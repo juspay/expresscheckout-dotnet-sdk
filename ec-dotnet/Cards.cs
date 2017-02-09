@@ -39,10 +39,33 @@ namespace Juspay.ExpressCheckout
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost("/cards", req));
         }
 
-
+        // Given a customerId, list all the cards for that customer
         private static async Task<ECApiResponse> List(string customerId)
         {
-            
+            if(string.IsNullOrEmpty(customerId))
+            {
+                throw new ArgumentException("customerId is not specified, please specify a customer"
+                    + " for which we need to fetch cards");
+            }
+
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet("/cards", new Dictionary<string, string>()
+            {
+                { "customer_id", customerId }
+            }));
+        }
+
+        // Given a card reference, delete the card
+        private static async Task<ECApiResponse> Delete(string cardRef)
+        {
+            if(string.IsNullOrEmpty(cardRef))
+            {
+                throw new ArgumentException("Please specify a cardReference to the card that you want to delete");
+            }
+
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoDelete(
+                String.Format("/cards/{0}", cardRef),
+                null
+                ));
         }
     }
 }
