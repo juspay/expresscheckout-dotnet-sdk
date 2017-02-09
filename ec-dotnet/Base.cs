@@ -144,6 +144,18 @@ namespace Juspay.ExpressCheckout.Base
             }
         }
 
+        public static async Task<HttpResponseMessage> DoDelete(string path, IDictionary<string, string> payload)
+        {
+            try
+            {
+                return await Client.DeleteAsync(Config.GenerateApiUrl(path, payload));
+            }
+            catch(Exception e)
+            {
+                return null;
+            }
+        }
+
         public static async Task<ECApiResponse> ParseAndWrapResponseJObject(HttpResponseMessage message)
         {
             var response = new ECApiResponse() {
