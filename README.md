@@ -48,7 +48,7 @@ namespace MyApplication
 {
     public class MyClass
     {
-        public static void CreateOrder()
+        public static async void CreateOrder()
         {
             // Prepare a dictionary of parameters.
             // the minimum 2 parameters required to create the order are the orderId and the order amount
@@ -61,10 +61,9 @@ namespace MyApplication
             OrderDetails.Add("order_id", OrderId);
             OrderDetails.Add("amount", "10.00");
             
-            Task<ECApiResponse> OrderResponse = Orders.CreateOrder(OrderDetails);
-            
+
             // Wait for the task to finish and
-            ECApiResponse Response = OrderResponse.Result;
+            ECApiResponse OrderResponse = await Orders.CreateOrder(OrderDetails);
         }
     }
 }
@@ -80,13 +79,12 @@ namespace MyApplication
 {
     class MyClass
     {
-        public static void FetchOrderStatus()
+        public static async void FetchOrderStatus()
         {
             var OrderId = "Csharp-SDK-b2b78e5c-c2bf-481d-aae5-2003ec9738df";
-            Task<ECApiResponse> OrderStatusResponse = Orders.GetStatus(OrderId);
             
             // Wait for the Task to finish and get the response
-            ECApiResponse ApiResponse = OrderStatusResponse.Result;
+            ECApiResponse OrderStatusResponse = await Orders.GetStatus(OrderId);
         }
     }
 }
@@ -98,13 +96,12 @@ namespace MyApplication
 {
     class MyClass
     {
-        public static void GetOrderList()
+        public static async void GetOrderList()
         {
             int count = 20;
-            Task<EcApiResponse>  OrderListResponse = Orders.List(count);
             
-            // Wait for the Task to finish and get
-            ECApiResponse ApiRes = OrderListResponse.Result;
+            // Wait for the Task to finish and get the response
+            EcApiResponse OrderListResponse = await Orders.List(count);
         }
     }
 }
