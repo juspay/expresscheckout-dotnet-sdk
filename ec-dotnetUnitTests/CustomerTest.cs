@@ -42,7 +42,7 @@ namespace ec_dotnetUnitTests
         }
 
         [Fact]
-        public void GetCustomerTEst()
+        public void GetCustomerTest()
         {
             string CustomerId = "Csharp-SDK-CustID-945b1fca-768e-430b-9115-eb6dbaf5b3f4";
 
@@ -69,7 +69,12 @@ namespace ec_dotnetUnitTests
                                             
             try 
             {
-                dynamic UpdateCustomerResponse = Customer.UpdateCustomer(CustomerId, MobileNumber, null, FirstName, LastName);
+                dynamic UpdateCustomerResponse = Customer.UpdateCustomer(CustomerId, new Dictionary<string, string>() {
+                    { "first_name", FirstName },
+                    { "mobile_number", MobileNumber },
+                    { "last_name", LastName }
+                });
+
                 UpdateCustomerResponse = UpdateCustomerResponse.Result.Response;
 
                 Assert.Equal(UpdateCustomerResponse["object_reference_id"].ToString(), CustomerId);

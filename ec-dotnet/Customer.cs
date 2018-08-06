@@ -10,6 +10,9 @@ namespace Juspay.ExpressCheckout
     // All Customer related API's are here 
     public class Customer
     {
+        private static string[] MODIFIABLE_CUSTOMER_PROPERTIES = 
+            new string[] {"mobile_number", "email_address", "first_name", "last_name", "mobile_country_code"};
+        
         public static async Task<ECApiResponse> CreateCustomer(string objectReferenceId, 
                                                                   string mobileNumber,
                                                                   string emailAddress,
@@ -59,12 +62,8 @@ namespace Juspay.ExpressCheckout
         }
 
         // Given a customerId, list all the cards for that customer
-        public static async Task<ECApiResponse> UpdateCustomer(string customerId,
-                                                               string mobileNumber = null,
-                                                               string emailAddress = null,
-                                                               string firstName = null,
-                                                               string lastName = null,
-                                                               string mobileCountryCode = null)
+        public static async Task<ECApiResponse> UpdateCustomer(string customerId, 
+                                                               IDictionary<string, string> customerDetails)
         {
             if(string.IsNullOrEmpty(customerId))
             {
@@ -72,17 +71,21 @@ namespace Juspay.ExpressCheckout
                     + " for which we need to fetch cards");
             }
 
-            IDictionary<string, string> Params = new Dictionary<string, string>()
+            IDictionary<string, string> ValidatedCustomerDetails = new Dictionary<string, string>();
+
+            foreach(var key in MODIFIABLE_CUSTOMER_PROPERTIES)
             {
-                { "mobile_number", mobileNumber },
-                { "email_address", emailAddress },
-                { "first_name", firstName },
-                { "last_name", lastName },
-                { "mobile_country_code", mobileCountryCode }
-            };
+                if(customerDetails.ContainsKey(key))
+                    ValidatedCustomerDetails.Add(key, customerDetails[key]);
+            }
+
+            if(ValidatedCustomerDetails.Keys.Count == 0)
+            {
+                throw new ArgumentException("No details provided to update customer");
+            }
 
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost(
-                String.Format("/customers/{0}", customerId), Params));
+                String.Format("/customers/{0}", customerId), ValidatedCustomerDetails));
         }
     }
 }
