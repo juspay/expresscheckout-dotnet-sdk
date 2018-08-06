@@ -55,11 +55,16 @@ namespace Juspay.ExpressCheckout
             }
 
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet(
-                String.format("/customers/{0}", customerId)));
+                String.Format("/customers/{0}", customerId), null));
         }
 
         // Given a customerId, list all the cards for that customer
-        public static async Task<ECApiResponse> Update(string customerId)
+        public static async Task<ECApiResponse> UpdateCustomer(string customerId,
+                                                               string mobileNumber = null,
+                                                               string emailAddress = null,
+                                                               string firstName = null,
+                                                               string lastName = null,
+                                                               string mobileCountryCode = null)
         {
             if(string.IsNullOrEmpty(customerId))
             {
@@ -67,10 +72,17 @@ namespace Juspay.ExpressCheckout
                     + " for which we need to fetch cards");
             }
 
-            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet("/cards", new Dictionary<string, string>()
+            IDictionary<string, string> Params = new Dictionary<string, string>()
             {
-                { "customer_id", customerId }
-            }));
+                { "mobile_number", mobileNumber },
+                { "email_address", emailAddress },
+                { "first_name", firstName },
+                { "last_name", lastName },
+                { "mobile_country_code", mobileCountryCode }
+            };
+
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost(
+                String.Format("/customers/{0}", customerId), Params));
         }
     }
 }

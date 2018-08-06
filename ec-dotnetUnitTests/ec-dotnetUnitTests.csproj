@@ -14,4 +14,9 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ec-dotnet">
+      <HintPath>..\ec-dotnet\bin\Debug\ec-dotnet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

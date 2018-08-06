@@ -60,8 +60,8 @@ namespace Juspay.ExpressCheckout
         // Get the status for an order
         public static async Task<ECApiResponse> GetStatus(string orderId)
         {
-            var message = await HTTPUtils.DoGet("/order/status", new Dictionary<string, string>() { { "order_id", orderId } });
-            return await HTTPUtils.ParseAndWrapResponseJObject(message);
+            return await HTTPUtils.ParseAndWrapResponseJObject(
+                await HTTPUtils.DoGet(String.Format("/orders/{0}", orderId), null));
         }
 
         
@@ -117,7 +117,7 @@ namespace Juspay.ExpressCheckout
             {
                 {"amount", amount.ToString()}
             });
-
+            
             return await HTTPUtils.ParseAndWrapResponseJObject(message);
         }
 
