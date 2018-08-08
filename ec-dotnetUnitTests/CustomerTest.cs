@@ -26,12 +26,12 @@ namespace ec_dotnetUnitTests
             string FirstName = "Juspay";
             string LastName = "Technologies";
             string MobileNumber = "9876545432";
+            string EmailAddress = "support@juspay.in";
 
             try 
             {
-                dynamic CustomerCreateResponse = Customer.CreateCustomer(CustomerId, MobileNumber, FirstName, LastName);
+                dynamic CustomerCreateResponse = Customer.CreateCustomer(CustomerId, MobileNumber, EmailAddress, FirstName, LastName);
                 CustomerCreateResponse = CustomerCreateResponse.Result.Response;
-
                 Assert.Equal(CustomerCreateResponse["object_reference_id"].ToString(), CustomerId);
     
             }
