@@ -1,5 +1,16 @@
 ﻿# Express Checkout C# SDK
 
+## Using .NET 4.5? 
+
+All API calls to `https://api.juspay.in` must be over TLS1.2. In .NET 4.5 TLS1.2 support is not enabled
+by default. To enable, update the `System.Net.ServicePointManager.SecurityProtocol` property.
+
+```cs
+System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+```
+
+Refer: [https://stackoverflow.com/questions/28286086/default-securityprotocol-in-net-4-5](https://stackoverflow.com/questions/28286086/default-securityprotocol-in-net-4-5)
+
 ## Configure the SDK
 Configure the SDK by invoking the `Juspay.ExpressCheckout.Base.Config.Configure` method:
 
