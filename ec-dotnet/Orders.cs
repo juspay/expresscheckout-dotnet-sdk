@@ -42,7 +42,9 @@ namespace Juspay.ExpressCheckout
  
             "metadata.TPSL:shoppingCartDetails", "metadata.TPSL:accountNo",
  
-            "metadata.ZAAKPAY:productDescription", "metadata.ZAAKPAY:product1Description"
+            "metadata.ZAAKPAY:productDescription", "metadata.ZAAKPAY:product1Description",
+
+            "metadata.PAYPAL:phone_number", "metadata.PAYPAL:first_name", "metadata.PAYPAL:last_name", "metadata.PAYPAL:country_code"
         };
 
         static Orders()
