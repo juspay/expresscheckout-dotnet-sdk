@@ -20,7 +20,29 @@ namespace Juspay.ExpressCheckout
 
             "shipping_address_first_name","shipping_address_last_name","shipping_address_line1","shipping_address_line2","shipping_address_line3",
             "shipping_address_city","shipping_address_state","shipping_address_postal_code", "shipping_address_phone","shipping_address_country_code_iso",
-            "shipping_address_country"
+            "shipping_address_country",
+
+            "metadata.CCAVENUE_V2:promo_code",
+ 
+            "metadata.BILLDESK:AdditionalInfo3", "metadata.BILLDESK:AdditionalInfo4",
+ 
+            "metadata.FREECHARGE:campaignCode",
+ 
+            "metadata.HSBC_UPI:addInfo", 
+            
+            "metadata.MIGS:vpc_AddendumData", "metadata.MIGS:vpc_OrderInfo"
+ 
+            "metadata.OLAMONEY:couponCode",
+ 
+            "metadata.PAYTM:PROMO_CAMP_ID", "metadata.PAYTM:CUST_ID", "metadata.PAYTM:MERC_UNIQ_REF"
+ 
+            "metadata.PAYU:offer_key", "metadata.PAYU:udf1", "metadata.PAYU:udf2", "metadata.PAYU:udf3", "metadata.PAYU:udf4", "metadata.PAYU:udf5",
+ 
+            "metadata.RAZORPAY:notes[cust_id]", "metadata.RAZORPAY:notes[cust_name]",
+ 
+            "metadata.TPSL:shoppingCartDetails", "metadata.TPSL:accountNo",
+ 
+            "metadata.ZAAKPAY:productDescription", "metadata.ZAAKPAY:product1Description"
         };
 
         static Orders()
