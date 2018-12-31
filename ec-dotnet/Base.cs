@@ -25,13 +25,14 @@ namespace Juspay.ExpressCheckout.Base
         private static string ApiKey;
         private static string ApiVersion;
              
-        public static void Configure(Environment env, string merchantId, string apiKey)
+        public static void Configure(Environment env, string merchantId, string apiKey, string apiVersion = "2017-07-26")
         {
             if(env == null || merchantId == null || apiKey == null)
             {
                 throw new ArgumentException("ERROR: Please specify environment, merchantId and API Key");
             }
 
+            ApiVersion = apiVersion;
             Env = env;
             MerchantId = merchantId;
             ApiKey = apiKey;
@@ -50,6 +51,11 @@ namespace Juspay.ExpressCheckout.Base
         public static string GetApiKey()
         {
             return ApiKey;
+        }
+
+        public static string GetApiVersion()
+        {
+            return ApiVersion;
         }
 
         public enum Environment {
@@ -106,6 +112,7 @@ namespace Juspay.ExpressCheckout.Base
         {
             Client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Basic", GenerateAuthHeader());
+            Client.DefaultRequestHeaders.Add("Version", Config.GetApiVersion());
         }
 
         public static string Base64Encode(string plainText)
