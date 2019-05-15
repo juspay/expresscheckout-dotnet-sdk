@@ -15,19 +15,15 @@ namespace ec_dotnetUnitTests
 
         private static string RandomOrderId()
         {
-            return String.Format("Csharp-SDK-{0}", Guid.NewGuid().ToString());
+            return Common.RandomId();
         }
 
         [Fact]
         public void CreateOrderTest()
         {
-            var OrderDetails = new Dictionary<string, string>();
-            var OrderId = RandomOrderId();
+            var OrderId = RandomOrderId();            
 
-            OrderDetails.Add("order_id", OrderId);
-            OrderDetails.Add("amount", "10.00");
-
-            dynamic OrderResponse = Orders.CreateOrder(OrderDetails);
+            dynamic OrderResponse = Common.DoOrderCreate(OrderId);
             try
             {
                 OrderResponse = OrderResponse.Result.Response;

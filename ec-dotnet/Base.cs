@@ -110,11 +110,10 @@ namespace Juspay.ExpressCheckout.Base
 
         static HTTPUtils()
         {
-            Client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Basic", GenerateAuthHeader());
             Client.DefaultRequestHeaders.Add("Version", Config.GetApiVersion());
         }
 
+       
         public static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
@@ -126,12 +125,30 @@ namespace Juspay.ExpressCheckout.Base
             return Base64Encode(String.Format("{0}:", Config.GetApiKey()));
         }
 
+        private static HttpRequestMessage EmptyRequest()
+        {
+            return new HttpRequestMessage
+            {
+                Headers =
+                {
+                    { HttpRequestHeader.Authorization.ToString(), "Basic " + GenerateAuthHeader() },
+                    { "Version", Config.GetApiVersion() }
+                }
+            };
+
+        }
+
         public static async Task<HttpResponseMessage> DoPost(string path, IDictionary<string, string> payload)
         {
-            var content = new FormUrlEncodedContent(payload);
             try
             {
-                return await Client.PostAsync(Config.GenerateApiUrl(path), content);                    
+                var request = EmptyRequest();
+                request.Method = HttpMethod.Post;
+                request.RequestUri = Config.GenerateApiUrl(path);
+                request.Headers.Add(HttpRequestHeader.ContentType.ToString(), "application/x-www-form-urlencoded");
+                request.Content = new FormUrlEncodedContent(payload);
+
+                return await Client.SendAsync(request);
             } 
             catch (ArgumentNullException e)
             {
@@ -143,7 +160,11 @@ namespace Juspay.ExpressCheckout.Base
         {
             try
             {
-                return await Client.GetAsync(Config.GenerateApiUrl(path, payload));
+                var request = EmptyRequest();
+                request.Method = HttpMethod.Get;
+                request.RequestUri = Config.GenerateApiUrl(path, payload);
+
+                return await Client.SendAsync(request);
             }
             catch (ArgumentNullException e)
             {
@@ -155,7 +176,11 @@ namespace Juspay.ExpressCheckout.Base
         {
             try
             {
-                return await Client.DeleteAsync(Config.GenerateApiUrl(path, payload));
+                var request = EmptyRequest();
+                request.Method = HttpMethod.Delete;
+                request.RequestUri = Config.GenerateApiUrl(path, payload);
+
+                return await Client.SendAsync(request);
             }
             catch(Exception e)
             {

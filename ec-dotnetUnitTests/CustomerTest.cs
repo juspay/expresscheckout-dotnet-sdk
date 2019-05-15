@@ -15,7 +15,7 @@ namespace ec_dotnetUnitTests
 
         private static string RandomCustomerId()
         {
-            return String.Format("Csharp-SDK-CustID-{0}", Guid.NewGuid().ToString());
+            return Common.RandomId();
         }
 
 

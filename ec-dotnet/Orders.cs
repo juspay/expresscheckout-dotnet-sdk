@@ -30,11 +30,11 @@ namespace Juspay.ExpressCheckout
  
             "metadata.HSBC_UPI:addInfo", 
             
-            "metadata.MIGS:vpc_AddendumData", "metadata.MIGS:vpc_OrderInfo"
+            "metadata.MIGS:vpc_AddendumData", "metadata.MIGS:vpc_OrderInfo",
  
             "metadata.OLAMONEY:couponCode",
  
-            "metadata.PAYTM:PROMO_CAMP_ID", "metadata.PAYTM:CUST_ID", "metadata.PAYTM:MERC_UNIQ_REF"
+            "metadata.PAYTM:PROMO_CAMP_ID", "metadata.PAYTM:CUST_ID", "metadata.PAYTM:MERC_UNIQ_REF",
  
             "metadata.PAYU:offer_key", "metadata.PAYU:udf1", "metadata.PAYU:udf2", "metadata.PAYU:udf3", "metadata.PAYU:udf4", "metadata.PAYU:udf5",
  
