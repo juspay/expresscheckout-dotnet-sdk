@@ -23,7 +23,7 @@ namespace ec_dotnetUnitTests
         {
             var OrderId = RandomOrderId();            
 
-            dynamic OrderResponse = Common.DoOrderCreate(OrderId);
+            dynamic OrderResponse = Common.DoOrderCreate(OrderId, udfs: new string[] { "1", "2", "3", "4", "5", "6", "7", "8" });
             try
             {
                 OrderResponse = OrderResponse.Result.Response;
@@ -65,6 +65,26 @@ namespace ec_dotnetUnitTests
             catch (AggregateException e)
             {
                 Assert.True(false, "message");
+            }
+        }
+
+        [Fact]
+        public void OrderCreateVerifyUDFS()
+        {
+            var OrderId = RandomOrderId();
+
+            string[] udfs = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+
+            dynamic OrderResponse = Common.DoOrderCreate(OrderId, udfs).Result.Response;
+            dynamic OrderStatus =  Orders.GetStatus(OrderId).Result.Response;
+
+            Assert.True(OrderResponse["status"] == "CREATED");
+            for(int i=0;i<udfs.Length; i++)
+            {
+                string receivedVal = OrderStatus["udf" + (i + 1)];
+                string expectedVal = (i + 1).ToString();
+
+                Assert.Equal(receivedVal, expectedVal);
             }
         }
     }

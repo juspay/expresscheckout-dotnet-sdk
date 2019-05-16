@@ -22,6 +22,8 @@ namespace Juspay.ExpressCheckout
             "shipping_address_city","shipping_address_state","shipping_address_postal_code", "shipping_address_phone","shipping_address_country_code_iso",
             "shipping_address_country",
 
+            "udf1", "udf2", "udf3", "udf4", "udf5", "udf6", "udf7", "udf8", "udf9", "udf10",
+
             "metadata.CCAVENUE_V2:promo_code",
  
             "metadata.BILLDESK:AdditionalInfo3", "metadata.BILLDESK:AdditionalInfo4",

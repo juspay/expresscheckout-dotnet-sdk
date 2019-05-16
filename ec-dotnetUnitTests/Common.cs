@@ -14,13 +14,20 @@ namespace ec_dotnetUnitTests
             return String.Format("Csharp-SDK-CustID-{0}", Guid.NewGuid().ToString());
         }
 
-        public static async Task<ECApiResponse> DoOrderCreate(string OrderId)
+        public static async Task<ECApiResponse> DoOrderCreate(string OrderId, string[] udfs = null)
         {
             var OrderDetails = new Dictionary<string, string>();
            
-
             OrderDetails.Add("order_id", OrderId);
             OrderDetails.Add("amount", "10.00");
+
+            if(udfs != null)
+            {
+                for(int i=0; i< udfs.Length; i++)
+                {
+                    OrderDetails.Add("udf" + (i + 1), udfs[i]);
+                }
+            }
 
             return await Orders.CreateOrder(OrderDetails);
         }
