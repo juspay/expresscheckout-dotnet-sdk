@@ -24,6 +24,8 @@ namespace Juspay.ExpressCheckout
 
             "udf1", "udf2", "udf3", "udf4", "udf5", "udf6", "udf7", "udf8", "udf9", "udf10",
 
+            "options.create_mandate", "mandate_max_amount",
+
             "metadata.CCAVENUE_V2:promo_code",
  
             "metadata.BILLDESK:AdditionalInfo3", "metadata.BILLDESK:AdditionalInfo4",

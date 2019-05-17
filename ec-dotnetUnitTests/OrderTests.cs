@@ -3,6 +3,8 @@ using Xunit;
 using Juspay.ExpressCheckout;
 using System.Collections.Generic;
 using Juspay.ExpressCheckout.Base;
+using System;
+using System.Threading;
 
 namespace ec_dotnetUnitTests
 {
@@ -21,13 +23,37 @@ namespace ec_dotnetUnitTests
         [Fact]
         public void CreateOrderTest()
         {
-            var OrderId = RandomOrderId();            
+            var OrderId = RandomOrderId();
 
-            dynamic OrderResponse = Common.DoOrderCreate(OrderId, udfs: new string[] { "1", "2", "3", "4", "5", "6", "7", "8" });
+            var udfs = new string[] { "1", "2", "3", "4", "5", "6", "7", "8" };
+            var OrderDetails = new Dictionary<string, string>();
+
+            OrderDetails.Add("order_id", OrderId);
+            OrderDetails.Add("amount", "10.00");
+
+            for (int i = 0; i < udfs.Length; i++)
+            {
+                OrderDetails.Add("udf" + (i + 1), udfs[i]);
+            }
+
+            OrderDetails.Add("options.create_mandate", "OPTIONAL");
+            OrderDetails.Add("mandate_max_amount", "1000.0");
+            OrderDetails.Add("customer_id", "random_customer_id");
+
+            dynamic OrderResponse = Orders.CreateOrder(OrderDetails);
+
             try
             {
                 OrderResponse = OrderResponse.Result.Response;
                 Assert.Equal(OrderResponse["order_id"].ToString(), OrderId);
+
+                // sleep for 2 seconds so that status can propogate to the system
+                Thread.Sleep(2000);
+
+                dynamic OrderStatus = Orders.GetStatus(OrderId);
+                OrderStatus = OrderStatus.Result.Response;
+
+                Assert.Equal(OrderStatus["customer_id"].ToString(), "random_customer_id");
             }
             catch (AggregateException e)
             {
