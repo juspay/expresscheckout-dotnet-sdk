@@ -62,7 +62,7 @@ namespace Juspay.ExpressCheckout
 
         // Create order given an orderId,
         // Returns a JObject for ease of use
-        public static async Task<ECApiResponse> CreateOrder(IDictionary<string, string> orderDetails)
+        public static async Task<ECApiResponse> CreateOrder(IDictionary<string, string> orderDetails, ECApiCredentials creds = null)
         {
             foreach(var item in ORDER_REQ_PARAMETERS)
             {
@@ -82,20 +82,20 @@ namespace Juspay.ExpressCheckout
             }
 
             return await HTTPUtils.ParseAndWrapResponseJObject(
-                await HTTPUtils.DoPost("/order/create", CleanDict));
+                await HTTPUtils.DoPost("/order/create", CleanDict, creds));
         }
 
         // Get the status for an order
-        public static async Task<ECApiResponse> GetStatus(string orderId)
+        public static async Task<ECApiResponse> GetStatus(string orderId, ECApiCredentials creds = null)
         {
             return await HTTPUtils.ParseAndWrapResponseJObject(
-                await HTTPUtils.DoGet(String.Format("/orders/{0}", orderId), null));
+                await HTTPUtils.DoGet(String.Format("/orders/{0}", orderId), null, creds));
         }
 
         
         // List orders
         public static async Task<ECApiResponse> List(int count=10, int offset=int.MinValue, long gte=long.MinValue,
-            long lte=long.MinValue, long gt=long.MinValue, long lt=long.MinValue)
+            long lte=long.MinValue, long gt=long.MinValue, long lt=long.MinValue, ECApiCredentials creds = null)
         {
 
             if (count > 100 || count <= 0)
@@ -130,11 +130,11 @@ namespace Juspay.ExpressCheckout
                 query.Add("created.lt", lt.ToString());
             }
 
-            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet("/orders", query));
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet("/orders", query, creds));
         }
 
         // Update the order
-        public static async Task<ECApiResponse> Update(string orderId, float amount)
+        public static async Task<ECApiResponse> Update(string orderId, float amount, ECApiCredentials creds = null)
         {
             if(orderId == null || amount <= 0)
             {
@@ -144,14 +144,14 @@ namespace Juspay.ExpressCheckout
             var message = await HTTPUtils.DoPost(String.Format("/orders/{0}", orderId), new Dictionary<string, string>()
             {
                 {"amount", amount.ToString()}
-            });
+            }, creds);
             
             return await HTTPUtils.ParseAndWrapResponseJObject(message);
         }
 
 
         // Refund an order given orderId, amount and a unique request Id
-        public static async Task<ECApiResponse> Refund(string orderId, float amount, string uniqueReqId)
+        public static async Task<ECApiResponse> Refund(string orderId, float amount, string uniqueReqId, ECApiCredentials creds = null)
         {
             if (orderId == null || uniqueReqId == null || amount <= 0)
             {
@@ -162,7 +162,7 @@ namespace Juspay.ExpressCheckout
             var message = await HTTPUtils.DoPost(String.Format("/orders/{0}/refunds", orderId), new Dictionary<string, string>() {
                 { "unique_request_id", uniqueReqId },
                 { "amount", amount.ToString() }
-            });
+            }, creds);
 
             return await HTTPUtils.ParseAndWrapResponseJObject(message);
         }

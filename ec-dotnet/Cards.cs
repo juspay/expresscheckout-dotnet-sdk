@@ -11,7 +11,7 @@ namespace Juspay.ExpressCheckout
     public class StoredCards
     {
         public static async Task<ECApiResponse> AddCardUsingToken(string cardToken, string customerId, string customerEmail,
-            string nameOnCard=null, string nickname=null)
+            string nameOnCard=null, string nickname=null, ECApiCredentials credentials = null)
         {
             if(cardToken == null || customerEmail == null || customerId == null)
             {
@@ -36,11 +36,11 @@ namespace Juspay.ExpressCheckout
                 req.Add("nickname", nickname);
             }
 
-            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost("/cards", req));
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost("/cards", req, credentials));
         }
 
         // Given a customerId, list all the cards for that customer
-        private static async Task<ECApiResponse> List(string customerId)
+        private static async Task<ECApiResponse> List(string customerId, ECApiCredentials credentials = null)
         {
             if(string.IsNullOrEmpty(customerId))
             {
@@ -51,11 +51,11 @@ namespace Juspay.ExpressCheckout
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet("/cards", new Dictionary<string, string>()
             {
                 { "customer_id", customerId }
-            }));
+            }, credentials));
         }
 
         // Given a card reference, delete the card
-        private static async Task<ECApiResponse> Delete(string cardRef)
+        private static async Task<ECApiResponse> Delete(string cardRef, ECApiCredentials credentials = null)
         {
             if(string.IsNullOrEmpty(cardRef))
             {
@@ -64,8 +64,9 @@ namespace Juspay.ExpressCheckout
 
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoDelete(
                 String.Format("/cards/{0}", cardRef),
-                null
-                ));
+                null,
+                credentials
+            ));
         }
     }
 }

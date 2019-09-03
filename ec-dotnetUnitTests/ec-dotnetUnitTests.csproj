@@ -15,8 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ec-dotnet">
-      <HintPath>..\ec-dotnet\bin\Debug\ec-dotnet.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ec-dotnet\ec-dotnet.csproj" />
   </ItemGroup>
 </Project>

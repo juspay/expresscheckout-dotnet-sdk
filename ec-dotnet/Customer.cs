@@ -18,7 +18,8 @@ namespace Juspay.ExpressCheckout
                                                                   string emailAddress,
                                                                   string firstName=null,
                                                                   string lastName=null,
-                                                                  string mobileCountryCode=null)
+                                                                  string mobileCountryCode=null,
+                                                                  ECApiCredentials creds = null)
         {
             if(objectReferenceId == null || mobileNumber == null || emailAddress == null)
             {
@@ -47,10 +48,10 @@ namespace Juspay.ExpressCheckout
                 req.Add("mobile_country_code", mobileCountryCode);
             }
 
-            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost("/customers", req));
+            return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost("/customers", req, creds));
         }
 
-        public static async Task<ECApiResponse> GetCustomer(string customerId)
+        public static async Task<ECApiResponse> GetCustomer(string customerId, ECApiCredentials credentials = null)
         {
             if(string.IsNullOrEmpty(customerId))
             {
@@ -58,12 +59,13 @@ namespace Juspay.ExpressCheckout
             }
 
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoGet(
-                String.Format("/customers/{0}", customerId), null));
+                String.Format("/customers/{0}", customerId), null, credentials));
         }
 
         // Given a customerId, list all the cards for that customer
         public static async Task<ECApiResponse> UpdateCustomer(string customerId, 
-                                                               IDictionary<string, string> customerDetails)
+                                                               IDictionary<string, string> customerDetails,
+                                                               ECApiCredentials credentials = null)
         {
             if(string.IsNullOrEmpty(customerId))
             {
@@ -85,7 +87,7 @@ namespace Juspay.ExpressCheckout
             }
 
             return await HTTPUtils.ParseAndWrapResponseJObject(await HTTPUtils.DoPost(
-                String.Format("/customers/{0}", customerId), ValidatedCustomerDetails));
+                String.Format("/customers/{0}", customerId), ValidatedCustomerDetails, credentials));
         }
     }
 }

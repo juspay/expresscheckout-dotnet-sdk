@@ -14,7 +14,7 @@ namespace ec_dotnetUnitTests
             return String.Format("Csharp-SDK-CustID-{0}", Guid.NewGuid().ToString());
         }
 
-        public static async Task<ECApiResponse> DoOrderCreate(string OrderId, string[] udfs = null)
+        public static async Task<ECApiResponse> DoOrderCreate(string OrderId, string[] udfs = null, ECApiCredentials creds = null)
         {
             var OrderDetails = new Dictionary<string, string>();
            
@@ -29,7 +29,7 @@ namespace ec_dotnetUnitTests
                 }
             }
 
-            return await Orders.CreateOrder(OrderDetails);
+            return await Orders.CreateOrder(OrderDetails, creds);
         }
     }
 }

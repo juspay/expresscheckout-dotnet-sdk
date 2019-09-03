@@ -8,7 +8,95 @@ namespace ec_dotnetUnitTests
 {
     public class MultipleConfigureTest
     {
-      
+        [Fact]
+        public void ExplicitConfigurationCalls()
+        {
+            new System.Threading.Thread(() =>
+            {
+                string randId = Common.RandomId();
+                for (int i=0; i<30; i++)
+                {
+                    string orderId = "sandbox__" + randId + "__" + i;
+                    dynamic orderResult =
+                        Common.DoOrderCreate(orderId,
+                                             null,
+                                             new ECApiCredentials("sriduth_sandbox_test", "4D94B6287BE459EB735EE9AB0DA212", "2018-10-25"));
+
+                    orderResult = orderResult.Result.Response;
+                    Assert.Equal(orderResult["order_id"].ToString(), orderId);
+
+                }
+         
+            }).Start();
+
+            new System.Threading.Thread(() =>
+            {
+                string randId = Common.RandomId();
+                for (int i = 0; i < 30; i++)
+                {
+                    string orderId = "production__" + randId + "__" + i;
+                    dynamic orderResult =
+                        Common.DoOrderCreate(orderId,
+                                             null,
+                                             new ECApiCredentials("sriduth_prod_test", "F4211C67C9B84CCDB2A0ED2E65A4201D", "2018-10-25"));
+
+                    orderResult = orderResult.Result.Response;
+                    Assert.Equal(orderResult["order_id"].ToString(), orderId);
+
+                }
+            }).Start();
+        }
+
+        [Fact]
+        public void ParallelCallsWithCommonAuth()
+        {
+            new System.Threading.Thread(() =>
+            {
+                Console.WriteLine("prod");
+                System.Threading.Thread.CurrentThread.IsBackground = true;
+                string randId = Common.RandomId();
+                for (int i = 0; i < 30; i++)
+                {
+                    Console.WriteLine("randid" + randId + i);
+                    Config.Configure(Config.Environment.SANDBOX, "sriduth_sandbox_test", "4D94B6287BE459EB735EE9AB0DA212");
+                    string orderId = "sandbox__" + randId + "__" + i;
+                    dynamic orderResult =
+                        Common.DoOrderCreate(orderId);
+
+                    orderResult = orderResult.Result.Response;
+                    Assert.Equal(orderResult["order_id"].ToString(), orderId);
+                }
+
+            }).Start();
+
+            new System.Threading.Thread(() =>
+            {
+                try
+                {
+                    Console.WriteLine("sandbox");
+                    System.Threading.Thread.CurrentThread.IsBackground = true;
+                    string randId = Common.RandomId();
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Config.Configure(Config.Environment.PRODUCTION, "sriduth_prod_test", "F4211C67C9B84CCDB2A0ED2E65A4201D");
+                        string orderId = "production__" + randId + "__" + i;
+                        dynamic orderResult =
+                            Common.DoOrderCreate(orderId);
+
+                        orderResult = orderResult.Result.Response;
+                        Assert.Equal(orderResult["order_id"].ToString(), orderId);
+                    }
+                } 
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+           
+            }).Start();
+
+            System.Threading.Thread.Sleep(1000 * 20);
+        }
+
         [Fact]
         public void TestMultipleConfigureCalls()
         {

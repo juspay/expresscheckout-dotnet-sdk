@@ -10,6 +10,25 @@ using Newtonsoft.Json.Linq;
 
 namespace Juspay.ExpressCheckout.Base
 {
+    public sealed class ECApiCredentials
+    {
+        string MerchantId { get; set;  }
+        private string ApiKey { get; set; }
+        public string Version { get; set; }
+
+        public string GenerateAuthHeader()
+        {
+            return HTTPUtils.Base64Encode(String.Format("{0}:", ApiKey));
+        }
+
+        public ECApiCredentials(string MerchantId, string ApiKey, string Version = "2018-10-25")
+        {
+            this.MerchantId = MerchantId;
+            this.ApiKey = ApiKey;
+            this.Version = Version;
+        }
+    }
+
     public sealed class ECApiResponse
     {
         public HttpStatusCode StatusCode { get; set; }
@@ -120,25 +139,39 @@ namespace Juspay.ExpressCheckout.Base
             return System.Convert.ToBase64String(plainTextBytes);
         }
 
-        private static string GenerateAuthHeader()
+        private static string GenerateAuthHeaderGlobal()
         {            
             return Base64Encode(String.Format("{0}:", Config.GetApiKey()));
         }
 
-        private static HttpRequestMessage EmptyRequest()
+        private static HttpRequestMessage EmptyRequest(ECApiCredentials credentials = null)
         {
+            string AuthHeader;
+            string Version;
+
+            if(credentials == null)
+            {
+                AuthHeader = GenerateAuthHeaderGlobal();
+                Version = Config.GetApiVersion();
+            }
+            else
+            {
+                AuthHeader = credentials.GenerateAuthHeader();
+                Version = credentials.Version;
+            }
+
             return new HttpRequestMessage
             {
                 Headers =
                 {
-                    { HttpRequestHeader.Authorization.ToString(), "Basic " + GenerateAuthHeader() },
-                    { "Version", Config.GetApiVersion() }
+                    { HttpRequestHeader.Authorization.ToString(), "Basic " + AuthHeader },
+                    { "Version", Version }
                 }
             };
 
         }
 
-        public static async Task<HttpResponseMessage> DoPost(string path, IDictionary<string, string> payload)
+        public static async Task<HttpResponseMessage> DoPost(string path, IDictionary<string, string> payload, ECApiCredentials credentials = null)
         {
             try
             {
@@ -156,11 +189,11 @@ namespace Juspay.ExpressCheckout.Base
             }   
         }
 
-        public static async Task<HttpResponseMessage> DoGet(string path, IDictionary<string, string> payload)
+        public static async Task<HttpResponseMessage> DoGet(string path, IDictionary<string, string> payload, ECApiCredentials credentials = null)
         {
             try
             {
-                var request = EmptyRequest();
+                var request = EmptyRequest(credentials);
                 request.Method = HttpMethod.Get;
                 request.RequestUri = Config.GenerateApiUrl(path, payload);
 
@@ -172,11 +205,11 @@ namespace Juspay.ExpressCheckout.Base
             }
         }
 
-        public static async Task<HttpResponseMessage> DoDelete(string path, IDictionary<string, string> payload)
+        public static async Task<HttpResponseMessage> DoDelete(string path, IDictionary<string, string> payload, ECApiCredentials credentials = null)
         {
             try
             {
-                var request = EmptyRequest();
+                var request = EmptyRequest(credentials);
                 request.Method = HttpMethod.Delete;
                 request.RequestUri = Config.GenerateApiUrl(path, payload);
 
