@@ -48,7 +48,9 @@ namespace Juspay.ExpressCheckout
  
             "metadata.ZAAKPAY:productDescription", "metadata.ZAAKPAY:product1Description",
 
-            "metadata.PAYPAL:phone_number", "metadata.PAYPAL:first_name", "metadata.PAYPAL:last_name", "metadata.PAYPAL:country_code"
+            "metadata.PAYPAL:phone_number", "metadata.PAYPAL:first_name", "metadata.PAYPAL:last_name", "metadata.PAYPAL:country_code",
+
+            "options.create_mandate", "max_mandate_amount"
         };
 
         static Orders()
