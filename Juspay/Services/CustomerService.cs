@@ -1,7 +1,7 @@
 namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
-    public class CreateCustomerInput
+    public class CreateCustomerInput : JuspayEntity
     {
         [JsonProperty("object_reference_id")]
         public string? ObjectReferenceId { get; set; }
@@ -18,15 +18,11 @@ namespace Juspay {
         [JsonProperty("options")]
         public ClientAuthToken? Options { get; set; }
     }
-    public class GetCustomerOptions {
+    public class GetCustomerOptions : JuspayEntity {
         [JsonProperty("options")]
         public ClientAuthToken? Options { get; set; } 
     }
-    public class ClientAuthToken
-    {
-        [JsonProperty("get_client_auth_token")]
-        public bool? GetClientAuthToken { get; set; }
-    }
+
     public class CustomerService : Service<CustomerResponse> {
         public CustomerService()
             : base()
@@ -40,18 +36,18 @@ namespace Juspay {
     
         public override string BasePath => "/customers";
     
-        public async Task<CustomerResponse> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
+        public async Task<JuspayEntity> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions);
         }
-        public CustomerResponse CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
+        public JuspayEntity CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions);
         }
-        public async Task<CustomerResponse> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public async Task<JuspayEntity> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return await this.GetAsync(customerId, null, getCustomerOptions, requestOptions);
         }
-        public CustomerResponse GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public JuspayEntity GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return this.Get(customerId, null, getCustomerOptions, requestOptions);
         }
     }

@@ -8,5 +8,6 @@ namespace Juspay
     public interface IJuspayEntity
     {
         JuspayResponse? JuspayResponse { get; set; }
+        Dictionary<string, object> DictionaryObject { get; set; }
     }
 }

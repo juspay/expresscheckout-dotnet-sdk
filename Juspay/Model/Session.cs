@@ -1,12 +1,5 @@
 namespace Juspay {
     using Newtonsoft.Json;
-    public class PaymentLinks : JuspayEntity
-    {
-        [JsonProperty("web")]
-        public string? Web { get; set; }
-        [JsonProperty("expiry")]
-        public DateTime? ExpiryDate { get; set; }
-    }
     public class SdkPayload : JuspayEntity
     {
         [JsonProperty("requestId")]

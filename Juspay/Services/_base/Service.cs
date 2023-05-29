@@ -17,7 +17,7 @@ namespace Juspay {
             set => this.client = value;
         }
 
-        public virtual string? BasePath { get; }
+        public virtual string? BasePath { get; set; }
 
         public virtual string? BaseUrl => this.Client.ApiBase;
 
@@ -27,25 +27,30 @@ namespace Juspay {
             {
                 throw new JuspayException("The id cannot be null or whitespace." + nameof(id));
             }
-            Console.WriteLine(this.BasePath);
             return $"{this.BasePath}/{Uri.EscapeDataString(id)}";
         }
 
-        public async Task<TModelReturned> CreateAsync(object input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded")
-        {
-            return await this.Client.RequestAsync<TModelReturned>(HttpMethod.Post, this.BasePath, input, null, requestOptions, contentType).ConfigureAwait(false);
+        private object getInput(JuspayEntity input) {
+            if (input != null && input.DictionaryObject != null) {
+                return input.DictionaryObject;
+            }
+            return input;
         }
-        public async Task<TModelReturned> GetAsync(string id, object? input, object queryParams, RequestOptions requestOptions, string contentType = "") {
-            return await this.Client.RequestAsync<TModelReturned>(HttpMethod.Get, this.InstanceUrl(id), input, queryParams, requestOptions, contentType).ConfigureAwait(false);
+        public async Task<TModelReturned> CreateAsync(JuspayEntity input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded", string prefix = "")
+        {
+            return await this.Client.RequestAsync<TModelReturned>(HttpMethod.Post, this.BasePath + prefix, getInput(input), null, requestOptions, contentType).ConfigureAwait(false);
+        }
+        public async Task<TModelReturned> GetAsync(string id, JuspayEntity? input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
+            return await this.Client.RequestAsync<TModelReturned>(HttpMethod.Get, this.InstanceUrl(id) + prefix, input, queryParams, requestOptions, contentType).ConfigureAwait(false);
         }
         // public async Task<TModelReturned> UpdateAsync(string url, Dictionary<string, string> pathParams, object input, RequestOptions requestOptions) {
         //     return await this.Client.RequestAsync<TModelReturned>(input, url, pathParams, requestOptions).ConfigureAwait(false);
         // }
-        public TModelReturned Create(object input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded") {
-             return CreateAsync(input, requestOptions, contentType).ConfigureAwait(false).GetAwaiter().GetResult();
+        public TModelReturned Create(JuspayEntity input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded", string prefix = "") {
+             return CreateAsync(input, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
-        public TModelReturned Get(string id, object? input, object queryParams, RequestOptions requestOptions, string contentType = "") {
-            return GetAsync(id, input, queryParams, requestOptions, contentType).ConfigureAwait(false).GetAwaiter().GetResult();
+        public TModelReturned Get(string id, JuspayEntity? input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
+            return GetAsync(id, input, queryParams, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
         // public TModelReturned Update(string id,  object input, RequestOptions requestOptions) {
         //     return UpdateAsync(url, pathParams, client, input, requestOptions).ConfigureAwait(false).GetAwaiter().GetResult();

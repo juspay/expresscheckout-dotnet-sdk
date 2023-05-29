@@ -5,37 +5,25 @@ namespace Juspay
     using System.Net;
     using System.Net.Http.Headers;
 
-    /// <summary>
-    /// Represents a response from Juspay's API.
-    /// </summary>
     public abstract class JuspayResponseBase
     {
-        /// <param name="statusCode">The HTTP status code.</param>
-        /// <param name="headers">The HTTP headers of the response.</param>
-        public JuspayResponseBase(HttpStatusCode statusCode, HttpResponseHeaders headers)
+        public JuspayResponseBase(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode)
         {
             this.StatusCode = statusCode;
             this.Headers = headers;
+            this.IsSuccessStatusCode = isSuccessStatusCode;
         }
 
-        /// <summary>Gets the HTTP status code of the response.</summary>
-        /// <value>The HTTP status code of the response.</value>
         public HttpStatusCode StatusCode { get; }
 
-        /// <summary>Gets the HTTP headers of the response.</summary>
-        /// <value>The HTTP headers of the response.</value>
+        public bool IsSuccessStatusCode { get; }
+
         public HttpResponseHeaders Headers { get; }
 
-        /// <summary>Gets the date of the request, as returned by Juspay.</summary>
-        /// <value>The date of the request, as returned by Juspay.</value>
         public DateTimeOffset? Date => this.Headers?.Date;
 
-        /// <summary>Gets the idempotency key of the request, as returned by Juspay.</summary>
-        /// <value>The idempotency key of the request, as returned by Juspay.</value>
         public string? RequestId => MaybeGetHeader(this.Headers, "x-request-id");
 
-        /// <summary>Gets the ID of the request, as returned by Juspay.</summary>
-        /// <value>The ID of the request, as returned by Juspay.</value>
         public string? ResponseId => MaybeGetHeader(this.Headers, "x-response-id");
 
         public string? MerchantId => MaybeGetHeader(this.Headers, "x-jp-merchant-id");

@@ -54,11 +54,8 @@ namespace Juspay {
                 var message = "API key is invalid";
                 throw new JuspayException(message);
             }
-
-            System.Net.Http.HttpClient httpClient = ConnectTimeoutInMilliSeconds.HasValue ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds.Value}) : new HttpClient();
-            if (ReadTimeoutInMilliSeconds.HasValue) httpClient.Timeout = ReadTimeoutInMilliSeconds.Value;
-            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
-            return new JuspayClient(ApiKey, BaseUrl, httpClient);
+            IHttpClient httpClient = new SystemHttpClient(ConnectTimeoutInMilliSeconds, ReadTimeoutInMilliSeconds);
+            return new JuspayClient(httpClient, ApiKey, BaseUrl);
         }
 
     }

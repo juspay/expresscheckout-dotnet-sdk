@@ -13,8 +13,6 @@ namespace Juspay {
     {
         string ApiBase { get; set; }
 
-        string ApiKey { get; set; }
-
         // string MerchantId { get; }
 
         Task<T> RequestAsync<T>(HttpMethod method, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)
