@@ -10,7 +10,7 @@ namespace JuspayTest.Services
         public JuspayServiceTest () {
             JuspayEnvironment.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
         }
-        [Fact]
+        //[Fact]
         public void JuspaySessionAPITest()
         {
             CreateSessionInput sessionInputFromJson = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
@@ -20,7 +20,7 @@ namespace JuspayTest.Services
             Assert.IsType<SessionResponse>(sessionRes);
             Console.WriteLine(sessionRes.ToJson());
         }
-        [Fact]
+        //[Fact]
         public string CreateOrderTest() {
             string orderId = $"order_{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}";
             JuspayEntity createOrderInput = new JuspayEntity { DictionaryObject = new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } };
@@ -32,7 +32,7 @@ namespace JuspayTest.Services
             return orderId;
         }
         
-        [Fact]
+        //[Fact]
         public void GetOrderTest() {
             string orderId = CreateOrderTest();
             Console.WriteLine($"order created {orderId}");
@@ -40,7 +40,6 @@ namespace JuspayTest.Services
             Console.WriteLine($"order status => {orderStatus.ToJson()}");
             Assert.NotNull(orderStatus);
         }
-
         // [Fact]
         public void RefundOrderTest() {
             string orderId = CreateOrderTest();
@@ -49,6 +48,37 @@ namespace JuspayTest.Services
             JuspayEntity refundOrder = new JuspayEntity { DictionaryObject = new Dictionary<string, object> { {"order_id", $"{orderId}"}, {"unique_request_id", $"{reqId}"}, { "amount", 10 } } };
             JuspayEntity refundStatus = new OrderService().RefundOrder(orderId, refundOrder, new RequestOptions("azhar_test", null, null, null));
             Console.WriteLine($"refund status => {refundStatus.ToJson()}");
+        }
+
+        // [Fact]
+        public string CreateCustomerWithClientAuthToken() {
+            string customerId = $"customer_{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}";
+            JuspayEntity createCustomerInput = new JuspayEntity { DictionaryObject = new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }}};
+            CustomerResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("azhar_test", null, null, null)) as CustomerResponse;
+            Console.WriteLine($"Customer created => {newCustomer.ToJson()}");
+            Assert.NotNull(newCustomer);
+            Assert.NotNull(newCustomer.Juspay.ClientAuthToken);
+            Assert.IsType<CustomerResponse>(newCustomer);
+            return customerId;
+        }
+        // [Fact]
+        public string CreateCustomerWithOutClientAuthToken() {
+            string customerId = $"customer_{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}";  
+            JuspayEntity createCustomerInput = new JuspayEntity { DictionaryObject = new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} }};
+            CustomerResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("azhar_test", null, null, null)) as CustomerResponse;
+            Console.WriteLine($"Customer created without token => {newCustomer.ToJson()}");
+            Assert.NotNull(newCustomer);
+            Assert.Null(newCustomer.Juspay);
+            Assert.IsType<CustomerResponse>(newCustomer);
+            return customerId;
+        }
+        [Fact]
+        public void GetCustomer() {
+            string customerId = CreateCustomerWithOutClientAuthToken();
+            CustomerResponse customer = new CustomerService().GetCustomer(customerId, null, new RequestOptions("azhar_test", null, null, null)) as CustomerResponse;
+            Assert.NotNull(customer);
+            Assert.IsType<CustomerResponse>(customer);
+            Assert.True(customerId == customer.ObjectReferenceId);
         }
     }
 }

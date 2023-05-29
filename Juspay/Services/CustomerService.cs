@@ -36,18 +36,18 @@ namespace Juspay {
     
         public override string BasePath => "/customers";
     
-        public async Task<JuspayEntity> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
+        public async Task<JuspayEntity> CreateCustomerAsync(JuspayEntity input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions);
         }
-        public JuspayEntity CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
+        public JuspayEntity CreateCustomer(JuspayEntity input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions);
         }
-        public async Task<JuspayEntity> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public async Task<JuspayEntity> GetCustomerAsync(string customerId, JuspayEntity getCustomerOptions, RequestOptions requestOptions) {
             return await this.GetAsync(customerId, null, getCustomerOptions, requestOptions);
         }
-        public JuspayEntity GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public JuspayEntity GetCustomer(string customerId, JuspayEntity getCustomerOptions, RequestOptions requestOptions) {
             return this.Get(customerId, null, getCustomerOptions, requestOptions);
         }
     }
