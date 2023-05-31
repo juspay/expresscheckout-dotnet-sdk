@@ -4,7 +4,9 @@ namespace Juspay {
     public class OrderCreate : JuspayEntity
     {
         public OrderCreate () : base() {}
-        public OrderCreate(Dictionary<string, object> data) : base(data) {}
+        public OrderCreate(Dictionary<string, object> data) : base(data) {
+            this.PopulateObject(data);
+        }
         [JsonProperty("order_id")]
         public string? OrderId { get; set; }
         [JsonProperty("amount")]
@@ -20,7 +22,9 @@ namespace Juspay {
     public class RefundOrder : JuspayEntity
     {
         public RefundOrder() : base() {}
-        public RefundOrder(Dictionary<string, object> data) : base(data) {}
+        public RefundOrder(Dictionary<string, object> data) : base(data) {
+            this.PopulateObject(data);
+        }
         [JsonProperty("order_id")]
         public string? OrderId { get; set; }
         [JsonProperty("amount")]

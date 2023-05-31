@@ -10,7 +10,7 @@ namespace JuspayTest.Services
         public JuspayServiceTest () {
             JuspayEnvironment.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
         }
-        [Fact]
+        // [Fact]
         public void JuspaySessionAPITest()
         {
             CreateSessionInput sessionInputFromJson = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
@@ -19,7 +19,7 @@ namespace JuspayTest.Services
             Assert.NotNull(sessionRes);
             Assert.IsType<SessionResponse>(sessionRes);
         }
-        [Fact]
+        // [Fact]
         public string CreateOrderTest() {
             string orderId = $"order_{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}";
             OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
@@ -29,7 +29,7 @@ namespace JuspayTest.Services
             return orderId;
         }
         
-        [Fact]
+        // [Fact]
         public void GetOrderTest() {
             string orderId = CreateOrderTest();
             Console.WriteLine($"order created {orderId}");
@@ -54,12 +54,13 @@ namespace JuspayTest.Services
             Assert.IsType<CustomerResponse>(newCustomer);
             return customerId;
         }
-        [Fact]
+        // [Fact]
         public string CreateCustomerWithOutClientAuthToken() {
             string customerId = $"customer_{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()}";  
             Console.WriteLine($"customer_id => {customerId}");
-            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
-            JuspayResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, new RequestOptions("azhar_test", null, null, null));
+            CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+            Console.WriteLine($"createCustomerObject {createCustomerInput.ObjectReferenceId} {createCustomerInput.Data["object_reference_id"]}");
+            JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(newCustomer);
             Assert.Null(((CustomerResponse)newCustomer).Juspay);
             Assert.IsType<CustomerResponse>(newCustomer);

@@ -3,7 +3,9 @@ namespace Juspay {
     using System.Threading.Tasks;
     public class CreateSessionInput : JuspayEntity {
         public CreateSessionInput() : base() {}
-        public CreateSessionInput(Dictionary<string, object> data) : base(data) {}
+        public CreateSessionInput(Dictionary<string, object> data) : base(data) {
+            this.PopulateObject(data);
+        }
         [JsonProperty("amount")]
         public string? Amount { get; set; }
         [JsonProperty("order_id")]

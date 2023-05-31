@@ -4,7 +4,9 @@ namespace Juspay {
     public class CreateCustomerInput : JuspayEntity
     {   
         public CreateCustomerInput() : base() {}
-        public CreateCustomerInput(Dictionary<string, object> data) : base(data) {}
+        public CreateCustomerInput(Dictionary<string, object> data) : base(data) {
+            this.PopulateObject(data);
+        }
         [JsonProperty("object_reference_id")]
         public string? ObjectReferenceId { get; set; }
         [JsonProperty("mobile_number")]
@@ -22,7 +24,9 @@ namespace Juspay {
     }
     public class GetCustomerOptions : JuspayEntity {
         public GetCustomerOptions() : base() {}
-        public GetCustomerOptions(Dictionary<string, object> data) : base(data) {}
+        public GetCustomerOptions(Dictionary<string, object> data) : base(data) {
+            this.PopulateObject(data);
+        }
         [JsonProperty("options")]
         public ClientAuthToken? Options { get; set; } 
     }
