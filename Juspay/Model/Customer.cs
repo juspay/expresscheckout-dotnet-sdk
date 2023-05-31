@@ -1,6 +1,6 @@
 namespace Juspay {
     using Newtonsoft.Json;
-    public class CustomerResponse : JuspayEntity
+    public class CustomerResponse : JuspayResponse
     {
         [JsonProperty("id")]
         public string? Id { get; set; }

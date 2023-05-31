@@ -36,32 +36,32 @@ namespace Juspay {
 
         public override string BasePath { get; set; } = "/orders";
 
-        public async Task<JuspayEntity> CreateOrderAsync(JuspayEntity input, RequestOptions requestOptions)
+        public async Task<OrderResponse> CreateOrderAsync(JuspayEntity input, RequestOptions requestOptions)
         {
+            this.BasePath = "/orders";
             return await this.CreateAsync(input, requestOptions);
         }
 
-        public JuspayEntity CreateOrder(JuspayEntity input, RequestOptions requestOptions) {
+        public OrderResponse CreateOrder(JuspayEntity input, RequestOptions requestOptions) {
+            this.BasePath = "/orders";
             return this.Create(input, requestOptions);
         }
 
-        public async Task<JuspayEntity> GetOrderAsync(string orderId, RequestOptions requestOptions) {
+        public async Task<OrderResponse> GetOrderAsync(string orderId, RequestOptions requestOptions) {
             return await this.GetAsync(orderId, null, null, requestOptions);
         }
-        public JuspayEntity GetOrder(string orderId, RequestOptions requestOptions) {
+        public OrderResponse GetOrder(string orderId, RequestOptions requestOptions) {
             return this.Get(orderId, null, null, requestOptions);
         }
 
-        public async Task<JuspayEntity> RefundOrderAsync(string orderId, JuspayEntity input, RequestOptions requestOptions) {
+        public async Task<OrderResponse> RefundOrderAsync(string orderId, JuspayEntity input, RequestOptions requestOptions) {
             this.BasePath = this.InstanceUrl(orderId);
             return await this.CreateAsync(input, requestOptions, "application/x-www-form-urlencoded", "/refunds");
-            this.BasePath = "/orders";
         }
 
-        public JuspayEntity RefundOrder(string orderId, JuspayEntity input, RequestOptions requestOptions) {
-            BasePath = this.InstanceUrl(orderId);
+        public OrderResponse RefundOrder(string orderId, JuspayEntity input, RequestOptions requestOptions) {
+            this.BasePath = this.InstanceUrl(orderId);
             return this.Create(input, requestOptions, "application/x-www-form-urlencoded", "/refunds");
-            this.BasePath = "/orders";
         }
     }
 

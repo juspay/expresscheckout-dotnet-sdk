@@ -27,11 +27,11 @@ namespace Juspay {
     
         public override string BasePath => "/session";
     
-        public async Task<JuspayEntity> CreateSessionAsync(JuspayEntity input, RequestOptions requestOptions)
+        public async Task<SessionResponse> CreateSessionAsync(JuspayEntity input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions, "application/json");
         }
-        public JuspayEntity CreateSession(JuspayEntity input, RequestOptions requestOptions)
+        public SessionResponse CreateSession(JuspayEntity input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions, "application/json");
         }

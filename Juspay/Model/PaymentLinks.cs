@@ -1,7 +1,7 @@
 namespace Juspay
 {
     using Newtonsoft.Json;
-    public class PaymentLinks : JuspayEntity
+    public class PaymentLinks : JuspayResponse
     {
         [JsonProperty("web")]
         public string? Web { get; set; }

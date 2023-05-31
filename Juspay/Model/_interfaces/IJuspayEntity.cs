@@ -7,7 +7,6 @@ namespace Juspay
     /// </summary>
     public interface IJuspayEntity
     {
-        JuspayResponse? JuspayResponse { get; set; }
-        Dictionary<string, object> DictionaryObject { get; set; }
+        Dictionary<string, object> Data { get; set; }
     }
 }

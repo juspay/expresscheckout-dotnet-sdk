@@ -21,7 +21,7 @@ namespace Juspay {
             ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new Exception("Base Url not Initialized");
             httpClient = client ?? throw new Exception("Http Client not initialized");
         }
-        public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayEntity {
+        public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
             JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
             Console.WriteLine($"Basepath {path}");
             JuspayResponse responseObj = await httpClient.MakeRequestAsync(juspayRequest);
@@ -29,7 +29,7 @@ namespace Juspay {
             {
                 T obj;
                 try {
-                    obj = JuspayEntity.FromJson<T>(responseObj);
+                    obj = responseObj.FromJson<T>();
                     return obj;
                 } catch (Newtonsoft.Json.JsonException) {
                     throw BuildInvalidResponseException(responseObj);
@@ -47,7 +47,7 @@ namespace Juspay {
 
             try
             {
-                jObject = JObject.Parse(response.Content);
+                jObject = JObject.Parse(response.RawContent);
             }
             catch (Newtonsoft.Json.JsonException)
             {
@@ -60,12 +60,11 @@ namespace Juspay {
                 return BuildInvalidResponseException(response);
             }
 
-            var juspayError =  JuspayEntity.FromJson<JuspayError>(response);
-            juspayError.JuspayResponse = response;
-
+            var juspayError =  JuspayEntity.FromJson<JuspayError>(response.RawContent);
             return new JuspayException(
                 response.StatusCode,
                 juspayError,
+                response,
                 juspayError.UserMessage ?? juspayError.ErrorMessage ?? "");
         }
 
@@ -73,8 +72,9 @@ namespace Juspay {
         {
             return new JuspayException(
                 response.StatusCode,
-                new JuspayError { JuspayResponse = response },
-                $"Invalid response object from API: \"{response.Content}\" statusCode = {response.StatusCode}")
+                null,
+                response,
+                $"Invalid response object from API: \"{response.RawContent}\" statusCode = {response.StatusCode}")
             {
                 JuspayResponse = response,
             };

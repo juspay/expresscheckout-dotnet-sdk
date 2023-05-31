@@ -15,12 +15,12 @@ namespace Juspay
         {
         }
 
-        public JuspayException(HttpStatusCode httpStatusCode, JuspayError JuspayError, string message)
+        public JuspayException(HttpStatusCode httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
             : base(message)
         {
             this.HttpStatusCode = httpStatusCode;
             this.JuspayError = JuspayError;
-            this.JuspayResponse = JuspayError?.JuspayResponse;
+            this.JuspayResponse = juspayResponse;
         }
 
         public HttpStatusCode HttpStatusCode { get; set; }

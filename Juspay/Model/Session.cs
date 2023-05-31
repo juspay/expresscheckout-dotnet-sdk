@@ -1,6 +1,6 @@
 namespace Juspay {
     using Newtonsoft.Json;
-    public class SdkPayload : JuspayEntity
+    public class SdkPayload : JuspayResponse
     {
         [JsonProperty("requestId")]
         public string? RequestId { get; set; }
@@ -11,7 +11,7 @@ namespace Juspay {
         [JsonProperty("expiry")]
         public DateTime? ExpiryDate { get; set; }
     }
-    public class Payload : JuspayEntity
+    public class Payload : JuspayResponse
     {
         [JsonProperty("clientId")]
         public string? ClientId { get; set; }
@@ -40,7 +40,7 @@ namespace Juspay {
         [JsonProperty("orderId")]
         public string? OrderId { get; set; }
     }
-    public class SessionResponse : JuspayEntity
+    public class SessionResponse : JuspayResponse
     {
         [JsonProperty("status")]
         public string? Status { get; set; }

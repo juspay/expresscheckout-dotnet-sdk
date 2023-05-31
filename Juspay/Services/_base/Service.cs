@@ -2,7 +2,7 @@ namespace Juspay {
     using System.Threading.Tasks;
     using System.Net.Http;
     using System.Net;
-    public class Service<TModelReturned> where TModelReturned : IJuspayEntity{
+    public class Service<TModelReturned> where TModelReturned : IJuspayResponseEntity {
         private IJuspayClient? client;
         protected Service()
         {
@@ -31,8 +31,8 @@ namespace Juspay {
         }
 
         private object getInput(JuspayEntity input) {
-            if (input != null && input.DictionaryObject != null) {
-                return input.DictionaryObject;
+            if (input != null && input.Data != null) {
+                return input.Data;
             }
             return input;
         }
@@ -43,17 +43,11 @@ namespace Juspay {
         public async Task<TModelReturned> GetAsync(string id, JuspayEntity? input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
             return await this.Client.RequestAsync<TModelReturned>(HttpMethod.Get, this.InstanceUrl(id) + prefix, input, queryParams, requestOptions, contentType).ConfigureAwait(false);
         }
-        // public async Task<TModelReturned> UpdateAsync(string url, Dictionary<string, string> pathParams, object input, RequestOptions requestOptions) {
-        //     return await this.Client.RequestAsync<TModelReturned>(input, url, pathParams, requestOptions).ConfigureAwait(false);
-        // }
         public TModelReturned Create(JuspayEntity input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded", string prefix = "") {
              return CreateAsync(input, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
         public TModelReturned Get(string id, JuspayEntity? input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
             return GetAsync(id, input, queryParams, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
-        // public TModelReturned Update(string id,  object input, RequestOptions requestOptions) {
-        //     return UpdateAsync(url, pathParams, client, input, requestOptions).ConfigureAwait(false).GetAwaiter().GetResult();
-        // }
     }
 }

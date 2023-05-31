@@ -16,6 +16,6 @@ namespace Juspay {
         // string MerchantId { get; }
 
         Task<T> RequestAsync<T>(HttpMethod method, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)
-            where T : IJuspayEntity;
+            where T : IJuspayResponseEntity;
     }
 }

@@ -1,7 +1,7 @@
 namespace Juspay
 {
     using Newtonsoft.Json;
-    public class Token : JuspayEntity
+    public class Token : JuspayResponse
     {
         [JsonProperty("card_reference")]
         public string? CardReference { get; set; }

@@ -11,21 +11,15 @@ namespace Juspay
     [JsonObject(MemberSerialization.OptIn)]
     public class JuspayEntity : IJuspayEntity
     {
-
-        [JsonIgnore]
-        public JuspayResponse? JuspayResponse { get; set; }
+        public JuspayEntity() {}
+    
+        public JuspayEntity(Dictionary<string, object> data) {
+            this.Data = data;
+        }
         
         [JsonIgnore]
-        public Dictionary<string, object>? DictionaryObject { get; set; }
+        public Dictionary<string, object>? Data { get; set; }
 
-        public static T FromJson<T>(JuspayResponse value) where T : IJuspayEntity
-        {
-            T? response =  JsonConvert.DeserializeObject<T>(value.Content);
-            if (response != null) response.JuspayResponse = value;
-            else throw new Exception($"Deserialization Failed for type {typeof(T)}");
-            response.DictionaryObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(value.Content);
-            return response;
-        }
         public static T FromJson<T>(string value) where T : IJuspayEntity
         {
             T? response =  JsonConvert.DeserializeObject<T>(value);
@@ -44,8 +38,8 @@ namespace Juspay
 
         public string ToJson()
         {
-            if (DictionaryObject != null) {
-                return JsonConvert.SerializeObject(DictionaryObject, Formatting.Indented);
+            if (Data != null) {
+                return JsonConvert.SerializeObject(Data, Formatting.Indented);
             }
             return JsonConvert.SerializeObject(
                 this,

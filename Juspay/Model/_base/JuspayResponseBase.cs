@@ -7,18 +7,18 @@ namespace Juspay
 
     public abstract class JuspayResponseBase
     {
-        public JuspayResponseBase(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode)
+        public void CreateJuspayResponseBase(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode)
         {
             this.StatusCode = statusCode;
             this.Headers = headers;
             this.IsSuccessStatusCode = isSuccessStatusCode;
         }
 
-        public HttpStatusCode StatusCode { get; }
+        public HttpStatusCode StatusCode { get; set; }
 
-        public bool IsSuccessStatusCode { get; }
+        public bool IsSuccessStatusCode { get; set; }
 
-        public HttpResponseHeaders Headers { get; }
+        public HttpResponseHeaders Headers { get; set; }
 
         public DateTimeOffset? Date => this.Headers?.Date;
 
@@ -28,8 +28,7 @@ namespace Juspay
 
         public string? MerchantId => MaybeGetHeader(this.Headers, "x-jp-merchant-id");
 
-        internal int NumRetries { get; set; }
-
+    
         public override string ToString()
         {
             return string.Format(

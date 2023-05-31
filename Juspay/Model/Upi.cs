@@ -1,7 +1,7 @@
 namespace Juspay
 {
     using Newtonsoft.Json;
-    public class Upi : JuspayEntity
+    public class Upi : JuspayResponse
     {
         [JsonProperty("txn_flow_type")]
         public string? TxnFlowType { get; set; }
