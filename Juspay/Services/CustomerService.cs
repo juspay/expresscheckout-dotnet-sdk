@@ -2,7 +2,9 @@ namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
     public class CreateCustomerInput : JuspayEntity
-    {
+    {   
+        public CreateCustomerInput() : base() {}
+        public CreateCustomerInput(Dictionary<string, object> data) : base(data) {}
         [JsonProperty("object_reference_id")]
         public string? ObjectReferenceId { get; set; }
         [JsonProperty("mobile_number")]
@@ -19,6 +21,8 @@ namespace Juspay {
         public ClientAuthToken? Options { get; set; }
     }
     public class GetCustomerOptions : JuspayEntity {
+        public GetCustomerOptions() : base() {}
+        public GetCustomerOptions(Dictionary<string, object> data) : base(data) {}
         [JsonProperty("options")]
         public ClientAuthToken? Options { get; set; } 
     }
@@ -36,18 +40,18 @@ namespace Juspay {
     
         public override string BasePath => "/customers";
     
-        public async Task<CustomerResponse> CreateCustomerAsync(JuspayEntity input, RequestOptions requestOptions)
+        public async Task<CustomerResponse> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions);
         }
-        public CustomerResponse CreateCustomer(JuspayEntity input, RequestOptions requestOptions)
+        public CustomerResponse CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions);
         }
-        public async Task<CustomerResponse> GetCustomerAsync(string customerId, JuspayEntity getCustomerOptions, RequestOptions requestOptions) {
+        public async Task<CustomerResponse> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return await this.GetAsync(customerId, null, getCustomerOptions, requestOptions);
         }
-        public CustomerResponse GetCustomer(string customerId, JuspayEntity getCustomerOptions, RequestOptions requestOptions) {
+        public CustomerResponse GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return this.Get(customerId, null, getCustomerOptions, requestOptions);
         }
     }

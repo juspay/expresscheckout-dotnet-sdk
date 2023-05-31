@@ -23,7 +23,6 @@ namespace Juspay {
         }
         public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
             JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
-            Console.WriteLine($"Basepath {path}");
             JuspayResponse responseObj = await httpClient.MakeRequestAsync(juspayRequest);
             if (responseObj.IsSuccessStatusCode)
             {
