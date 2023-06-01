@@ -1,5 +1,6 @@
 namespace Juspay {
     using Newtonsoft.Json;
+    using System.Collections.Generic;
     public class JuspayOptions : JuspayEntity
     {
         public JuspayOptions() : base() {}
@@ -7,8 +8,8 @@ namespace Juspay {
             this.PopulateObject(data);
         }
         [JsonProperty("client_auth_token")]
-        public string? ClientAuthToken { get; set; }
+        public string ClientAuthToken { get; set; }
         [JsonProperty("client_auth_token_expiry")]
-        public string? ClientAuthTokenExpiry { get; set; }
+        public string ClientAuthTokenExpiry { get; set; }
     }
 }

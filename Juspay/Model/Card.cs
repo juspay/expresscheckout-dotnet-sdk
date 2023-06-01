@@ -1,5 +1,6 @@
 namespace Juspay {
     using Newtonsoft.Json;
+    using System.Collections.Generic;
     public class Card : JuspayResponse
     {
         [JsonProperty("card_number")]

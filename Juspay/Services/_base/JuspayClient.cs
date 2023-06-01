@@ -7,8 +7,8 @@ namespace Juspay {
     using System.Reflection;
     using Newtonsoft.Json;
     using System.Text;
-    using System.Text.Json;
     using Newtonsoft.Json.Linq;
+    using System.Threading.Tasks;
     public class JuspayClient : IJuspayClient
     {
         private IHttpClient httpClient;
@@ -21,7 +21,7 @@ namespace Juspay {
             ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new Exception("Base Url not Initialized");
             httpClient = client ?? throw new Exception("Http Client not initialized");
         }
-        public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
+        public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string path, object input, object queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
             JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
             JuspayResponse responseObj = await httpClient.MakeRequestAsync(juspayRequest);
             if (responseObj.IsSuccessStatusCode)

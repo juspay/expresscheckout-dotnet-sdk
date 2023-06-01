@@ -6,15 +6,15 @@ namespace Juspay
     {
         
         [JsonProperty("error_code")]
-        public string? ErrorCode { get; set; }
+        public string ErrorCode { get; set; }
 
         [JsonProperty("status")]
-        public string? Status { get; set; }
+        public string Status { get; set; }
 
         [JsonProperty("error_message")]
-        public string? ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
         [JsonProperty("user_message")]
-        public string? UserMessage { get; set; }
+        public string UserMessage { get; set; }
     }
 }

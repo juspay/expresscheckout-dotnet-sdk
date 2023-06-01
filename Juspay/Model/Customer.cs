@@ -3,27 +3,27 @@ namespace Juspay {
     public class CustomerResponse : JuspayResponse
     {
         [JsonProperty("id")]
-        public string? Id { get; set; }
+        public string Id { get; set; }
         [JsonProperty("object")]
-        public string? Object { get; set; }
+        public string Object { get; set; }
         [JsonProperty("object_reference_id")]
-        public string? ObjectReferenceId { get; set; }
+        public string ObjectReferenceId { get; set; }
         [JsonProperty("mobile_country_code")]
-        public string? MobileCountryCode { get; set; }
+        public string MobileCountryCode { get; set; }
         [JsonProperty("mobile_number")]
-        public string? MobileNumber { get; set; }
+        public string MobileNumber { get; set; }
         [JsonProperty("email_address")]
-        public string? EmailAddress { get; set; }
+        public string EmailAddress { get; set; }
         [JsonProperty("first_name")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
         [JsonProperty("last_name")]
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
         [JsonProperty("date_created")]
-        public string? DateCreated { get; set; }
+        public string DateCreated { get; set; }
         [JsonProperty("last_updated")]
-        public string? LastUpdated { get; set; }
+        public string LastUpdated { get; set; }
         [JsonProperty("juspay")]
-        public JuspayOptions? Juspay { get; set; }
+        public JuspayOptions Juspay { get; set; }
     }
     
 }

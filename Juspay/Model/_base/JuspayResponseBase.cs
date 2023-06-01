@@ -20,13 +20,13 @@ namespace Juspay
 
         public HttpResponseHeaders Headers { get; set; }
 
-        public DateTimeOffset? Date => this.Headers?.Date;
+        public DateTimeOffset? Date => this.Headers.Date;
 
-        public string? RequestId => MaybeGetHeader(this.Headers, "x-request-id");
+        public string RequestId => MaybeGetHeader(this.Headers, "x-request-id");
 
-        public string? ResponseId => MaybeGetHeader(this.Headers, "x-response-id");
+        public string ResponseId => MaybeGetHeader(this.Headers, "x-response-id");
 
-        public string? MerchantId => MaybeGetHeader(this.Headers, "x-jp-merchant-id");
+        public string MerchantId => MaybeGetHeader(this.Headers, "x-jp-merchant-id");
 
     
         public override string ToString()
@@ -38,10 +38,10 @@ namespace Juspay
                 this.RequestId,
                 this.ResponseId,
                 this.MerchantId,
-                this.Date?.ToString("s"));
+                this.Date.ToString());
         }
 
-        private static string? MaybeGetHeader(HttpHeaders headers, string name)
+        private static string MaybeGetHeader(HttpHeaders headers, string name)
         {
             if ((headers == null) || (!headers.Contains(name)))
             {

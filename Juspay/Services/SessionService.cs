@@ -1,21 +1,22 @@
 namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     public class CreateSessionInput : JuspayEntity {
         public CreateSessionInput() : base() {}
         public CreateSessionInput(Dictionary<string, object> data) : base(data) {
             this.PopulateObject(data);
         }
         [JsonProperty("amount")]
-        public string? Amount { get; set; }
+        public string Amount { get; set; }
         [JsonProperty("order_id")]
-        public string? OrderId { get; set; }
+        public string OrderId { get; set; }
         [JsonProperty("payment_page_client_id")]
-        public string? PaymentPageClientId { get; set; }
+        public string PaymentPageClientId { get; set; }
         [JsonProperty("action")]
-        public string? Action { get; set; }
+        public string Action { get; set; }
         [JsonProperty("return_url")]
-        public string? ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; }
     }
 
     public class SessionService : Service<SessionResponse> {

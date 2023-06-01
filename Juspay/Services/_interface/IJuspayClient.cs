@@ -7,15 +7,15 @@ namespace Juspay {
     using System.Reflection;
     using Newtonsoft.Json;
     using System.Text;
-    using System.Text.Json;
     using Newtonsoft.Json.Linq;
+    using System.Threading.Tasks;
     public interface IJuspayClient
     {
         string ApiBase { get; set; }
 
         // string MerchantId { get; }
 
-        Task<T> RequestAsync<T>(HttpMethod method, string? path, object? input, object? queryParams, RequestOptions requestOptions, string contentType)
+        Task<T> RequestAsync<T>(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, string contentType)
             where T : IJuspayResponseEntity;
     }
 }

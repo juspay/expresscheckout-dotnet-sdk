@@ -7,7 +7,8 @@ namespace Juspay
     using System.Runtime.CompilerServices;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
+    using System.Collections.Generic;
+    using System;
     public class JuspayResponse : JuspayResponseBase, IJuspayResponseEntity
     {
         public Dictionary<string, object> Response { get; set; }
@@ -24,7 +25,7 @@ namespace Juspay
 
         public static T FromJson<T>(string value) where T : IJuspayResponseEntity
         {
-            T? response =  JsonConvert.DeserializeObject<T>(value);
+            T response =  JsonConvert.DeserializeObject<T>(value);
             if (response != null) {
                 response.Response = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
                 return response;
@@ -48,7 +49,7 @@ namespace Juspay
         }
 
 
-        private object? GetIdString()
+        private object GetIdString()
         {
             foreach (var property in this.GetType().GetTypeInfo().DeclaredProperties)
             {

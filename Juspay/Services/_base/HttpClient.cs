@@ -12,9 +12,8 @@ namespace Juspay
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using System.Text;
-    using System.Text.Json;
     using System.Reflection;
-
+    using System;
 
     public class SystemHttpClient : IHttpClient
     {
@@ -52,7 +51,7 @@ namespace Juspay
         }
 
         public SystemHttpClient(
-            HttpClient? httpClient = null)
+            HttpClient httpClient = null)
         {
             this.httpClient = httpClient ?? LazyDefaultHttpClient.Value;
 
@@ -60,10 +59,12 @@ namespace Juspay
 
 
 
-        public SystemHttpClient(TimeSpan? ConnectTimeoutInMilliSeconds, TimeSpan? ReadTimeoutInMilliSeconds)
+        public SystemHttpClient(TimeSpan ConnectTimeoutInMilliSeconds, TimeSpan ReadTimeoutInMilliSeconds)
         {
-            this.httpClient = ConnectTimeoutInMilliSeconds.HasValue ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds.Value}) : new HttpClient();
-            if (ReadTimeoutInMilliSeconds.HasValue) httpClient.Timeout = ReadTimeoutInMilliSeconds.Value;
+            // this.httpClient = ConnectTimeoutInMilliSeconds != null ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
+            this.httpClient = new HttpClient();
+            Console.WriteLine(ReadTimeoutInMilliSeconds);
+            if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
             ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
         }
 
@@ -141,7 +142,7 @@ namespace Juspay
             }
             return dictionary;
         }
-        public static void FlattenObjectRecursive(object? obj, string? prefix, Dictionary<string, object> dictionary)
+        public static void FlattenObjectRecursive(object obj, string prefix, Dictionary<string, object> dictionary)
         {
             if (obj == null)
                 return;
@@ -196,8 +197,8 @@ namespace Juspay
                 foreach (var x in FlattenObject(requestOptions)) {
                     request.Headers.Add(x.Key, x.Value.ToString());
                 }
-                if (requestOptions.ReadTimeoutInMilliSeconds.HasValue) {
-                    httpClient.Timeout = requestOptions.ReadTimeoutInMilliSeconds.Value;
+                if (requestOptions.ReadTimeoutInMilliSeconds != TimeSpan.Zero) {
+                    httpClient.Timeout = requestOptions.ReadTimeoutInMilliSeconds;
                 }
             } 
             

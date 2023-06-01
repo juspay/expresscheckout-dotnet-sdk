@@ -1,7 +1,7 @@
 using Xunit;
 using Juspay;
-using System.Text.Json;
-
+using System;
+using System.Collections.Generic;
 namespace JuspayTest.Services
 {
     [Collection("Sequential")]
@@ -13,8 +13,8 @@ namespace JuspayTest.Services
         // [Fact]
         public void JuspaySessionAPITest()
         {
-            CreateSessionInput sessionInputFromJson = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
-            CreateSessionInput sessionInput = new CreateSessionInput { Data = JsonSerializer.Deserialize<Dictionary<string, object>>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}") };
+            CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
+            // CreateSessionInput sessionInput = new CreateSessionInput { Data = JsonSerializer.Deserialize<Dictionary<string, object>>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}") };
             JuspayResponse sessionRes = new SessionService().CreateSession(sessionInput, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(sessionRes);
             Assert.IsType<SessionResponse>(sessionRes);

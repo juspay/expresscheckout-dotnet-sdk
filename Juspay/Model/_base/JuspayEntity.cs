@@ -7,6 +7,7 @@ namespace Juspay
     using System.Runtime.CompilerServices;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using System;
 
     [JsonObject(MemberSerialization.OptIn)]
     public class JuspayEntity : IJuspayEntity
@@ -18,11 +19,11 @@ namespace Juspay
         }
         
         [JsonIgnore]
-        public Dictionary<string, object>? Data { get; set; }
+        public Dictionary<string, object> Data { get; set; }
 
         public static T FromJson<T>(string value) where T : IJuspayEntity
         {
-            T? response =  JsonConvert.DeserializeObject<T>(value);
+            T response =  JsonConvert.DeserializeObject<T>(value);
             if (response != null) return response;
             throw new Exception($"Deserialization Failed for type {typeof(T)}");
         }
@@ -52,7 +53,7 @@ namespace Juspay
         }
 
 
-        private object? GetIdString()
+        private object GetIdString()
         {
             foreach (var property in this.GetType().GetTypeInfo().DeclaredProperties)
             {

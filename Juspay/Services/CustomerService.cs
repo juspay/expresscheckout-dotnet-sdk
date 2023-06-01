@@ -1,6 +1,7 @@
 namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     public class CreateCustomerInput : JuspayEntity
     {   
         public CreateCustomerInput() : base() {}
@@ -8,19 +9,19 @@ namespace Juspay {
             this.PopulateObject(data);
         }
         [JsonProperty("object_reference_id")]
-        public string? ObjectReferenceId { get; set; }
+        public string ObjectReferenceId { get; set; }
         [JsonProperty("mobile_number")]
-        public string? MobileNumber { get; set; }
+        public string MobileNumber { get; set; }
         [JsonProperty("email_address")]
-        public string? EmailAddress { get; set; }
+        public string EmailAddress { get; set; }
         [JsonProperty("first_name")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
         [JsonProperty("last_name")]
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
         [JsonProperty("mobile_country_code")]
-        public string? MobileCountryCode { get; set; }
+        public string MobileCountryCode { get; set; }
         [JsonProperty("options")]
-        public ClientAuthToken? Options { get; set; }
+        public ClientAuthToken Options { get; set; }
     }
     public class GetCustomerOptions : JuspayEntity {
         public GetCustomerOptions() : base() {}
@@ -28,7 +29,7 @@ namespace Juspay {
             this.PopulateObject(data);
         }
         [JsonProperty("options")]
-        public ClientAuthToken? Options { get; set; } 
+        public ClientAuthToken Options { get; set; } 
     }
 
     public class CustomerService : Service<CustomerResponse> {

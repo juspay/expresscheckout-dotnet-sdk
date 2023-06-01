@@ -1,6 +1,7 @@
 namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     public class OrderCreate : JuspayEntity
     {
         public OrderCreate () : base() {}
@@ -8,15 +9,15 @@ namespace Juspay {
             this.PopulateObject(data);
         }
         [JsonProperty("order_id")]
-        public string? OrderId { get; set; }
+        public string OrderId { get; set; }
         [JsonProperty("amount")]
-        public double? Amount { get; set; }
+        public double Amount { get; set; }
         [JsonProperty("currency")]
-        public string? Currency { get; set; }
+        public string Currency { get; set; }
         [JsonProperty("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
         [JsonProperty("options")]
-        public ClientAuthToken? Options { get; set; }
+        public ClientAuthToken Options { get; set; }
     }
 
     public class RefundOrder : JuspayEntity
@@ -26,9 +27,9 @@ namespace Juspay {
             this.PopulateObject(data);
         }
         [JsonProperty("order_id")]
-        public string? OrderId { get; set; }
+        public string OrderId { get; set; }
         [JsonProperty("amount")]
-        public double? Amount { get; set; }
+        public double Amount { get; set; }
         [JsonProperty("unique_request_id")]
         public string RequestId { get; set; }
     }

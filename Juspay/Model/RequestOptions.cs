@@ -2,6 +2,7 @@ namespace Juspay {
      using Newtonsoft.Json;
      using System.Net;
      using System.Net.Http;
+     using System;
      public class RequestOptions {
       public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, TimeSpan? readTimeoutInMilliSeconds) {
          if (merchantId != null) this.MerchantId = merchantId;
@@ -13,7 +14,7 @@ namespace Juspay {
         public string MerchantId { get; set; }
         public string ApiKey { get; set; }
         public SecurityProtocolType SSL { get; set; }
-        public TimeSpan? ReadTimeoutInMilliSeconds { get; set; }
+        public TimeSpan ReadTimeoutInMilliSeconds { get; set; }
 
         public override string ToString()
         {
@@ -21,7 +22,7 @@ namespace Juspay {
                "<{0} MerchantId={1} TimeSpan={2}",
                this.GetType().FullName,
                this.MerchantId == null ? "not added" : this.MerchantId,
-               this.ReadTimeoutInMilliSeconds.HasValue ? "not added" : this.ReadTimeoutInMilliSeconds.Value
+               this.ReadTimeoutInMilliSeconds.ToString() != TimeSpan.Zero.ToString() ? "not added" : this.ReadTimeoutInMilliSeconds.ToString()
             );
         }
      }
