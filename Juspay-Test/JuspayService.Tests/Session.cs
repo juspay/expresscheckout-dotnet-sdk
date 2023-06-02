@@ -17,6 +17,8 @@ namespace JuspayTest {
             SessionResponse sessionRes = new SessionService().CreateSession(sessionInput, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
+            Assert.NotNull(sessionRes.ResponseBase);
+            Assert.NotNull(sessionRes.RawContent);
             Assert.NotNull(sessionRes.Id);
             Assert.IsType<SessionResponse>(sessionRes);
         }

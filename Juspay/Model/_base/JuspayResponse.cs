@@ -40,7 +40,10 @@ namespace Juspay
     
         public T FromJson<T>() where T : IJuspayResponseEntity {
             if (this.RawContent == null) throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
-            return FromJson<T>(this.RawContent);
+            T response = FromJson<T>(this.RawContent);
+            if (this.ResponseBase != null) response.ResponseBase = this.ResponseBase;
+            if (this.RawContent != null) response.RawContent = this.RawContent;
+            return response;
         }
     
         public override string ToString()

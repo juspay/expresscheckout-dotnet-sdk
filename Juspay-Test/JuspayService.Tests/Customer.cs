@@ -20,6 +20,8 @@ namespace JuspayTest {
             Assert.NotNull(newCustomer);
             Assert.NotNull(newCustomer.Juspay.ClientAuthToken);
             Assert.NotNull(newCustomer.Response);
+            Assert.NotNull(newCustomer.ResponseBase);
+            Assert.NotNull(newCustomer.RawContent);
             Assert.True(newCustomer.ObjectReferenceId == customerId);
             Assert.IsType<CustomerResponse>(newCustomer);
             return customerId;
@@ -41,6 +43,9 @@ namespace JuspayTest {
             CustomerResponse customer = new CustomerService().GetCustomer(customerId, null, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(customer);
             Assert.IsType<CustomerResponse>(customer);
+            Assert.NotNull(customer.ResponseBase);
+            Assert.NotNull(customer.Response);
+            Assert.NotNull(customer.RawContent);
             Assert.True(customerId == customer.ObjectReferenceId);
         }
 

@@ -18,6 +18,8 @@ namespace JuspayTest {
             OrderResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(order);
             Assert.NotNull(order.Response);
+            Assert.NotNull(order.ResponseBase);
+            Assert.NotNull(order.RawContent);
             Assert.NotNull(order.OrderId);
             Assert.IsType<OrderResponse>(order);
             return orderId;
@@ -28,6 +30,10 @@ namespace JuspayTest {
             string orderId = CreateOrderTest();
             OrderResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions("azhar_test", null, null, null));
             Assert.NotNull(orderStatus);
+            Assert.NotNull(orderStatus.Response);
+            Assert.NotNull(orderStatus.ResponseBase);
+            Assert.NotNull(orderStatus.RawContent);
+            Assert.IsType<OrderResponse>(orderStatus);
         }
         public static void TestOrderService() {
             GetOrderTest();
