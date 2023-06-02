@@ -31,7 +31,7 @@ namespace Juspay
                 response.Response = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
                 return response;
             }
-            throw new Exception($"Deserialization Failed for type {typeof(T)}");
+            throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
         }
 
         public void PopulateObject() {

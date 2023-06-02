@@ -17,9 +17,9 @@ namespace Juspay {
     
         public JuspayClient(IHttpClient client, string apiKey, string baseUrl)
         {
-            this.apiKey = apiKey ?? JuspayEnvironment.ApiKey ?? throw new Exception("Api Key Not Initialized");
-            ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new Exception("Base Url not Initialized");
-            httpClient = client ?? throw new Exception("Http Client not initialized");
+            this.apiKey = apiKey ?? JuspayEnvironment.ApiKey ?? throw new JuspayException("Api Key Not Initialized");
+            ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new JuspayException("Base Url not Initialized");
+            httpClient = client ?? throw new JuspayException("Http Client not initialized");
         }
         public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string path, object input, object queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
             JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
