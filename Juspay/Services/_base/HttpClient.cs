@@ -13,14 +13,15 @@ namespace Juspay
     using Newtonsoft.Json;
     using System.Text;
     using System.Reflection;
-    using System;
 
     public class SystemHttpClient : IHttpClient
     {
         public static TimeSpan DefaultHttpTimeout => TimeSpan.FromSeconds(80);
 
         private const string JuspayNetTargetFramework =
-#if NET6_0
+#if NET7_0
+            "net7.0"
+#elif NET6_0
             "net6.0"
 #elif NET5_0
             "net5.0"
@@ -67,7 +68,7 @@ namespace Juspay
 
         public SystemHttpClient(TimeSpan ConnectTimeoutInMilliSeconds, TimeSpan ReadTimeoutInMilliSeconds)
         {
-            #if NET6_0
+            #if (NET6_0 || NET7_0)
                 this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
             #else
                 this.httpClient = new HttpClient();
@@ -84,6 +85,7 @@ namespace Juspay
             request.RequestUri = BuildQueryparams(juspayRequest);
             AddRequestOptions(request, juspayRequest);
             AddAuthorizationHeaders(request, juspayRequest);
+            AddClientUserAgentString(request);
             var response = await httpClient.SendAsync(request).ConfigureAwait(false);
             return await BuildJuspayResponse(response);
             
@@ -135,6 +137,22 @@ namespace Juspay
                 return new Uri(apiBase + path);
             }
             return new Uri(apiBase + path ?? "");
+        }
+
+        private void AddClientUserAgentString(HttpRequestMessage request)
+        {
+            string userAgent = $"Juspay .NetBindings/{JuspayEnvironment.juspaySDKVersion}";
+            var values = new Dictionary<string, object>
+            {
+                { "binding_version", JuspayEnvironment.juspaySDKVersion },
+                { "api_version", JuspayEnvironment.API_VERSION },
+                { "lang", ".net" },
+                { "publisher", "juspay" },
+                { "sdk_version", JuspayEnvironment.SDK_VERSION },
+                { "juspay_net_target_framework", JuspayNetTargetFramework },
+            };
+            request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
+            request.Headers.Add("User-Agent", userAgent);
         }
 
       
