@@ -9,13 +9,14 @@ namespace Juspay
     using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
     using System;
-    public class JuspayResponse : JuspayResponseBase, IJuspayResponseEntity
+    public class JuspayResponse : IJuspayResponseEntity
     {
         public Dictionary<string, object> Response { get; set; }
 
+        public JuspayResponseBase ResponseBase { get; set; }
         public JuspayResponse CreateJuspayResponse(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode, string content)
         {
-            this.CreateJuspayResponseBase(statusCode, headers, isSuccessStatusCode);
+            this.ResponseBase = new JuspayResponseBase(statusCode, headers, isSuccessStatusCode);
             this.RawContent = content;
             this.Response = JsonConvert.DeserializeObject<Dictionary<string, object>>(content);
             return this;
@@ -33,6 +34,10 @@ namespace Juspay
             throw new Exception($"Deserialization Failed for type {typeof(T)}");
         }
 
+        public void PopulateObject() {
+            JsonConvert.PopulateObject(this.RawContent, this);
+        }
+    
         public T FromJson<T>() where T : IJuspayResponseEntity {
             if (this.RawContent == null) throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
             return FromJson<T>(this.RawContent);

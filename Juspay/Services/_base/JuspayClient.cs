@@ -24,7 +24,7 @@ namespace Juspay {
         public async Task<T> RequestAsync<T>(HttpMethod apiMethod, string path, object input, object queryParams, RequestOptions requestOptions, string contentType)  where T : IJuspayResponseEntity {
             JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
             JuspayResponse responseObj = await httpClient.MakeRequestAsync(juspayRequest);
-            if (responseObj.IsSuccessStatusCode)
+            if (responseObj.ResponseBase.IsSuccessStatusCode)
             {
                 T obj;
                 try {
@@ -61,7 +61,7 @@ namespace Juspay {
 
             var juspayError =  JuspayEntity.FromJson<JuspayError>(response.RawContent);
             return new JuspayException(
-                response.StatusCode,
+                response.ResponseBase.StatusCode,
                 juspayError,
                 response,
                 juspayError.UserMessage ?? juspayError.ErrorMessage ?? "");
@@ -70,10 +70,10 @@ namespace Juspay {
         private static JuspayException BuildInvalidResponseException(JuspayResponse response)
         {
             return new JuspayException(
-                response.StatusCode,
+                response.ResponseBase.StatusCode,
                 null,
                 response,
-                $"Invalid response object from API: \"{response.RawContent}\" statusCode = {response.StatusCode}")
+                $"Invalid response object from API: \"{response.RawContent}\" statusCode = {response.ResponseBase.StatusCode}")
             {
                 JuspayResponse = response,
             };

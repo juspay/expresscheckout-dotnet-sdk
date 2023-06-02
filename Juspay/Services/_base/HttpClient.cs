@@ -63,7 +63,6 @@ namespace Juspay
         {
             // this.httpClient = ConnectTimeoutInMilliSeconds != null ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
             this.httpClient = new HttpClient();
-            Console.WriteLine(ReadTimeoutInMilliSeconds);
             if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
             ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
         }
