@@ -20,8 +20,14 @@ namespace Juspay
         public static TimeSpan DefaultHttpTimeout => TimeSpan.FromSeconds(80);
 
         private const string JuspayNetTargetFramework =
-#if NET5_0
+#if NET6_0
+            "net6.0"
+#elif NET5_0
             "net5.0"
+#elif NETCOREAPP2_1
+            "netcoreapp2.1"
+#elif NETCOREAPP3_1
+            "netcoreapp3.1"
 #elif NETSTANDARD2_0
             "netstandard2.0"
 #elif NET461
@@ -61,8 +67,11 @@ namespace Juspay
 
         public SystemHttpClient(TimeSpan ConnectTimeoutInMilliSeconds, TimeSpan ReadTimeoutInMilliSeconds)
         {
-            // this.httpClient = ConnectTimeoutInMilliSeconds != null ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
-            this.httpClient = new HttpClient();
+            #if NET6_0
+                this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
+            #else
+                this.httpClient = new HttpClient();
+            #endif
             if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
             ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
         }
