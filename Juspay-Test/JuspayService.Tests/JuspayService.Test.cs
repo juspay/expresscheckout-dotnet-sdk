@@ -25,7 +25,7 @@ namespace JuspayTest
         }
 
         [Fact]
-        public void TestSessio() {
+        public void TestSession() {
             SessionTest.TestSessionService();
         }
 

@@ -33,6 +33,8 @@ namespace Juspay
             "netstandard2.0"
 #elif NET461
             "net461"
+#elif NET452
+            "net452"
 #else
             "unknown"
 #endif
@@ -151,6 +153,7 @@ namespace Juspay
                 { "sdk_version", JuspayEnvironment.SDK_VERSION },
                 { "juspay_net_target_framework", JuspayNetTargetFramework },
             };
+            // Console.WriteLine($"target framework {JuspayNetTargetFramework}");
             request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
             request.Headers.Add("User-Agent", userAgent);
         }
