@@ -55,8 +55,7 @@ namespace Juspay
         }
         static SystemHttpClient()
         {
-            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol |
-                SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol;
         }
 
         public SystemHttpClient(
@@ -71,12 +70,13 @@ namespace Juspay
         public SystemHttpClient(TimeSpan ConnectTimeoutInMilliSeconds, TimeSpan ReadTimeoutInMilliSeconds)
         {
             #if (NET6_0 || NET7_0)
-                this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler {ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
+                this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler { ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls13;
             #else
                 this.httpClient = new HttpClient();
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
             #endif
             if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
-            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
         }
 
 

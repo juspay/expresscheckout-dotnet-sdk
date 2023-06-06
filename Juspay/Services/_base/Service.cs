@@ -3,7 +3,7 @@ namespace Juspay {
     using System.Net.Http;
     using System.Net;
     using System;
-    public class Service<TModelReturned> where TModelReturned : IJuspayResponseEntity {
+    public class Service<TModelReturned> where TModelReturned : IJuspayResponseEntity, new() {
         private IJuspayClient client;
         protected Service()
         {

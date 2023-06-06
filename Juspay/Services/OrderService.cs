@@ -5,33 +5,71 @@ namespace Juspay {
     public class OrderCreate : JuspayEntity
     {
         public OrderCreate () : base() {}
-        public OrderCreate(Dictionary<string, object> data) : base(data) {
-            this.PopulateObject(data);
-        }
+        public OrderCreate(Dictionary<string, object> data) : base(data) {}
+
         [JsonProperty("order_id")]
-        public string OrderId { get; set; }
+        public string OrderId
+        {
+            get { return GetValue<string>("order_id"); }
+            set { SetValue("order_id", value); }
+        }
+
         [JsonProperty("amount")]
-        public double Amount { get; set; }
+        public double Amount
+        {
+            get { return GetValue<double>("amount"); }
+            set { SetValue("amount", value); }
+        }
+
         [JsonProperty("currency")]
-        public string Currency { get; set; }
+        public string Currency
+        {
+            get { return GetValue<string>("currency"); }
+            set { SetValue("currency", value); }
+        }
+
         [JsonProperty("metadata")]
-        public Dictionary<string, object> Metadata { get; set; }
+        public Dictionary<string, object> Metadata
+        {
+            get { return GetValue<Dictionary<string, object>>("metadata"); }
+            set { SetValue("metadata", value); }
+        }
+
         [JsonProperty("options")]
-        public ClientAuthToken Options { get; set; }
+        public ClientAuthToken Options
+        {
+            get { return GetObject<ClientAuthToken>("options"); }
+            set { SetValue("options", value); }
+        }
     }
 
     public class RefundOrder : JuspayEntity
     {
         public RefundOrder() : base() {}
-        public RefundOrder(Dictionary<string, object> data) : base(data) {
-            this.PopulateObject(data);
-        }
+        public RefundOrder(Dictionary<string, object> data) : base(data) {}
+
         [JsonProperty("order_id")]
-        public string OrderId { get; set; }
+        public string OrderId
+        {
+            get { return GetValue<string>("order_id"); }
+            set { SetValue("order_id", value); }
+        }
+
         [JsonProperty("amount")]
-        public double Amount { get; set; }
+        public double Amount
+        {
+            get { return GetValue<double>("amount"); }
+            set { SetValue("amount", value); }
+        }
+
         [JsonProperty("unique_request_id")]
-        public string RequestId { get; set; }
+        public string RequestId
+        {
+            get { return GetValue<string>("unique_request_id"); }
+            set { SetValue("unique_request_id", value); }
+        }
+
+
     }
 
     public class OrderService : Service<OrderResponse> {

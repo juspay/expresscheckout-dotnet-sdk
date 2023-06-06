@@ -7,10 +7,18 @@ namespace JuspayTest {
     public class OrderTest {
         public static void OrderResponseEntityTest() {
             string order = "{\"status\":\"CREATED\",\"status_id\":1,\"id\":\"ordeh_e4413483448d464295bcfc9a945a58b8\",\"order_id\":\"order_1478031549\",\"payment_links\":{\"iframe\":\"https://sandbox.juspay.in/r/xLhHqP\",\"web\":\"https://sandbox.juspay.in/r/xicWsh\",\"mobile\":\"https://sandbox.juspay.in/r/jXP6CR\"}}";
-            OrderResponse Order = new OrderResponse { RawContent = order };
-            Order.PopulateObject();
+            OrderResponse Order = JuspayResponse.FromJson<OrderResponse>(order);
             Assert.True(Order.OrderId == "order_1478031549");
+            Assert.NotNull(Order.PaymentLinks);
+            Assert.NotNull(Order.PaymentLinks.Iframe);
         }
+
+        public static void CreateOrderWithMetadataEntityTest() {
+           string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+            OrderCreate CreateOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 }, {"metadata", new Dictionary<string, object>(){ { "value1", 100 } }} } ); 
+            Assert.True((int)CreateOrderInput.Metadata["value1"] == 100);
+        }
+
         public static string CreateOrderTest() 
         {
             string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
@@ -37,6 +45,7 @@ namespace JuspayTest {
         }
         public static void TestOrderService() {
             GetOrderTest();
+            CreateOrderWithMetadataEntityTest();
             OrderResponseEntityTest();
         }
     }

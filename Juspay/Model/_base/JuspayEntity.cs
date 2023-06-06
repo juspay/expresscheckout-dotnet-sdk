@@ -14,12 +14,18 @@ namespace Juspay
     {
         public JuspayEntity() {}
     
+        private Dictionary<string, object> data = new Dictionary<string, object>();
+
         public JuspayEntity(Dictionary<string, object> data) {
             this.Data = data;
         }
         
         [JsonIgnore]
-        public Dictionary<string, object> Data { get; set; }
+        public Dictionary<string, object> Data
+        {
+            get { return data; }
+            set { data = value; }
+        }
 
         public static T FromJson<T>(string value) where T : IJuspayEntity
         {
@@ -28,9 +34,55 @@ namespace Juspay
             throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
         }
 
-        public void PopulateObject(Dictionary<string, object> data) {
-            string jsonString = JsonConvert.SerializeObject(data);
-            JsonConvert.PopulateObject(jsonString, this);
+        protected T GetValue<T>(string key)
+        {
+            if (Data.ContainsKey(key))
+            {
+                return (T)Data[key];
+            }
+            return default(T);
+        }
+
+        protected List<T> GetList<T>(string key)
+        {
+            List<T> listObj = new List<T>();
+            if (Data.ContainsKey(key)) {
+                foreach (T item in (Data[key] as List<T>)) {
+                    listObj.Add((T)item);
+                }
+                return listObj;
+            }
+            return default(List<T>);
+
+        }
+
+        protected List<T> GetObjectList<T>(string key) where T : IJuspayEntity, new()
+        {
+            List<T> listObj = new List<T>();
+            if (Data.ContainsKey(key)) {
+                foreach (object item in (Data[key] as List<object>)) {
+                    T obj = new T();
+                    obj.Data = item as Dictionary<string, object>;
+                    listObj.Add(obj);
+                }
+                return listObj;
+            }
+            return default(List<T>);
+        }
+
+        protected T GetObject<T>(string key) where T : IJuspayEntity, new()
+        {
+            T obj = new T();
+
+            if (Data.ContainsKey(key)) {
+                obj.Data = Data[key] as Dictionary<string, object>;
+                return obj;
+            }
+            return default(T);
+        }
+        protected void SetValue<T>(string key, T value)
+        {
+            data[key] = value;
         }
         public override string ToString()
         {
