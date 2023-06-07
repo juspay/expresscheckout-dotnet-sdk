@@ -28,6 +28,11 @@ namespace JuspayTest
         public void TestSession() {
             SessionTest.TestSessionService();
         }
+        [Fact]
+        public void TestInputEntity()
+        {
+            InputEntityTest.TestInputEntity();
+        }
 
     }
 }

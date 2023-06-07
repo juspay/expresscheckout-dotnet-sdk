@@ -43,26 +43,14 @@ namespace Juspay
             return default(T);
         }
 
-        protected List<T> GetList<T>(string key)
-        {
-            List<T> listObj = new List<T>();
-            if (Data.ContainsKey(key)) {
-                foreach (T item in (Data[key] as List<T>)) {
-                    listObj.Add((T)item);
-                }
-                return listObj;
-            }
-            return default(List<T>);
-
-        }
 
         protected List<T> GetObjectList<T>(string key) where T : IJuspayEntity, new()
         {
             List<T> listObj = new List<T>();
             if (Data.ContainsKey(key)) {
-                foreach (object item in (Data[key] as List<object>)) {
+                foreach (Dictionary<string,object> item in (Data[key] as List<Dictionary<string,object>>)) {
                     T obj = new T();
-                    obj.Data = item as Dictionary<string, object>;
+                    obj.Data = item;
                     listObj.Add(obj);
                 }
                 return listObj;
@@ -70,19 +58,63 @@ namespace Juspay
             return default(List<T>);
         }
 
+        // protected List<T> GetObjectList<T>(string key) where T : IJuspayEntity, new()
+        // {
+        //     if (Data.ContainsKey(key))
+        //     {
+        //         var list = Data[key] as List<object>;
+        //         return ProcessNestedList<T>(list);
+        //     }
+
+        //     return null;
+        // }
+
+        // private List<T> ProcessNestedList<T>(List<object> list) where T : IJuspayEntity, new()
+        // {
+        //     var nestedList = new List<T>();
+
+        //     foreach (var item in list)
+        //     {
+        //         if (item is List<object> nestedItemList)
+        //         {
+        //             nestedList.Add(ProcessNestedList<T>(nestedItemList));
+        //         }
+        //         else if (item is Dictionary<string, object> data)
+        //         {
+        //             var newItem = CreateObject<T>(data);
+        //             nestedList.Add(newItem);
+        //         }
+        //     }
+
+        //     return nestedList;
+        // }
+
+        // private T CreateObject<T>(Dictionary<string, object> data) where T : IJuspayEntity, new()
+        // {
+        //     var obj = new T();
+        //     obj.Data = data;
+        //     return obj;
+        // }
+
+
         protected T GetObject<T>(string key) where T : IJuspayEntity, new()
         {
             T obj = new T();
 
-            if (Data.ContainsKey(key)) {
+            if (Data.ContainsKey(key) && Data[key] != null) {
                 obj.Data = Data[key] as Dictionary<string, object>;
                 return obj;
             }
             return default(T);
         }
+        
         protected void SetValue<T>(string key, T value)
         {
-            data[key] = value;
+            if (value is JuspayEntity) {
+                data[key] = ((IJuspayEntity)value).Data;
+            } else {
+                data[key] = value;
+            }
         }
         public override string ToString()
         {

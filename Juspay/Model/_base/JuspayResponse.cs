@@ -39,26 +39,13 @@ namespace Juspay
             return default(T);
         }
 
-        protected List<T> GetList<T>(string key)
-        {
-            List<T> listObj = new List<T>();
-            if (Response.ContainsKey(key)) {
-                foreach (T item in (Response[key] as List<T>)) {
-                    listObj.Add((T)item);
-                }
-                return listObj;
-            }
-            return default(List<T>);
-
-        }
-
         protected List<T> GetObjectList<T>(string key) where T : IJuspayResponseEntity, new()
         {
             List<T> listObj = new List<T>();
             if (Response.ContainsKey(key)) {
-                foreach (object item in (Response[key] as List<object>)) {
+                foreach (Dictionary<string,object> item in (Response[key] as List<Dictionary<string,object>>)) {
                     T obj = new T();
-                    obj.Response = item as Dictionary<string, object>;
+                    obj.Response = item;
                     listObj.Add(obj);
                 }
                 return listObj;
@@ -69,7 +56,7 @@ namespace Juspay
         protected T GetObject<T> (string key) where T : IJuspayResponseEntity, new()
         {
             T obj = new T();
-            if (Response.ContainsKey(key))
+            if (Response.ContainsKey(key) && Response[key] != null)
             {
                 obj.Response = Response[key] as Dictionary<string, object>;
                 return obj;
@@ -78,7 +65,14 @@ namespace Juspay
         }
         protected void SetValue<T>(string key, T value)
         {
-            Response[key] = value;
+            if (value is JuspayResponse)
+            {
+                Response[key] = ((IJuspayResponseEntity)value).Response;
+            }
+            else
+            {
+                Response[key] = value;
+            }
         }
 
         public static T FromJson<T>(string value) where T : IJuspayResponseEntity, new()

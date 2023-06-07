@@ -70,7 +70,7 @@ namespace Juspay
         [JsonProperty("cvv_less_supported_gateways")]
         public List<string> CvvLessSupportedGateways
         {
-            get => GetList<string>("cvv_less_supported_gateways");
+            get => GetValue<List<string>>("cvv_less_supported_gateways");
             set => SetValue("cvv_less_supported_gateways", value);
         }
     }
