@@ -95,9 +95,11 @@ namespace Juspay {
         }
 
         public async Task<OrderResponse> GetOrderAsync(string orderId, RequestOptions requestOptions) {
+            this.BasePath = "/orders";
             return await this.GetAsync(orderId, null, null, requestOptions);
         }
         public OrderResponse GetOrder(string orderId, RequestOptions requestOptions) {
+            this.BasePath = "/orders";
             return this.Get(orderId, null, null, requestOptions);
         }
 
