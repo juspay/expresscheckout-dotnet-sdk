@@ -4,6 +4,7 @@ namespace Juspay
     using System.Net.Http.Headers;
     using System.Linq;
     using System.Reflection;
+    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -34,18 +35,69 @@ namespace Juspay
         {
             if (Response.ContainsKey(key))
             {
+                if (Response[key] is Int64 && typeof(T) == typeof(int))
+                {
+                    return (T)(object)Convert.ToInt32(Response[key]);
+                }
+                else if (Response[key] is double && typeof(T) == typeof(float))
+                {
+                    return (T)(object)Convert.ToSingle(Response[key]);
+                }
+                else if (Response[key] is double && typeof(T) == typeof(double))
+                {
+                    return (T)(object)Response[key];
+                }
+                else if (Response[key] is float && typeof(T) == typeof(double)) {
+                    return (T)(object)Convert.ToDouble(Response[key].ToString());
+                }
+                else if (Response[key] is List<object> inputList) {
+                    Type targetType = typeof(T);
+                    Type innerListType = targetType.GetGenericArguments()[0];
+                    dynamic result = Activator.CreateInstance(targetType);
+                    foreach (object item in inputList)
+                    {
+                        dynamic convertedItem = ConvertToObjectListHelper(innerListType, item);
+                        result.Add(convertedItem);
+                    }
+                    Response[key] = result;
+                    return (T) Response[key];
+                }
                 return (T)Response[key];
             }
             return default(T);
+        }
+
+
+        private static dynamic ConvertToObjectListHelper(Type innerListType, object item)
+        {
+            Type[] genericArguments = innerListType.GetGenericArguments();
+            if (genericArguments.Length == 0)
+            {
+                return item;
+            }
+            dynamic innerList = Activator.CreateInstance(innerListType);
+            if (item is List<object> nestedList)
+            {
+                foreach (object nestedItem in nestedList)
+                {
+                    dynamic convertedItem = ConvertToObjectListHelper(innerListType.GetGenericArguments()[0], nestedItem);
+                    innerList.Add(convertedItem);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid object type in the input list.");
+            }
+            return innerList;
         }
 
         protected List<T> GetObjectList<T>(string key) where T : IJuspayResponseEntity, new()
         {
             List<T> listObj = new List<T>();
             if (Response.ContainsKey(key)) {
-                foreach (Dictionary<string,object> item in (Response[key] as List<Dictionary<string,object>>)) {
+                foreach (object item in (Response[key] as List<Dictionary<string, object>>)) {
                     T obj = new T();
-                    obj.Response = item;
+                    obj.Response = item as Dictionary<string, object>;
                     listObj.Add(obj);
                 }
                 return listObj;
@@ -63,6 +115,7 @@ namespace Juspay
             }
            return default(T);
         }
+
         protected void SetValue<T>(string key, T value)
         {
             if (value is JuspayResponse)
@@ -148,21 +201,31 @@ namespace Juspay
                 }
                 else if (value.Type == JTokenType.Array)
                 {
-                    dictionary[property.Name] = ConvertJArrayToList((JArray)value);
+                    if (((JArray)value).Count > 0 && ((JArray)value)[0].Type == JTokenType.Object) {
+                        var dictList = new List<Dictionary<string, object>>();
+                        foreach(var item in ((JArray)value))
+                        {
+                            dictList.Add(ConvertJObjectToDictionary((JObject)item));
+                        }
+                        dictionary[property.Name] = dictList;
+                    }
+                    else
+                    {
+                        dictionary[property.Name] = ConvertJArrayToList((JArray)value);
+                    }
                 }
                 else
                 {
-                    dictionary[property.Name] = ((JValue)value).Value;
+                    dictionary[property.Name] = ConvertJValueToBasicType((JValue)value);
                 }
             }
 
             return dictionary;
         }
 
-        private static List<object> ConvertJArrayToList(JArray jsonArray)
+        private static List<dynamic> ConvertJArrayToList(JArray jsonArray)
         {
-            var list = new List<object>();
-
+            var list = new List<dynamic>();
             foreach (var item in jsonArray)
             {
                 if (item.Type == JTokenType.Object)
@@ -175,11 +238,39 @@ namespace Juspay
                 }
                 else
                 {
-                    list.Add(((JValue)item).Value);
+                    list.Add(ConvertJValueToBasicType((JValue)item));
                 }
             }
-
             return list;
         }
+
+        private static object ConvertJValueToBasicType(JValue jValue)
+        {
+            object value;
+            switch (jValue.Type)
+            {
+                case JTokenType.Integer:
+                    value = jValue.Value<int>();
+                    break;
+                case JTokenType.Float:
+                    value = jValue.Value<float>();
+                    break;
+                case JTokenType.String:
+                    value = jValue.Value<string>();
+                    break;
+                case JTokenType.Boolean:
+                    value = jValue.Value<bool>();
+                    break;
+                case JTokenType.Null:
+                    value = null;
+                    break;
+                default:
+                    value = jValue.Value;
+                    break;
+            }
+
+            return value;
+        }
+
     }
 }
