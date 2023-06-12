@@ -51,15 +51,6 @@ namespace Juspay
                     return (T)(object)Convert.ToDouble(Response[key].ToString());
                 }
                 else if (Response[key] is List<object> inputList) {
-                    Type targetType = typeof(T);
-                    Type innerListType = targetType.GetGenericArguments()[0];
-                    dynamic result = Activator.CreateInstance(targetType);
-                    foreach (object item in inputList)
-                    {
-                        dynamic convertedItem = ConvertToObjectListHelper(innerListType, item);
-                        result.Add(convertedItem);
-                    }
-                    Response[key] = result;
                     return (T) Response[key];
                 }
                 return (T)Response[key];
@@ -131,7 +122,7 @@ namespace Juspay
         public static T FromJson<T>(string value) where T : IJuspayResponseEntity, new()
         {
             T response = new T();
-            response.Response = JsonConverter.ConvertJsonToDictionary(value);
+            response.Response = JsonConvertToJuspayTargetType.ConvertJsonToDictionary<T>(value);
             return response;
             throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
         }
@@ -201,18 +192,8 @@ namespace Juspay
                 }
                 else if (value.Type == JTokenType.Array)
                 {
-                    if (((JArray)value).Count > 0 && ((JArray)value)[0].Type == JTokenType.Object) {
-                        var dictList = new List<Dictionary<string, object>>();
-                        foreach(var item in ((JArray)value))
-                        {
-                            dictList.Add(ConvertJObjectToDictionary((JObject)item));
-                        }
-                        dictionary[property.Name] = dictList;
-                    }
-                    else
-                    {
-                        dictionary[property.Name] = ConvertJArrayToList((JArray)value);
-                    }
+                    
+                    dictionary[property.Name] = ConvertJArrayToList((JArray)value);
                 }
                 else
                 {
@@ -239,6 +220,179 @@ namespace Juspay
                 else
                 {
                     list.Add(ConvertJValueToBasicType((JValue)item));
+                }
+            }
+            return list;
+        }
+
+        private static object ConvertJValueToBasicType(JValue jValue)
+        {
+            object value;
+            switch (jValue.Type)
+            {
+                case JTokenType.Integer:
+                    value = jValue.Value<int>();
+                    break;
+                case JTokenType.Float:
+                    value = jValue.Value<float>();
+                    break;
+                case JTokenType.String:
+                    value = jValue.Value<string>();
+                    break;
+                case JTokenType.Boolean:
+                    value = jValue.Value<bool>();
+                    break;
+                case JTokenType.Null:
+                    value = null;
+                    break;
+                default:
+                    value = jValue.Value;
+                    break;
+            }
+
+            return value;
+        }
+
+    }
+
+    public static class JsonConvertToJuspayTargetType
+    {
+        public static Dictionary<string, object> ConvertJsonToDictionary<T>(string json) where T : IJuspayResponseEntity, new()
+        {
+            var jsonObject = JsonConvert.DeserializeObject<JObject>(json);
+            return ConvertJObjectToDictionary(jsonObject, typeof(T));
+        }
+
+        private static Dictionary<string, object> ConvertJObjectToDictionary(JObject jsonObject, Type targetType)
+        {
+            var dictionary = new Dictionary<string, object>();
+
+            foreach (var property in jsonObject.Properties())
+            {
+                var propertyName = property.Name;
+                var propertyValue = property.Value;
+
+                var propertyInfo = targetType.GetProperties()
+                    .FirstOrDefault(p => p.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName == propertyName);
+                if (propertyInfo != null)
+                {
+                    var convertedValue = ConvertJTokenToValue(propertyValue, propertyInfo.PropertyType);
+                    dictionary[propertyName] = convertedValue;
+                }
+                else
+                {
+                    dictionary[propertyName] = propertyValue;
+                }
+            }
+
+            return dictionary;
+        }
+
+        private static object ConvertJTokenToValue(JToken jToken, Type targetType)
+        {
+            if (targetType == typeof(Dictionary<string, object>))
+            {
+                return ConvertJObjectToPlainDictionary(jToken as JObject);
+            }
+            else if (jToken.Type == JTokenType.Object)
+            {
+                var objectType = targetType;
+                return ConvertJObjectToDictionary((JObject)jToken, targetType);
+            }
+            else if (jToken.Type == JTokenType.Array)
+            {
+
+                return ConvertJArrayToList((JArray)jToken, targetType);
+
+            }
+            else
+            {
+                return ConvertJValueToBasicType((JValue)jToken);
+            }
+        }
+
+
+        private static object ConvertJValueToBasicTargetType(JValue jValue, Type targetType)
+        {
+            if (jValue.Value == null)
+            {
+                return null;
+            }
+            else
+            {
+                return Convert.ChangeType(jValue.Value, targetType);
+            }
+        }
+
+        private static Dictionary<string, object> ConvertJObjectToPlainDictionary(JObject jsonObject)
+        {
+            var dictionary = new Dictionary<string, object>();
+
+            foreach (var property in jsonObject.Properties())
+            {
+                var value = property.Value;
+
+                if (value.Type == JTokenType.Object)
+                {
+                    dictionary[property.Name] = ConvertJObjectToPlainDictionary((JObject)value);
+                }
+                else if (value.Type == JTokenType.Array)
+                {
+                   
+                    dictionary[property.Name] = ConvertJArrayToPlainList((JArray)value);
+                }
+                else
+                {
+                    dictionary[property.Name] = ConvertJValueToBasicType((JValue)value);
+                }
+            }
+
+            return dictionary;
+        }
+
+        private static List<dynamic> ConvertJArrayToPlainList(JArray jsonArray)
+        {
+            var list = new List<dynamic>();
+            foreach (var item in jsonArray)
+            {
+                if (item.Type == JTokenType.Object)
+                {
+                    list.Add(ConvertJObjectToPlainDictionary((JObject)item));
+                }
+                else if (item.Type == JTokenType.Array)
+                {
+                    list.Add(ConvertJArrayToPlainList((JArray)item));
+                }
+                else
+                {
+                    list.Add(ConvertJValueToBasicType((JValue)item));
+                }
+            }
+            return list;
+        }
+
+        private static dynamic ConvertJArrayToList(JArray jsonArray, Type targetType)
+        {
+            dynamic list = Activator.CreateInstance(targetType);
+            Type innerType = targetType.GetElementType() ?? targetType.GetGenericArguments()[0];
+            if (typeof(JuspayResponse).IsAssignableFrom(innerType)) {
+                list = new List<Dictionary<string, object>>();
+            }
+            foreach (var item in jsonArray)
+            {
+                if (item.Type == JTokenType.Object)
+                {
+                    dynamic innerItem = ConvertJTokenToValue((JObject)item, innerType);
+                    list.Add(innerItem);
+                }
+                else if (item.Type == JTokenType.Array)
+                {
+                    list.Add(ConvertJArrayToList((JArray)item, innerType));
+                }
+                else
+                {
+                    dynamic innerItem = ConvertJValueToBasicType((JValue)item);
+                    list.Add(innerItem);
                 }
             }
             return list;

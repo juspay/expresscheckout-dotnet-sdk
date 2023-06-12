@@ -480,7 +480,7 @@ namespace JuspayTest
         private static string response;
 
         public static void setData() {
-            response = "{ \"basic_string_field\": \"Hello\", \"basic_int_field\": 123, \"basic_float_field\": 3.14, \"basic_double_field\": 3.14159, \"basic_bool_field\": true, \"basic_dictionary_field\": { \"key\": \"value\" }, \"basic_list_field\": [ \"item1\", \"item2\", \"item3\" ], \"nested_list\": [ [ \"Item 1 of List 1\", \"Item 2 of List 1\", \"Item 3 of List 1\" ], [ \"Item 1 of List 2\", \"Item 2 of List 2\" ], [ \"Item 1 of List 3\", \"Item 2 of List 3\", \"Item 3 of List 3\", \"Item 4 of List 3\" ] ], \"object_a\": { \"basic_string_field\": \"Nested object\", \"basic_int_field\": 456, \"basic_list_field\": [ \"objectA 1\", \"objectA 2\", \"objectA 3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, \"list_object_field\": [ { \"basic_string_field\": \"Item 1\", \"basic_int_field\": 111, \"basic_list_field\": [ 1, 2, 3 ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, { \"basic_string_field\": \"Item 2\", \"basic_int_field\": 222 } ] }";
+            response = "{ \"basic_string_field\": \"Hello\", \"basic_int_field\": 123, \"basic_float_field\": 3.14, \"basic_double_field\": 3.14159, \"basic_bool_field\": true, \"basic_dictionary_field\": { \"key\": \"value\" }, \"basic_list_field\": [ \"item1\", \"item2\", \"item3\" ], \"nested_list\": [ [ \"Item 1 of List 1\", \"Item 2 of List 1\", \"Item 3 of List 1\" ], [ \"Item 1 of List 2\", \"Item 2 of List 2\" ], [ \"Item 1 of List 3\", \"Item 2 of List 3\", \"Item 3 of List 3\", \"Item 4 of List 3\" ] ], \"object_a\": { \"basic_string_field\": \"Nested object\", \"basic_int_field\": 456, \"basic_list_field\": [ \"objectA 1\", \"objectA 2\", \"objectA 3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, \"list_object_field\": [ { \"basic_string_field\": \"Item 1\", \"basic_int_field\": 111, \"basic_list_field\": [ \"1\", \"2\", \"3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, { \"basic_string_field\": \"Item 2\", \"basic_int_field\": 222 } ] }";
         }
 
         public static void TestGetters() {
@@ -506,6 +506,9 @@ namespace JuspayTest
         {
             setData();
             ResponseEntityObjectTest InputObj = JuspayResponse.FromJson<ResponseEntityObjectTest>(response);
+            ((List<string>)InputObj.Response["basic_list_field"])[0] = "item1 data updated";
+            Assert.True(((List<string>)InputObj.Response["basic_list_field"])[0] == "item1 data updated");
+            Assert.True(InputObj.ListField[0] == "item1 data updated");
             InputObj.StringField = "Hello updated";
             Assert.True(InputObj.StringField == "Hello updated");
             Assert.True(((string)InputObj.Response["basic_string_field"]) == InputObj.StringField);
