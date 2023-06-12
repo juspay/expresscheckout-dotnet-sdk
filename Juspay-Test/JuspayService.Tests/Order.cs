@@ -44,9 +44,9 @@ namespace JuspayTest {
             Assert.IsType<OrderResponse>(orderStatus);
         }
         public static void TestOrderService() {
-            // GetOrderTest();
-            // CreateOrderWithMetadataEntityTest();
-            // OrderResponseEntityTest();
+            GetOrderTest();
+            CreateOrderWithMetadataEntityTest();
+            OrderResponseEntityTest();
             CreateOrderTest();
         }
     }

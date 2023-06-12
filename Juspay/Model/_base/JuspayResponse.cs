@@ -35,25 +35,33 @@ namespace Juspay
         {
             if (Response.ContainsKey(key))
             {
-                if (Response[key] is Int64 && typeof(T) == typeof(int))
+               try 
+               {
+                    if (Response[key] is Int64 && typeof(T) == typeof(int))
+                    {
+                        return (T)(object)Convert.ToInt32(Response[key]);
+                    }
+                    else if (Response[key] is double && typeof(T) == typeof(float))
+                    {
+                        return (T)(object)Convert.ToSingle(Response[key]);
+                    }
+                    else if (Response[key] is double && typeof(T) == typeof(double))
+                    {
+                        return (T)(object)Response[key];
+                    }
+                    else if (Response[key] is float && typeof(T) == typeof(double)) {
+                        return (T)(object)Convert.ToDouble(Response[key].ToString());
+                    }
+                    else if (Response[key] is List<object> inputList) {
+                        return (T) Response[key];
+                    }
+                
+                    return (T)Response[key];
+               }
+                catch (Exception ) 
                 {
-                    return (T)(object)Convert.ToInt32(Response[key]);
+                    return default(T);
                 }
-                else if (Response[key] is double && typeof(T) == typeof(float))
-                {
-                    return (T)(object)Convert.ToSingle(Response[key]);
-                }
-                else if (Response[key] is double && typeof(T) == typeof(double))
-                {
-                    return (T)(object)Response[key];
-                }
-                else if (Response[key] is float && typeof(T) == typeof(double)) {
-                    return (T)(object)Convert.ToDouble(Response[key].ToString());
-                }
-                else if (Response[key] is List<object> inputList) {
-                    return (T) Response[key];
-                }
-                return (T)Response[key];
             }
             return default(T);
         }
@@ -86,12 +94,19 @@ namespace Juspay
         {
             List<T> listObj = new List<T>();
             if (Response.ContainsKey(key)) {
-                foreach (object item in (Response[key] as List<Dictionary<string, object>>)) {
-                    T obj = new T();
-                    obj.Response = item as Dictionary<string, object>;
-                    listObj.Add(obj);
-                }
-                return listObj;
+               try
+               {
+                    foreach (object item in (Response[key] as List<Dictionary<string, object>>)) {
+                        T obj = new T();
+                        obj.Response = item as Dictionary<string, object>;
+                        listObj.Add(obj);
+                    }
+                    return listObj;
+               }
+               catch (Exception)
+               {
+                return default(List<T>);
+               }
             }
             return default(List<T>);
         }
@@ -101,8 +116,14 @@ namespace Juspay
             T obj = new T();
             if (Response.ContainsKey(key) && Response[key] != null)
             {
-                obj.Response = Response[key] as Dictionary<string, object>;
-                return obj;
+                try {
+                     obj.Response = Response[key] as Dictionary<string, object>;
+                    return obj;
+                }
+                catch (Exception)
+                {
+                    return default (T);
+                }
             }
            return default(T);
         }
