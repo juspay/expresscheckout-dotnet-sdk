@@ -199,7 +199,7 @@ namespace Juspay
             return ConvertJObjectToDictionary(jsonObject);
         }
 
-        private static Dictionary<string, object> ConvertJObjectToDictionary(JObject jsonObject)
+        public static Dictionary<string, object> ConvertJObjectToDictionary(JObject jsonObject)
         {
             var dictionary = new Dictionary<string, object>();
 
@@ -225,7 +225,7 @@ namespace Juspay
             return dictionary;
         }
 
-        private static List<dynamic> ConvertJArrayToList(JArray jsonArray)
+        public static List<dynamic> ConvertJArrayToList(JArray jsonArray)
         {
             var list = new List<dynamic>();
             foreach (var item in jsonArray)
@@ -246,7 +246,7 @@ namespace Juspay
             return list;
         }
 
-        private static object ConvertJValueToBasicType(JValue jValue)
+        public static object ConvertJValueToBasicType(JValue jValue)
         {
             object value;
             switch (jValue.Type)
@@ -302,7 +302,21 @@ namespace Juspay
                 }
                 else
                 {
-                    dictionary[propertyName] = propertyValue;
+                    var value = property.Value;
+
+                    if (value.Type == JTokenType.Object)
+                    {
+                        dictionary[property.Name] = JsonConverter.ConvertJObjectToDictionary((JObject)value);
+                    }
+                    else if (value.Type == JTokenType.Array)
+                    {
+                        
+                        dictionary[property.Name] = JsonConverter.ConvertJArrayToList((JArray)value);
+                    }
+                    else
+                    {
+                        dictionary[property.Name] = JsonConverter.ConvertJValueToBasicType((JValue)value);
+                    }
                 }
             }
 
@@ -313,7 +327,7 @@ namespace Juspay
         {
             if (targetType == typeof(Dictionary<string, object>))
             {
-                return ConvertJObjectToPlainDictionary(jToken as JObject);
+                return JsonConverter.ConvertJObjectToDictionary(jToken as JObject);
             }
             else if (jToken.Type == JTokenType.Object)
             {
@@ -328,7 +342,7 @@ namespace Juspay
             }
             else
             {
-                return ConvertJValueToBasicType((JValue)jToken);
+                return JsonConverter.ConvertJValueToBasicType((JValue)jToken);
             }
         }
 
@@ -345,52 +359,6 @@ namespace Juspay
             }
         }
 
-        private static Dictionary<string, object> ConvertJObjectToPlainDictionary(JObject jsonObject)
-        {
-            var dictionary = new Dictionary<string, object>();
-
-            foreach (var property in jsonObject.Properties())
-            {
-                var value = property.Value;
-
-                if (value.Type == JTokenType.Object)
-                {
-                    dictionary[property.Name] = ConvertJObjectToPlainDictionary((JObject)value);
-                }
-                else if (value.Type == JTokenType.Array)
-                {
-                   
-                    dictionary[property.Name] = ConvertJArrayToPlainList((JArray)value);
-                }
-                else
-                {
-                    dictionary[property.Name] = ConvertJValueToBasicType((JValue)value);
-                }
-            }
-
-            return dictionary;
-        }
-
-        private static List<dynamic> ConvertJArrayToPlainList(JArray jsonArray)
-        {
-            var list = new List<dynamic>();
-            foreach (var item in jsonArray)
-            {
-                if (item.Type == JTokenType.Object)
-                {
-                    list.Add(ConvertJObjectToPlainDictionary((JObject)item));
-                }
-                else if (item.Type == JTokenType.Array)
-                {
-                    list.Add(ConvertJArrayToPlainList((JArray)item));
-                }
-                else
-                {
-                    list.Add(ConvertJValueToBasicType((JValue)item));
-                }
-            }
-            return list;
-        }
 
         private static dynamic ConvertJArrayToList(JArray jsonArray, Type targetType)
         {
@@ -412,39 +380,11 @@ namespace Juspay
                 }
                 else
                 {
-                    dynamic innerItem = ConvertJValueToBasicType((JValue)item);
+                    dynamic innerItem = JsonConverter.ConvertJValueToBasicType((JValue)item);
                     list.Add(innerItem);
                 }
             }
             return list;
-        }
-
-        private static object ConvertJValueToBasicType(JValue jValue)
-        {
-            object value;
-            switch (jValue.Type)
-            {
-                case JTokenType.Integer:
-                    value = jValue.Value<int>();
-                    break;
-                case JTokenType.Float:
-                    value = jValue.Value<float>();
-                    break;
-                case JTokenType.String:
-                    value = jValue.Value<string>();
-                    break;
-                case JTokenType.Boolean:
-                    value = jValue.Value<bool>();
-                    break;
-                case JTokenType.Null:
-                    value = null;
-                    break;
-                default:
-                    value = jValue.Value;
-                    break;
-            }
-
-            return value;
         }
 
     }
