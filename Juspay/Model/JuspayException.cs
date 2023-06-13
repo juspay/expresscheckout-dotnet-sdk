@@ -15,7 +15,7 @@ namespace Juspay
         {
         }
 
-        public JuspayException(HttpStatusCode httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
+        public JuspayException(int httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
             : base(message)
         {
             this.HttpStatusCode = httpStatusCode;
@@ -23,7 +23,7 @@ namespace Juspay
             this.JuspayResponse = juspayResponse;
         }
 
-        public HttpStatusCode HttpStatusCode { get; set; }
+        public int HttpStatusCode { get; set; }
 
         public JuspayError JuspayError { get; set; }
 

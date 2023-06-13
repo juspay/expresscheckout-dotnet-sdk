@@ -15,7 +15,7 @@ namespace Juspay
         public Dictionary<string, object> response { get; set; }
 
         public JuspayResponseBase ResponseBase { get; set; }
-        public JuspayResponse CreateJuspayResponse(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode, string content)
+        public JuspayResponse CreateJuspayResponse(int statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode, string content)
         {
             this.ResponseBase = new JuspayResponseBase(statusCode, headers, isSuccessStatusCode);
             this.RawContent = content;
@@ -64,30 +64,6 @@ namespace Juspay
                 }
             }
             return default(T);
-        }
-
-
-        private static dynamic ConvertToObjectListHelper(Type innerListType, object item)
-        {
-            Type[] genericArguments = innerListType.GetGenericArguments();
-            if (genericArguments.Length == 0)
-            {
-                return item;
-            }
-            dynamic innerList = Activator.CreateInstance(innerListType);
-            if (item is List<object> nestedList)
-            {
-                foreach (object nestedItem in nestedList)
-                {
-                    dynamic convertedItem = ConvertToObjectListHelper(innerListType.GetGenericArguments()[0], nestedItem);
-                    innerList.Add(convertedItem);
-                }
-            }
-            else
-            {
-                throw new ArgumentException("Invalid object type in the input list.");
-            }
-            return innerList;
         }
 
         protected List<T> GetObjectList<T>(string key) where T : IJuspayResponseEntity, new()

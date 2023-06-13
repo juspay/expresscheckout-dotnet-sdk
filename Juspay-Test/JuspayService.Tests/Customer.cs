@@ -44,11 +44,14 @@ namespace JuspayTest {
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
             JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
-            CustomerResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, new RequestOptions("azhar_test", null, null, null));
+            CustomerResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, null);
             Assert.NotNull(newCustomer);
             Assert.NotNull(newCustomer.Juspay.ClientAuthToken);
             Assert.NotNull(newCustomer.Response);
             Assert.NotNull(newCustomer.ResponseBase);
+            Assert.True(newCustomer.ResponseBase.StatusCode == 200);
+            Assert.NotNull(newCustomer.ResponseBase.XResponseId);
+            Assert.True(newCustomer.ResponseBase.XMerchantId == JuspayEnvironment.MerchantId);
             Assert.NotNull(newCustomer.RawContent);
             Assert.True(newCustomer.ObjectReferenceId == customerId);
             Assert.IsType<CustomerResponse>(newCustomer);

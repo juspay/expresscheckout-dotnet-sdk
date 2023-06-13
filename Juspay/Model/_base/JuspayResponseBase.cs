@@ -7,14 +7,14 @@ namespace Juspay
 
     public class JuspayResponseBase
     {
-        public JuspayResponseBase(HttpStatusCode statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode)
+        public JuspayResponseBase(int statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode)
         {
             this.StatusCode = statusCode;
             this.Headers = headers;
             this.IsSuccessStatusCode = isSuccessStatusCode;
         }
 
-        public HttpStatusCode StatusCode { get; set; }
+        public int StatusCode { get; set; }
 
         public bool IsSuccessStatusCode { get; set; }
 

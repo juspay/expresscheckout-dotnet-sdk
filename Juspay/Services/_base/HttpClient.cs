@@ -97,7 +97,7 @@ namespace Juspay
             var reader = new StreamReader(
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             JuspayResponse responseObj = new JuspayResponse().CreateJuspayResponse(
-                response.StatusCode,
+                (int)response.StatusCode,
                 response.Headers,
                 response.IsSuccessStatusCode,
                 await reader.ReadToEndAsync().ConfigureAwait(false));

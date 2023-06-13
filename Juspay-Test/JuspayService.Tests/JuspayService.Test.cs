@@ -11,6 +11,7 @@ namespace JuspayTest
         public static Random Rnd { get; set; }
         public JuspayServiceTest () {
             JuspayEnvironment.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
+            JuspayEnvironment.MerchantId = Environment.GetEnvironmentVariable("MERCHANT_ID");
             Rnd = new Random();
         }
 
