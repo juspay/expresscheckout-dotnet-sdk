@@ -144,4 +144,126 @@ namespace Juspay {
         }
     }
 
+    public class RefundResponse : JuspayResponse
+    {
+        [JsonProperty("unique_request_id")]
+        public string UniqueRequestId
+        {
+            get { return GetValue<string>("unique_request_id"); }
+            set { SetValue("unique_request_id", value); }
+        }
+
+        [JsonProperty("txn_id")]
+        public string TxnId
+        {
+            get { return GetValue<string>("txn_id"); }
+            set { SetValue("txn_id", value); }
+        }
+
+        [JsonProperty("status")]
+        public string Status
+        {
+            get { return GetValue<string>("status"); }
+            set { SetValue("status", value); }
+        }
+
+        [JsonProperty("sent_to_gateway")]
+        public bool SentToGateway
+        {
+            get { return GetValue<bool>("sent_to_gateway"); }
+            set { SetValue("sent_to_gateway", value); }
+        }
+
+        [JsonProperty("response_code")]
+        public string ResponseCode
+        {
+            get { return GetValue<string>("response_code"); }
+            set { SetValue("response_code", value); }
+        }
+
+        [JsonProperty("refund_type")]
+        public string RefundType
+        {
+            get { return GetValue<string>("refund_type"); }
+            set { SetValue("refund_type", value); }
+        }
+
+        [JsonProperty("refund_source")]
+        public string RefundSource
+        {
+            get { return GetValue<string>("refund_source"); }
+            set { SetValue("refund_source", value); }
+        }
+
+        [JsonProperty("refund_arn")]
+        public string RefundArn
+        {
+            get { return GetValue<string>("refund_arn"); }
+            set { SetValue("refund_arn", value); }
+        }
+
+        [JsonProperty("reference_id")]
+        public string ReferenceId
+        {
+            get { return GetValue<string>("reference_id"); }
+            set { SetValue("reference_id", value); }
+        }
+
+        [JsonProperty("order_id")]
+        public string OrderId
+        {
+            get { return GetValue<string>("order_id"); }
+            set { SetValue("order_id", value); }
+        }
+
+        [JsonProperty("initiated_by")]
+        public string InitiatedBy
+        {
+            get { return GetValue<string>("initiated_by"); }
+            set { SetValue("initiated_by", value); }
+        }
+
+        [JsonProperty("gateway")]
+        public string Gateway
+        {
+            get { return GetValue<string>("gateway"); }
+            set { SetValue("gateway", value); }
+        }
+
+        [JsonProperty("error_message")]
+        public string ErrorMessage
+        {
+            get { return GetValue<string>("error_message"); }
+            set { SetValue("error_message", value); }
+        }
+
+        [JsonProperty("epg_txn_id")]
+        public string EpgTxnId
+        {
+            get { return GetValue<string>("epg_txn_id"); }
+            set { SetValue("epg_txn_id", value); }
+        }
+
+        [JsonProperty("created")]
+        public string Created
+        {
+            get { return GetValue<string>("created"); }
+            set { SetValue("created", value); }
+        }
+
+        [JsonProperty("authorization_id")]
+        public string AuthorizationId
+        {
+            get { return GetValue<string>("authorization_id"); }
+            set { SetValue("authorization_id", value); }
+        }
+
+        [JsonProperty("amount")]
+        public double Amount
+        {
+            get { return GetValue<double>("amount"); }
+            set { SetValue("amount", value); }
+        }
+    }
+
 }

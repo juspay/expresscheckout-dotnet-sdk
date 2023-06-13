@@ -72,6 +72,81 @@ namespace Juspay {
 
     }
 
+    public class  TransactionIdAndInstantRefund : JuspayEntity
+    {
+        public TransactionIdAndInstantRefund() : base() {}
+        public TransactionIdAndInstantRefund(Dictionary<string, object> data) : base(data) {}
+
+        [JsonProperty("order_id")]
+        public string OrderId
+        {
+            get { return GetValue<string>("order_id"); }
+            set { SetValue("order_id", value); }
+        }
+
+        [JsonProperty("amount")]
+        public double Amount
+        {
+            get { return GetValue<double>("amount"); }
+            set { SetValue("amount", value); }
+        }
+
+        [JsonProperty("unique_request_id")]
+        public string RequestId
+        {
+            get { return GetValue<string>("unique_request_id"); }
+            set { SetValue("unique_request_id", value); }
+        }
+
+        [JsonProperty("txn_id")]
+        public string TxnId
+        {
+            get { return GetValue<string>("txn_id"); }
+            set { SetValue("txn_id", value); }
+        }
+
+        [JsonProperty("refund_type")]
+        public string RefundType
+        {
+            get { return GetValue<string>("refund_type"); }
+            set { SetValue("refund_type", value); }
+        }
+
+        [JsonProperty("order_type")]
+        public string OrderType
+        {
+            get { return GetValue<string>("order_type"); }
+            set { SetValue("order_type", value); }
+        }
+
+        [JsonProperty("beneficiary_details")]
+        public List<TransactionIdAndInstantRefundBeneficiary> BeneficiaryDetails
+        {
+            get { return GetObjectList<TransactionIdAndInstantRefundBeneficiary>("beneficiary_details"); }
+            set { SetValue("beneficiary_details", value); }
+        }
+    }
+
+    public class TransactionIdAndInstantRefundBeneficiary : JuspayEntity
+    {
+        public TransactionIdAndInstantRefundBeneficiary() : base() {}
+        public TransactionIdAndInstantRefundBeneficiary(Dictionary<string, object> data) : base(data) {}
+
+        [JsonProperty("name1")]
+        public string Name1
+        {
+            get { return GetValue<string>("name1"); }
+            set { SetValue("name1", value); }
+        }
+
+        [JsonProperty("name2")]
+        public string Name2
+        {
+            get { return GetValue<string>("name2"); }
+            set { SetValue("name2", value); }
+        }
+
+    }
     public class OrderService : Service<OrderResponse> {
         public OrderService()
             : base()
@@ -104,13 +179,39 @@ namespace Juspay {
         }
 
         public async Task<OrderResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
+            this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
             return await this.CreateAsync(input, requestOptions, "application/x-www-form-urlencoded", "/refunds");
         }
 
         public OrderResponse RefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions) {
+            this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
             return this.Create(input, requestOptions, "application/x-www-form-urlencoded", "/refunds");
+        }
+
+    }
+
+    public class InstantRefundService : Service<RefundResponse>
+    {
+        public InstantRefundService()
+            : base()
+        {
+        }
+        public InstantRefundService(IJuspayClient client) : base(client)
+        {
+        }
+
+        public override string BasePath => "/refunds";
+
+        public RefundResponse GetTransactionIdAndInstantRefund(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
+        {
+            return this.Create(input, requestOptions);
+        }
+
+        public async Task<RefundResponse> GetTransactionIdAndInstantRefundAsync(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
+        {
+            return await this.CreateAsync(input, requestOptions);
         }
     }
 

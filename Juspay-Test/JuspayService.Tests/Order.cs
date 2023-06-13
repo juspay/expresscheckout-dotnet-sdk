@@ -43,11 +43,31 @@ namespace JuspayTest {
             Assert.NotNull(orderStatus.RawContent);
             Assert.IsType<OrderResponse>(orderStatus);
         }
+
+        public static void TestInstantRefundTest()
+        {
+            string orderId = CreateOrderTest();
+            string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
+            TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
+            try
+            {
+                RefundResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
+            }
+            catch (JuspayException Ex)
+            {
+                Assert.NotNull(Ex.JuspayError);
+                Assert.NotNull(Ex.JuspayError.ErrorMessage);
+                Assert.NotNull(Ex.JuspayResponse.RawContent);
+            }
+            
+        }
+
         public static void TestOrderService() {
             GetOrderTest();
             CreateOrderWithMetadataEntityTest();
             OrderResponseEntityTest();
             CreateOrderTest();
+            TestInstantRefundTest();
         }
     }
 }
