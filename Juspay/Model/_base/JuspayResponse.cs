@@ -19,7 +19,7 @@ namespace Juspay
         {
             this.ResponseBase = new JuspayResponseBase(statusCode, headers, isSuccessStatusCode);
             this.RawContent = content;
-            this.Response = JsonConverter.ConvertJsonToDictionary(content);
+            // this.Response = JsonConverter.ConvertJsonToDictionary(content); to prevent unnecessary computation
             return this;
         }
 
