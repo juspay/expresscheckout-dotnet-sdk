@@ -36,6 +36,23 @@ Response object contains Juspay endpoint response along with Headers, getters an
 #### Request Options
 RequestOptions provide option to set merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
 
+### Errors
+Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
+```C#
+using Juspay;
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
+try
+{
+    RefundResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
+}
+catch (JuspayException Ex)
+{
+    Console.WriteLine(Ex.JuspayError.ErrorMessage);
+    Console.WriteLine(Ex.JuspayResponse.RawContent);
+}
+``` 
 ### Test
 All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```.
 
