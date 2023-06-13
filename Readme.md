@@ -31,7 +31,7 @@ CustomerResponse newCustomer = new CustomerService().CreateCustomer(createCustom
 Input object as Dictionary<string, object> as input and provides getters and setters for fields accepted by the endpoint.
 
 #### Response Object
-Response object contains Juspay endpoint response along with Headers, getters and setters. Use ```.RawContent``` to get the raw response as string. Use ```.Response``` to get the response as Dictionary<string, object>. To access the Headers and Status Code use ```.ResponseBase.Headers``` and ```.ResponseBase.StatusCode``` respectively. Response object also provides getter and setter for important fields. Getter are provided for retriving x-request-id, x-response-id, x-jp-merchant-id from headers, Use ```.ResponseBase.XRequestId```, ```.ResponseBase.XResponseId``` and ```.ResponseBase.XMerchantId```.
+Response object contains Juspay endpoint response along with Headers, getters and setters. Use ```.RawContent``` to get the raw response as string. Use ```.Response``` to get the response as Dictionary<string, object>. To access the Headers and Status Code use ```.ResponseBase.Headers``` and ```.ResponseBase.StatusCode``` respectively. Response object also provides getter and setter for important fields. Getters are provided for retriving x-request-id (```.ResponseBase.XRequestId```), x-response-id (```.ResponseBase.XResponseId```) and x-jp-merchant-id (```.ResponseBase.XMerchantId```) from headers.
 
 #### Request Options
 RequestOptions provide option to set merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
