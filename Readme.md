@@ -1,5 +1,5 @@
 # Juspay.net
-official [Juspay](https://developer.juspay.in/) .NET library, supporting .NET Framework 4.5.2+, .NET Core 2.0+, .NET 5.0+
+Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framework 4.5.2+, .NET Core 2.0+ and .NET 5.0+
 
 ## Usage
 
