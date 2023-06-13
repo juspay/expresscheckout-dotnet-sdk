@@ -32,10 +32,24 @@ namespace JuspayTest {
             Assert.NotNull(sessionRes.Id);
             Assert.IsType<SessionResponse>(sessionRes);
         }
+
+        public static void JuspaySessionAPIAsyncTest()
+        {    
+            CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
+            SessionResponse sessionRes = new SessionService().CreateSessionAsync(sessionInput, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.NotNull(sessionRes);
+            Assert.NotNull(sessionRes.Response);
+            Assert.NotNull(sessionRes.ResponseBase);
+            Assert.NotNull(sessionRes.RawContent);
+            Assert.NotNull(sessionRes.Id);
+            Assert.IsType<SessionResponse>(sessionRes);
+        }
+
         public static void TestSessionService() {
             JuspaySessionAPITest();
             SessionResponseEntityTest();
             SessionResponseSetterEntityTest();
+            JuspaySessionAPIAsyncTest();
         }
     }
 }

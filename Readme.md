@@ -17,14 +17,21 @@ Use `JuspayEnvironment.ApiKey` property to set the API key
 using Juspay;
 JuspayEnvironment.ApiKey = "api_key";
 ```
-
+### Configure Endpoint
+By default Juspay.net SDK uses [Sandbox](https://sandbox.juspay.in) as endpoint. There are predefined endpoints(```JuspayEnvironment.SANDBOX_BASE_URL```, ```JuspayEnvironment.PRODUCTION_BASE_URL```) which can be set to ```JuspayEnvironment.BaseUrl``` attribute. To change the endpoint to custom url use ```JuspayEnvironment.BaseUrl = "custom domain"``` 
 ### Services
-Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse.
+Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse. All service has both Synchronous and Asynchronous version.
 
 ```C#
 string customerId = "customer id";
 CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
 CustomerResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("merchant_id", null, null, null));
+```
+```C#
+// Async version
+string customerId = "customer id";
+CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+CustomerResponse newCustomer = new CustomerService().CreateCustomerAsync(createCustomerInput, new RequestOptions("merchant_id", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
 ```
 
 #### Input Object
@@ -54,7 +61,8 @@ catch (JuspayException Ex)
 }
 ``` 
 ### Test
-All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```.
+All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```. 
+
 
 
 

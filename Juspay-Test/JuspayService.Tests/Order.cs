@@ -32,6 +32,20 @@ namespace JuspayTest {
             Assert.IsType<OrderResponse>(order);
             return orderId;
         }
+
+        public static string CreateOrderTestAsync()
+        {
+            string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+            OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
+            OrderResponse order = new OrderService().CreateOrderAsync(createOrderInput, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.NotNull(order);
+            Assert.NotNull(order.Response);
+            Assert.NotNull(order.ResponseBase);
+            Assert.NotNull(order.RawContent);
+            Assert.NotNull(order.OrderId);
+            Assert.IsType<OrderResponse>(order);
+            return orderId;
+        }
         
         public static void GetOrderTest() 
         {
@@ -42,9 +56,16 @@ namespace JuspayTest {
             Assert.NotNull(orderStatus.ResponseBase);
             Assert.NotNull(orderStatus.RawContent);
             Assert.IsType<OrderResponse>(orderStatus);
+            // Async Test
+            orderStatus = new OrderService().GetOrderAsync(orderId, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            Assert.NotNull(orderStatus);
+            Assert.NotNull(orderStatus.Response);
+            Assert.NotNull(orderStatus.ResponseBase);
+            Assert.NotNull(orderStatus.RawContent);
+            Assert.IsType<OrderResponse>(orderStatus);
         }
 
-        public static void TestInstantRefundTest()
+        public static void InstantRefundTest()
         {
             string orderId = CreateOrderTest();
             string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
@@ -62,12 +83,32 @@ namespace JuspayTest {
             
         }
 
+        public static void InstantRefundAsyncTest()
+        {
+            string orderId = CreateOrderTest();
+            string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
+            TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
+            try
+            {
+                RefundResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefundAsync(RefundInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            }
+            catch (JuspayException Ex)
+            {
+                Assert.NotNull(Ex.JuspayError);
+                Assert.NotNull(Ex.JuspayError.ErrorMessage);
+                Assert.NotNull(Ex.JuspayResponse.RawContent);
+            }
+            
+        }
+
         public static void TestOrderService() {
             GetOrderTest();
             CreateOrderWithMetadataEntityTest();
             OrderResponseEntityTest();
             CreateOrderTest();
-            TestInstantRefundTest();
+            CreateOrderTestAsync();
+            InstantRefundTest();
+            InstantRefundAsyncTest();
         }
     }
 }
