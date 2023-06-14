@@ -54,11 +54,23 @@ namespace Juspay {
             }
 
             var juspayError =  JuspayEntity.FromJson<JuspayError>(response.RawContent);
-            return new JuspayException(
-                response.ResponseBase.StatusCode,
-                juspayError,
-                response,
-                juspayError.UserMessage ?? juspayError.ErrorMessage ?? "");
+
+            switch (response.ResponseBase.StatusCode)
+            {
+                case 400:
+                case 404:
+                    return new InvalidRequestException(response.ResponseBase.StatusCode, juspayError, response);
+                case 401:
+                    return new AuthenticationException(response.ResponseBase.StatusCode, juspayError, response);
+                case 403:
+                    return new AuthorizationException(response.ResponseBase.StatusCode, juspayError, response);
+                default:
+                    return new JuspayException(
+                                response.ResponseBase.StatusCode,
+                                juspayError,
+                                response,
+                                juspayError.UserMessage ?? juspayError.ErrorMessage ?? "");
+            }
         }
 
         private static JuspayException BuildInvalidResponseException(JuspayResponse response)
