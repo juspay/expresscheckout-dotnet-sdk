@@ -122,7 +122,7 @@ namespace Juspay {
         [JsonProperty("beneficiary_details")]
         public List<TransactionIdAndInstantRefundBeneficiary> BeneficiaryDetails
         {
-            get { return GetObjectList<TransactionIdAndInstantRefundBeneficiary>("beneficiary_details"); }
+            get { return GetValue<List<TransactionIdAndInstantRefundBeneficiary>>("beneficiary_details"); }
             set { SetValue("beneficiary_details", value); }
         }
     }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Juspay;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace JuspayTest
 {
@@ -385,7 +386,7 @@ namespace JuspayTest
             [JsonProperty("list_object_field")]
             public List<ObjectA> ListObjectField
             {
-                get { return GetObjectList<ObjectA>("list_object_field"); }
+                get { return GetValue<List<ObjectA>>("list_object_field"); }
                 set { SetValue("list_object_field", value); }
             }
 
@@ -394,6 +395,13 @@ namespace JuspayTest
             {
                 get { return GetValue<List<List<string>>>("nested_list"); }
                 set { SetValue("nested_list", value ); }
+            }
+        
+            [JsonExtensionData]
+            public Dictionary<string, object> AdditionalData
+            {
+                get { return GetValue<Dictionary<string, object>>("additional_data"); } 
+                set { SetValue("additional_data", value); }
             }
             
         }
@@ -475,17 +483,19 @@ namespace JuspayTest
             TestGetters();
             TestSetters();
             TestPartialSetters();
+            // TestJobject();
         }
 
         private static string response;
 
         public static void setData() {
-            response = "{ \"basic_string_field\": \"Hello\", \"basic_int_field\": 123, \"basic_float_field\": 3.14, \"basic_double_field\": 3.14159, \"basic_bool_field\": true, \"basic_dictionary_field\": { \"key\": \"value\" }, \"basic_list_field\": [ \"item1\", \"item2\", \"item3\" ], \"nested_list\": [ [ \"Item 1 of List 1\", \"Item 2 of List 1\", \"Item 3 of List 1\" ], [ \"Item 1 of List 2\", \"Item 2 of List 2\" ], [ \"Item 1 of List 3\", \"Item 2 of List 3\", \"Item 3 of List 3\", \"Item 4 of List 3\" ] ], \"object_a\": { \"basic_string_field\": \"Nested object\", \"basic_int_field\": 456, \"basic_list_field\": [ \"objectA 1\", \"objectA 2\", \"objectA 3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, \"list_object_field\": [ { \"basic_string_field\": \"Item 1\", \"basic_int_field\": 111, \"basic_list_field\": [ \"1\", \"2\", \"3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, { \"basic_string_field\": \"Item 2\", \"basic_int_field\": 222 } ], \"extra_field\": \"extra\" }";
+            response = "{ \"basic_string_field\": \"Hello\", \"basic_int_field\": 123, \"basic_float_field\": 3.14, \"basic_double_field\": 3.14159, \"basic_bool_field\": true, \"basic_dictionary_field\": { \"key\": \"value\" }, \"basic_list_field\": [ \"item1\", \"item2\", \"item3\" ], \"nested_list\": [ [ \"Item 1 of List 1\", \"Item 2 of List 1\", \"Item 3 of List 1\" ], [ \"Item 1 of List 2\", \"Item 2 of List 2\" ], [ \"Item 1 of List 3\", \"Item 2 of List 3\", \"Item 3 of List 3\", \"Item 4 of List 3\" ] ], \"object_a\": { \"basic_string_field\": \"Nested object\", \"basic_int_field\": 456, \"basic_list_field\": [ \"objectA 1\", \"objectA 2\", \"objectA 3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, \"list_object_field\": [ { \"basic_string_field\": \"Item 1\", \"basic_int_field\": 111, \"basic_list_field\": [ \"1\", \"2\", \"3\" ], \"object_b\": { \"basic_string_field\": \"Nested nested object\" } }, { \"basic_string_field\": \"Item 2\", \"basic_int_field\": 222 } ], \"extra_field\": \"extra\", \"extra_list\": [1, 2, 3], \"extra_object\": { \"basic_nest\": \"hello\" } }";
         }
 
         public static void TestGetters() {
             setData();
             ResponseEntityObjectTest InputObj = JuspayResponse.FromJson<ResponseEntityObjectTest>(response);
+            Console.WriteLine(InputObj.Response);
             Assert.True(InputObj.StringField == "Hello");
             Assert.True(InputObj.IntField == 123);
             Assert.True(InputObj.FloatField == 3.14f);
@@ -500,6 +510,7 @@ namespace JuspayTest
             Assert.True(((List<string>)InputObj.ObjectAField.Response["basic_list_field"])[0] == "objectA 1");
             Assert.True(InputObj.ObjectAField.ObjectBField.StringField == "Nested nested object");
             Assert.True(((string)InputObj.ObjectAField.ObjectBField.Response["basic_string_field"]) == "Nested nested object");
+            Console.WriteLine(InputObj.Response["list_object_field"]);
             Assert.True(InputObj.ListObjectField[0].IntField == 111);
         }
         public static void TestSetters()
@@ -536,12 +547,14 @@ namespace JuspayTest
             Assert.True(((List<string>)InputObj.Response["basic_list_field"])[0] == "item1 data updated");
             Assert.True(InputObj.ListField[0] == "item1 data updated");
             InputObj.ListObjectField[0].IntField = 9999;
-            Assert.True(((int)((List<Dictionary<string, object>>)InputObj.Response["list_object_field"])[0]["basic_int_field"]) == 9999);
+            Console.WriteLine($"list object {InputObj.Response["list_object_field"][0]}");
+            Assert.True(InputObj.Response["list_object_field"][0].Response["basic_int_field"] == 9999);
             Assert.True(InputObj.ListObjectField[0].IntField == 9999);
-            ((List<Dictionary<string, object>>)InputObj.Response["list_object_field"])[0]["basic_int_field"] = 555;
-            Assert.True(((int)((List<Dictionary<string, object>>)InputObj.Response["list_object_field"])[0]["basic_int_field"]) == 555);
+            InputObj.Response["list_object_field"][0].Response["basic_int_field"] = 555;
+            Assert.True(InputObj.Response["list_object_field"][0].Response["basic_int_field"] == 555);
             Assert.True(InputObj.ListObjectField[0].IntField == 555);
-            Assert.True(((string)InputObj.Response["extra_field"]) == "extra");
+            Console.WriteLine($"additional data {InputObj.Response["additional_data"]["extra_object"]}");
+            Assert.True(((string)InputObj.Response["additional_data"]["extra_field"]) == "extra");
         }
         public static void TestPartialSetters() {
             setData();
@@ -556,6 +569,58 @@ namespace JuspayTest
             Assert.True(InputObj.ObjectAField.IntField == 100);
             Assert.NotNull(InputObj.ObjectAField);
         }
+
+        // public static void TestJobject()
+        // {
+        //     string response = @"{
+        //         'FirstName':'Jignesh',
+        //         'LastName':'Trivedi',
+        //         'list': [1,2,3],
+        //         'object_a': {
+        //             'basic_string_field': 'Nested object',
+        //             'basic_int_field': 456,
+        //             'basic_list_field': [ 'objectA 1', 'objectA 2', 'objectA 3' ], 
+        //             'object_b': { 'basic_string_field': 'Nested nested object' } }
+        //     }";
+        //     var data = new Dictionary<string, object>()
+        //         {
+        //             { "basic_string_field", "Hello" },
+        //             { "basic_int_field", 123 },
+        //             { "basic_float_field", 3.14f },
+        //             { "basic_double_field", 3.14159 },
+        //             { "basic_bool_field", true },
+        //             { "basic_dictionary_field", new Dictionary<string, object> { { "key", "value" } } },
+        //             { "basic_list_field", new List<string> { "item1", "item2", "item3" } },
+        //             {
+        //                 "nested_list",
+        //                 new List<List<string>>
+        //                 {
+        //                     new List<string> { "Item 1 of List 1", "Item 2 of List 1", "Item 3 of List 1" },
+        //                     new List<string> { "Item 1 of List 2", "Item 2 of List 2" },
+        //                     new List<string> { "Item 1 of List 3", "Item 2 of List 3", "Item 3 of List 3", "Item 4 of List 3" }
+        //                 }
+        //             },
+        //             {
+        //                 "object_a",
+        //                 new Dictionary<string, object>
+        //                 {
+        //                     { "basic_string_field", "Nested object" },
+        //                     { "basic_int_field", 456 },
+        //                     { "basic_list_field", new List<string> { "objectA 1", "objectA 2", "objectA 3" } },
+        //                     {
+        //                         "object_b",
+        //                         new Dictionary<string, object>
+        //                         {
+        //                             { "basic_string_field", "Nested nested object" }
+        //                         }
+        //                     }
+        //                 }
+        //             },
+        //         };
+        //     dynamic parsedResponse = new JObject(data);
+        //     Console.WriteLine(parsedResponse["object_a"]);
+        //     Console.WriteLine(parsedResponse);
+        // }
     }
 
 }

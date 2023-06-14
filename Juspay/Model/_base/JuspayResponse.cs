@@ -12,7 +12,7 @@ namespace Juspay
     using System;
     public class JuspayResponse : IJuspayResponseEntity
     {
-        public Dictionary<string, object> response { get; set; }
+        public dynamic response { get; set; } = new Dictionary<string, dynamic>();
 
         public JuspayResponseBase ResponseBase { get; set; }
         public JuspayResponse CreateJuspayResponse(int statusCode, HttpResponseHeaders headers, bool isSuccessStatusCode, string content)
@@ -25,7 +25,7 @@ namespace Juspay
 
         public string RawContent { get; set; }
 
-        public Dictionary<string, object> Response
+        public dynamic Response
         {
             get { return response; }
             set { response = value; }
@@ -37,25 +37,6 @@ namespace Juspay
             {
                try 
                {
-                    if (Response[key] is Int64 && typeof(T) == typeof(int))
-                    {
-                        return (T)(object)Convert.ToInt32(Response[key]);
-                    }
-                    else if (Response[key] is double && typeof(T) == typeof(float))
-                    {
-                        return (T)(object)Convert.ToSingle(Response[key]);
-                    }
-                    else if (Response[key] is double && typeof(T) == typeof(double))
-                    {
-                        return (T)(object)Response[key];
-                    }
-                    else if (Response[key] is float && typeof(T) == typeof(double)) {
-                        return (T)(object)Convert.ToDouble(Response[key].ToString());
-                    }
-                    else if (Response[key] is List<object> inputList) {
-                        return (T) Response[key];
-                    }
-                
                     return (T)Response[key];
                }
                 catch (Exception ) 
@@ -66,26 +47,26 @@ namespace Juspay
             return default(T);
         }
 
-        protected List<T> GetObjectList<T>(string key) where T : IJuspayResponseEntity, new()
-        {
-            List<T> listObj = new List<T>();
-            if (Response.ContainsKey(key)) {
-               try
-               {
-                    foreach (object item in (Response[key] as List<Dictionary<string, object>>)) {
-                        T obj = new T();
-                        obj.Response = item as Dictionary<string, object>;
-                        listObj.Add(obj);
-                    }
-                    return listObj;
-               }
-               catch (Exception)
-               {
-                return default(List<T>);
-               }
-            }
-            return default(List<T>);
-        }
+        // protected List<T> GetObjectList<T>(string key) where T : IJuspayResponseEntity, new()
+        // {
+        //     List<T> listObj = new List<T>();
+        //     if (Response.ContainsKey(key)) {
+        //        try
+        //        {
+        //             foreach (T item in (Response[key] as List<T>)) {
+        //                 Console.WriteLine($" here {item} {item.Response}");
+        //                 T obj = item;
+        //                 listObj.Add(obj);
+        //             }
+        //             return listObj;
+        //        }
+        //        catch (Exception)
+        //        {
+        //         return default(List<T>);
+        //        }
+        //     }
+        //     return default(List<T>);
+        // }
 
         protected T GetObject<T> (string key) where T : IJuspayResponseEntity, new()
         {
@@ -93,7 +74,7 @@ namespace Juspay
             if (Response.ContainsKey(key) && Response[key] != null)
             {
                 try {
-                     obj.Response = Response[key] as Dictionary<string, object>;
+                     obj.Response = Response[key];
                     return obj;
                 }
                 catch (Exception)
@@ -108,20 +89,21 @@ namespace Juspay
         {
             if (value is JuspayResponse)
             {
+                Console.WriteLine($"here setting dict {value}");
                 Response[key] = ((IJuspayResponseEntity)value).Response;
+                Console.WriteLine($"{Response[key]}");
             }
             else
             {
+                Console.WriteLine($"here setting normal {value}");
                 Response[key] = value;
             }
         }
 
         public static T FromJson<T>(string value) where T : IJuspayResponseEntity, new()
         {
-            T response = new T();
-            response.Response = JsonConvertToJuspayTargetType.ConvertJsonToDictionary<T>(value);
-            return response;
-            throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
+            return JsonConvert.DeserializeObject<T>(value);
+            // throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
         }
 
     
