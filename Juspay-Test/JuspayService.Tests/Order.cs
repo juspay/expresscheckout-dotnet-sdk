@@ -16,7 +16,7 @@ namespace JuspayTest {
         {
             string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
             OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
-            JuspayResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
+            JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
             Assert.NotNull(order);
             Assert.NotNull(order.Response);
             Assert.NotNull(order.ResponseBase);
@@ -30,7 +30,7 @@ namespace JuspayTest {
         {
             string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
             OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
-            JuspayResponse order = new OrderService().CreateOrderAsync(createOrderInput, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            JuspayResponse order = new OrderService().CreateOrderAsync(createOrderInput, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(order);
             Assert.NotNull(order.Response);
             Assert.NotNull(order.ResponseBase);
@@ -43,7 +43,7 @@ namespace JuspayTest {
         public static void GetOrderTest() 
         {
             string orderId = CreateOrderTest();
-            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions("azhar_test", null, null, null));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);

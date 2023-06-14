@@ -51,7 +51,7 @@ namespace JuspayTest {
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
             CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
-            JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("azhar_test", null, null, null));
+            JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, null);
             Assert.NotNull(newCustomer);
             Assert.Null(newCustomer.Response.juspay);
             Assert.IsType<JuspayResponse>(newCustomer);
@@ -62,7 +62,7 @@ namespace JuspayTest {
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
             CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
-            JuspayResponse newCustomer = new CustomerService().CreateCustomerAsync(createCustomerInput, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            JuspayResponse newCustomer = new CustomerService().CreateCustomerAsync(createCustomerInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(newCustomer);
             Assert.IsType<JuspayResponse>(newCustomer);
             return customerId;
@@ -71,14 +71,14 @@ namespace JuspayTest {
         public static void GetCustomer() 
         {
             string customerId = CreateCustomerWithOutClientAuthToken();
-            JuspayResponse customer = new CustomerService().GetCustomer(customerId, null, new RequestOptions("azhar_test", null, null, null));
+            JuspayResponse customer = new CustomerService().GetCustomer(customerId, null, null);
             Assert.NotNull(customer);
             Assert.IsType<JuspayResponse>(customer);
             Assert.NotNull(customer.ResponseBase);
             Assert.NotNull(customer.Response);
             Assert.NotNull(customer.RawContent);
             Assert.True(customerId == (string)customer.Response.object_reference_id);
-            customer = new CustomerService().GetCustomerAsync(customerId, null, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            customer = new CustomerService().GetCustomerAsync(customerId, null, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(customer);
         }
 

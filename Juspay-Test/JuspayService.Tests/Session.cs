@@ -10,7 +10,7 @@ namespace JuspayTest {
         public static void JuspaySessionAPITest()
         {    
             CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
-            JuspayResponse sessionRes = new SessionService().CreateSession(sessionInput, new RequestOptions("azhar_test", null, null, null));
+            JuspayResponse sessionRes = new SessionService().CreateSession(sessionInput, null);
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
@@ -22,7 +22,7 @@ namespace JuspayTest {
         public static void JuspaySessionAPIAsyncTest()
         {    
             CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>("{\n\"amount\":\"10.00\",\n\"order_id\":\"tes_1680679317\",\n\"customer_id\":\"cst_9uiehncjizlfcnps\",\n\"payment_page_client_id\":\"azharamin\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}");
-            JuspayResponse sessionRes = new SessionService().CreateSessionAsync(sessionInput, new RequestOptions("azhar_test", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+            JuspayResponse sessionRes = new SessionService().CreateSessionAsync(sessionInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
