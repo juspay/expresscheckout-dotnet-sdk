@@ -41,7 +41,7 @@ namespace Juspay {
         }
     }
 
-    public class SessionService : Service<SessionResponse> {
+    public class SessionService : Service {
         public SessionService()
             : base()
         {
@@ -54,11 +54,11 @@ namespace Juspay {
     
         public override string BasePath => "/session";
     
-        public async Task<SessionResponse> CreateSessionAsync(CreateSessionInput input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateSessionAsync(CreateSessionInput input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions, "application/json");
         }
-        public SessionResponse CreateSession(CreateSessionInput input, RequestOptions requestOptions)
+        public JuspayResponse CreateSession(CreateSessionInput input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions, "application/json");
         }

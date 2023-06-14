@@ -96,7 +96,7 @@ namespace Juspay
         private async Task<JuspayResponse> BuildJuspayResponse(HttpResponseMessage response) {
             var reader = new StreamReader(
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
-            JuspayResponse responseObj = new JuspayResponse().CreateJuspayResponse(
+            JuspayResponse responseObj = new JuspayResponse(
                 (int)response.StatusCode,
                 response.Headers,
                 response.IsSuccessStatusCode,

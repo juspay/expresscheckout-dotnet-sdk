@@ -69,7 +69,7 @@ namespace Juspay {
         }
     }
 
-    public class CustomerService : Service<CustomerResponse> {
+    public class CustomerService : Service {
         public CustomerService()
             : base()
         {
@@ -82,18 +82,18 @@ namespace Juspay {
     
         public override string BasePath => "/customers";
     
-        public async Task<CustomerResponse> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions);
         }
-        public CustomerResponse CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
+        public JuspayResponse CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions);
         }
-        public async Task<CustomerResponse> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public async Task<JuspayResponse> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return await this.GetAsync(customerId, null, getCustomerOptions, requestOptions);
         }
-        public CustomerResponse GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+        public JuspayResponse GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
             return this.Get(customerId, null, getCustomerOptions, requestOptions);
         }
     }
