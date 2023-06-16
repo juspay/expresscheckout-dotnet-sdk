@@ -122,7 +122,7 @@ namespace Juspay {
         [JsonProperty("beneficiary_details")]
         public List<TransactionIdAndInstantRefundBeneficiary> BeneficiaryDetails
         {
-            get { return GetValue<List<TransactionIdAndInstantRefundBeneficiary>>("beneficiary_details"); }
+            get { return GetObjectList<TransactionIdAndInstantRefundBeneficiary>("beneficiary_details"); }
             set { SetValue("beneficiary_details", value); }
         }
     }
@@ -176,6 +176,20 @@ namespace Juspay {
         public JuspayResponse GetOrder(string orderId, RequestOptions requestOptions) {
             this.BasePath = "/orders";
             return this.Get(orderId, null, null, requestOptions);
+        }
+
+        public JuspayResponse UpdateOrder(string orderId, double amount, RequestOptions requestOptions)
+        {
+            this.BasePath = "/orders";
+            this.BasePath = this.InstanceUrl(orderId);
+            return this.Create(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
+        }
+
+        public Task<JuspayResponse> UpdateOrderAsync(string orderId, double amount, RequestOptions requestOptions)
+        {
+            this.BasePath = "/orders";
+            this.BasePath = this.InstanceUrl(orderId);
+            return this.CreateAsync(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
         }
 
         public async Task<JuspayResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {

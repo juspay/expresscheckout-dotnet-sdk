@@ -40,6 +40,22 @@ namespace JuspayTest {
             return orderId;
         }
         
+        public static void UpdateOrderTest()
+        {
+            string orderId = CreateOrderTest();
+            JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
+            Assert.True((string)order.Response.order_id == orderId);
+            Assert.True((double)order.Response.amount == 99.99);
+        }
+
+        public static void UpdateOrderAsyncTest()
+        {
+            string orderId = CreateOrderTest();
+            JuspayResponse order = new OrderService().UpdateOrderAsync(orderId, 99.99, null).ConfigureAwait(false).GetAwaiter().GetResult();;
+            Assert.True((string)order.Response.order_id == orderId);
+            Assert.True((double)order.Response.amount == 99.99);
+        }
+
         public static void GetOrderTest() 
         {
             string orderId = CreateOrderTest();
@@ -101,6 +117,8 @@ namespace JuspayTest {
             CreateOrderTestAsync();
             InstantRefundTest();
             InstantRefundAsyncTest();
+            UpdateOrderTest();
+            UpdateOrderAsyncTest();
         }
     }
 }
