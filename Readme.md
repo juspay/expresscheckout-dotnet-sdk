@@ -5,7 +5,7 @@ Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framew
 
 ### Import
 All Juspay.net SDK's classes resides under namespace `Juspay`
-```cs
+```cs 
 using Juspay;
 ```
 ### Authentication
