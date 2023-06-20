@@ -12,7 +12,11 @@ namespace Juspay {
         public static readonly string SANDBOX_BASE_URL = "https://sandbox.juspay.in";
         public static readonly string PRODUCTION_BASE_URL = "https://api.juspay.in";
         public static readonly string API_VERSION = "2021-03-25";
-        public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
+        #if (NET6_0 || NET7_0)
+            public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
+        #else
+            public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.Tls12;
+        #endif
         public static SecurityProtocolType SSL { get; set; } = DEFAULT_SSL_PROTOCOL;
         public static readonly string juspaySDKVersion  = getJupaySDKVersion();
         public static readonly string SDK_VERSION = getSdkVersion();
