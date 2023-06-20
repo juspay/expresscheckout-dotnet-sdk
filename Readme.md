@@ -5,7 +5,7 @@ Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framew
 
 ### Import
 All Juspay.net SDK's classes resides under namespace `Juspay`
-```C#
+```cs
 using Juspay;
 ```
 ### Authentication
@@ -13,7 +13,7 @@ Juspay authenticates API request using API key. API key are passed in Authorizat
 
 Use `JuspayEnvironment.ApiKey` property to set the API key
 
-```C#
+```cs
 using Juspay;
 JuspayEnvironment.ApiKey = "api_key";
 ```
@@ -22,12 +22,12 @@ By default Juspay.net SDK uses [Sandbox](https://sandbox.juspay.in) as endpoint.
 ### Services
 Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse. All service has both Synchronous and Asynchronous version.
 
-```C#
+```cs
 string customerId = "customer id";
 CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
 JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("merchant_id", null, null, null));
 ```
-```C#
+```cs
 // Async version
 string customerId = "customer id";
 CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
@@ -39,7 +39,7 @@ Input object as Dictionary<string, object> as input and provides getters and set
 
 #### JuspayResponse Object
 Response object contains Juspay endpoint response along with Headers, Status Code, getters and setters. Use ```.RawContent``` to get the raw response as string. Use ```.Response``` to get the response as ```dynamic```. To access the Headers and Status Code use ```.ResponseBase.Headers``` and ```.ResponseBase.StatusCode``` respectively. Response object also provides getter and setter for important fields. Getters are provided for retriving x-request-id (```.ResponseBase.XRequestId```), x-response-id (```.ResponseBase.XResponseId```) and x-jp-merchant-id (```.ResponseBase.XMerchantId```) from headers.
-```C#
+```cs
 string orderId = $"order_id}";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
 JuspayResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
@@ -54,7 +54,7 @@ RequestOptions provide option to set merchant id, API key (to override the globa
 
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
-```C#
+```cs
 using Juspay;
 string orderId = "order_id";
 string uniqueRequestId = $"request_id";
