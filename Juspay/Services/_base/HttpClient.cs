@@ -71,10 +71,10 @@ namespace Juspay
         {
             #if (NET6_0 || NET7_0)
                 this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler { ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
-                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls13;
+                ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
             #else
                 this.httpClient = new HttpClient();
-                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
+                ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
             #endif
             if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
         }
@@ -227,11 +227,11 @@ namespace Juspay
                 foreach (var x in FlattenObject(requestOptions)) {
                     request.Headers.Add(x.Key, x.Value.ToString());
                 }
-                if (requestOptions.ReadTimeoutInMilliSeconds != TimeSpan.Zero) {
-                    httpClient.Timeout = requestOptions.ReadTimeoutInMilliSeconds;
+                if (requestOptions.ReadTimeout != TimeSpan.Zero) {
+                    httpClient.Timeout = requestOptions.ReadTimeout;
                 }
-            } 
-            
+                ServicePointManager.SecurityProtocol = requestOptions.SSL;
+            }
         }
 
         private void AddAuthorizationHeaders(HttpRequestMessage request, JuspayRequest juspayRequest) {

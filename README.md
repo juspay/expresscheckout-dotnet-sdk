@@ -13,6 +13,16 @@ Juspay authenticates API request using API key. API key are passed in Authorizat
 
 Use `JuspayEnvironment.ApiKey` property to set the API key
 
+### Environment Settings
+```cs
+JuspayEnvironment.ApiKey = "Api key";
+JuspayEnvironment.MerchantId = "merchant id";
+JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironment.SANDBOX_BASE_URL, JuspayEnvironment.PRODUCTION_BASE_URL
+)
+JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
+JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
+JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
+```
 ```cs
 using Juspay;
 JuspayEnvironment.ApiKey = "api_key";
@@ -50,7 +60,15 @@ Console.WriteLine(((string)order.Response.order_id));
 ```
 
 #### Request Options
-RequestOptions provide option to set merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
+RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
+```cs
+RequestOptions.MerchantId = "merchant id";
+RequestOptions.ApiKey = "new api key";
+RequestOptions.SSL = SecurityProtocolType.Tls13;
+RequestOptions.ReadTimeoutInMilliSeconds = 7000;
+// using constructor
+RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
+```
 
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
