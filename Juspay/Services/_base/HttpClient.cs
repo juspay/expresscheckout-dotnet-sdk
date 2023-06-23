@@ -89,18 +89,22 @@ namespace Juspay
             AddAuthorizationHeaders(request, juspayRequest);
             AddClientUserAgentString(request);
             var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            return await BuildJuspayResponse(response);
+            return await BuildJuspayResponse(juspayRequest, response);
             
         }
 
-        private async Task<JuspayResponse> BuildJuspayResponse(HttpResponseMessage response) {
+        private async Task<JuspayResponse> BuildJuspayResponse(JuspayRequest request, HttpResponseMessage response) {
             var reader = new StreamReader(
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
+            var rawResponse = await reader.ReadToEndAsync().ConfigureAwait(false);
+            if (request.RequestOptions != null && request.RequestOptions.JuspayJWT != null) {
+                rawResponse = request.RequestOptions.JuspayJWT.ConsumePayload(rawResponse);
+            }
             JuspayResponse responseObj = new JuspayResponse(
                 (int)response.StatusCode,
                 response.Headers,
                 response.IsSuccessStatusCode,
-                await reader.ReadToEndAsync().ConfigureAwait(false));
+                rawResponse);
             return responseObj;
         }
 
@@ -116,6 +120,13 @@ namespace Juspay
                 var flattenedData = FlattenObject(input);
                 if (juspayRequest.ContentType == "application/json") {
                     var jsonRequest = JsonConvert.SerializeObject(flattenedData);
+                    if (juspayRequest.RequestOptions != null) {
+                        RequestOptions requestOptions = juspayRequest.RequestOptions;
+                        if (requestOptions.JuspayJWT != null)
+                        {
+                            jsonRequest = requestOptions.JuspayJWT.PreparePayload(jsonRequest);
+                        }
+                    }
                     var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
                     request.Content = content;
                 } else {

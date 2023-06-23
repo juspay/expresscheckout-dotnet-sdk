@@ -31,6 +31,8 @@ namespace Juspay {
             get => readTimeoutInMilliSeconds.Milliseconds;
             set => readTimeoutInMilliSeconds = TimeSpan.FromTicks(value);
         }
+
+        public static IJuspayJWT JuspayJWT { get; set; }
         private static TimeSpan connectTimeoutInMilliSeconds;
         private static TimeSpan readTimeoutInMilliSeconds;
         private static IJuspayClient juspayClient;

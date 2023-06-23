@@ -4,11 +4,12 @@ namespace Juspay {
      using System.Net.Http;
      using System;
      public class RequestOptions {
-      public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds) {
+      public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds, IJuspayJWT juspayJWT) {
          if (merchantId != null) this.MerchantId = merchantId;
          if (apiKey != null) this.ApiKey = apiKey;
          if (ssl.HasValue) this.SSL = ssl.Value;
          if (readTimeoutInMilliSeconds.HasValue) this.ReadTimeoutInMilliSeconds = readTimeoutInMilliSeconds.Value;
+         if (juspayJWT != null) this.JuspayJWT = juspayJWT;
       }
         [JsonProperty("x-merchantid")]
         public string MerchantId { get; set; }
@@ -24,6 +25,8 @@ namespace Juspay {
             get => readTimeout;
             set => readTimeout = value;
          }
+
+         public IJuspayJWT JuspayJWT { get; set; }
 
         public override string ToString()
         {
