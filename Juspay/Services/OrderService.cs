@@ -169,13 +169,13 @@ namespace Juspay {
             return this.Create(input, requestOptions);
         }
 
-        public async Task<JuspayResponse> GetOrderAsync(string orderId, RequestOptions requestOptions) {
+        public async Task<JuspayResponse> GetOrderAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions = null) {
             this.BasePath = "/orders";
-            return await this.GetAsync(orderId, null, null, requestOptions);
+            return await this.GetAsync(orderId, null, queryParams, requestOptions);
         }
-        public JuspayResponse GetOrder(string orderId, RequestOptions requestOptions) {
+        public JuspayResponse GetOrder(string orderId, Dictionary<string, object> queryParams,  RequestOptions requestOptions = null) {
             this.BasePath = "/orders";
-            return this.Get(orderId, null, null, requestOptions);
+            return this.Get(orderId, null, queryParams, requestOptions);
         }
 
         public JuspayResponse UpdateOrder(string orderId, double amount, RequestOptions requestOptions)

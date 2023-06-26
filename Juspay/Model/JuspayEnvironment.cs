@@ -11,7 +11,7 @@ namespace Juspay {
         public static readonly string DEVELOPMENT_BASE_URL = "https://localapi.juspay.in";
         public static readonly string SANDBOX_BASE_URL = "https://sandbox.juspay.in";
         public static readonly string PRODUCTION_BASE_URL = "https://api.juspay.in";
-        public static readonly string API_VERSION = "2021-03-25";
+        public static string API_VERSION { get; set; } = "2021-03-25";
         #if (NET6_0 || NET7_0)
             public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
         #else

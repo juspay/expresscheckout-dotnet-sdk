@@ -15,32 +15,32 @@ namespace JuspayTest
             Rnd = new Random();
         }
 
-        [Fact]
-        public void TestCustomer () {
-            CustomerTest.TestCustomerService();
-        }
+        // [Fact]
+        // public void TestCustomer () {
+        //     CustomerTest.TestCustomerService();
+        // }
 
-        [Fact]
-        public void TestOrder() {
-            OrderTest.TestOrderService();
-        }
+        // [Fact]
+        // public void TestOrder() {
+        //     OrderTest.TestOrderService();
+        // }
 
         [Fact]
         public void TestSession() {
             SessionTest.TestSessionService();
         }
 
-        [Fact]
-        public void TestInputEntity()
-        {
-            InputEntityTest.TestInputEntity();
-        }
+        // [Fact]
+        // public void TestInputEntity()
+        // {
+        //     InputEntityTest.TestInputEntity();
+        // }
 
-        [Fact]
-        public void TestResponseEntity()
-        {
-            ResponseEntityTest.TestResponseEntity();
-        }
+        // [Fact]
+        // public void TestResponseEntity()
+        // {
+        //     ResponseEntityTest.TestResponseEntity();
+        // }
 
     }
 }

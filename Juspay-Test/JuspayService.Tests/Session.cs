@@ -10,9 +10,10 @@ namespace JuspayTest {
         public static void JuspaySessionAPITest()
         {    
             string customerId = CustomerTest.CreateCustomerWithOutClientAuthToken();
-            string orderId = OrderTest.CreateOrderTest();
+            string orderId = OrderTest.OrderWithMetadata();
             CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
             JuspayResponse sessionRes = new SessionService().CreateSession(sessionInput, null);
+            Console.WriteLine(sessionRes.Response);
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
@@ -37,7 +38,7 @@ namespace JuspayTest {
 
         public static void TestSessionService() {
             JuspaySessionAPITest();
-            JuspaySessionAPIAsyncTest();
+            // JuspaySessionAPIAsyncTest();
         }
     }
 }

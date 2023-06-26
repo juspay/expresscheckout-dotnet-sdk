@@ -13,7 +13,11 @@ namespace Juspay
     using Newtonsoft.Json;
     using System.Text;
     using System.Reflection;
-
+    #if NET6_0_OR_GREATER
+    using Microsoft.Extensions.Logging;
+    using Serilog;
+    using Serilog.Formatting.Json;
+    #endif
     public class SystemHttpClient : IHttpClient
     {
         public static TimeSpan DefaultHttpTimeout => TimeSpan.FromSeconds(80);
@@ -69,8 +73,21 @@ namespace Juspay
 
         public SystemHttpClient(TimeSpan ConnectTimeoutInMilliSeconds, TimeSpan ReadTimeoutInMilliSeconds)
         {
-            #if (NET6_0 || NET7_0)
-                this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler { ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
+            #if NET6_0_OR_GREATER
+                Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console(new JsonFormatter())
+                .WriteTo.File(new JsonFormatter(),
+                "test_log.json")
+                .CreateLogger();
+                
+                ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    // Add Serilog as the logging provider
+                    builder.AddSerilog(Log.Logger);
+                });
+
+                ILogger<LoggingHandler> logger = loggerFactory.CreateLogger<LoggingHandler>();
+                this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new LoggingHandler(new SocketsHttpHandler { ConnectTimeout = ConnectTimeoutInMilliSeconds}, logger)) : new HttpClient(new LoggingHandler(new HttpClientHandler(), logger));
                 ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
             #else
                 this.httpClient = new HttpClient();
@@ -132,10 +149,11 @@ namespace Juspay
             string apiBase = juspayRequest.ApiBase;
             if (queryParams != null)
             {
-                if (path != null) path = "";
+                if (path == null) path = "";
                 var flattenedQueryParams = FlattenObject(queryParams);
                 var queryString = string.Join("&", flattenedQueryParams.Select(x => $"{Uri.EscapeDataString(x.Key)}={Uri.EscapeDataString(x.Value.ToString() ?? "")}"));
                 path += $"?{queryString}";
+                Console.WriteLine(path);
                 return new Uri(apiBase + path);
             }
             return new Uri(apiBase + path ?? "");
@@ -147,7 +165,6 @@ namespace Juspay
             var values = new Dictionary<string, object>
             {
                 { "binding_version", JuspayEnvironment.juspaySDKVersion },
-                { "api_version", JuspayEnvironment.API_VERSION },
                 { "lang", ".net" },
                 { "publisher", "juspay" },
                 { "sdk_version", JuspayEnvironment.SDK_VERSION },
@@ -156,6 +173,10 @@ namespace Juspay
             // Console.WriteLine($"target framework {JuspayNetTargetFramework}");
             request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
             request.Headers.Add("User-Agent", userAgent);
+            if (JuspayEnvironment.API_VERSION != null) 
+            {
+                request.Headers.Add("version", JuspayEnvironment.API_VERSION);
+            }
         }
 
       
