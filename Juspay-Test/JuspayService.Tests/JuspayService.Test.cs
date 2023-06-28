@@ -20,15 +20,15 @@ namespace JuspayTest
         //     CustomerTest.TestCustomerService();
         // }
 
-        // [Fact]
-        // public void TestOrder() {
-        //     OrderTest.TestOrderService();
-        // }
-
         [Fact]
-        public void TestSession() {
-            SessionTest.TestSessionService();
+        public void TestOrder() {
+            OrderTest.TestOrderService();
         }
+
+        // [Fact]
+        // public void TestSession() {
+        //     SessionTest.TestSessionService();
+        // }
 
         // [Fact]
         // public void TestInputEntity()
