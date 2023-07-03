@@ -1,21 +1,22 @@
+using Jose;
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 namespace Juspay
 {
-    using Jose;
-    using System;
-    using System.Security.Cryptography;
     public class JWTSign : ISign
     {
-        public string Sign (string privateKey, string payload)
+        public string Sign (Dictionary<string, object> privateKey, string payload)
         {
             RSA RSAPrivateKey = RSA.Create();
-            RSAPrivateKey.ImportFromPem(privateKey);
-            return JWT.Encode(payload, RSAPrivateKey, JwsAlgorithm.RS256);
+            RSAPrivateKey.ImportFromPem((string)privateKey["key"]);
+            return JWT.Encode(payload, RSAPrivateKey, JwsAlgorithm.RS256, new Dictionary<string, object> { { "kid", (string)privateKey["kid"] }});
         }
 
-        public string VerifySign(string publicKey, string signedPayload)
+        public string VerifySign(Dictionary<string, object> publicKey, string signedPayload)
         {
             RSA RSAPublicKey = RSA.Create();
-            RSAPublicKey.ImportFromPem(publicKey);
+            RSAPublicKey.ImportFromPem((string)publicKey["key"]);
             return JWT.Decode(signedPayload, RSAPublicKey, JwsAlgorithm.RS256);
         }
     }

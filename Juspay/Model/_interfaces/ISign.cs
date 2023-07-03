@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 namespace Juspay
 {
     public interface ISign
     {
-        string Sign(string key, string data);
-        string VerifySign(string key, string data);
+        string Sign(Dictionary<string, object> key, string data);
+        string VerifySign(Dictionary<string, object> key, string data);
     }
 }

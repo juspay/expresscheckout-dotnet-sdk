@@ -122,8 +122,9 @@ namespace Juspay
                     var jsonRequest = JsonConvert.SerializeObject(flattenedData);
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
-                        if (requestOptions.JuspayJWT != null)
+                        if (requestOptions.EncryptionEnabled && requestOptions.JuspayJWT != null)
                         {
+                            requestOptions.JuspayJWT.Initialize();
                             jsonRequest = requestOptions.JuspayJWT.PreparePayload(jsonRequest);
                         }
                     }

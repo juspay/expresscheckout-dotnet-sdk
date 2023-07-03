@@ -28,6 +28,7 @@ namespace Juspay {
 
          public IJuspayJWT JuspayJWT { get; set; }
 
+         public bool EncryptionEnabled { get; set; } = false;
         public override string ToString()
         {
             return string.Format(

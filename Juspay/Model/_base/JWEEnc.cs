@@ -1,22 +1,24 @@
 namespace Juspay
 {
     using System;
+    using System.Collections.Generic;
     using System.Security.Cryptography;
     using Jose;
     public class JWEEnc : IEnc
     {
-        public string Encrypt(string publicKey, string payload)
+        public string Kid;
+        public string Encrypt(Dictionary<string, object> publicKey, string payload)
         {
             RSA RSAPublicKey = RSA.Create();
-            RSAPublicKey.ImportFromPem(publicKey);
-            var jweToken = JWT.Encode(payload, RSAPublicKey, JweAlgorithm.RSA_OAEP_256, JweEncryption.A256GCM);
+            RSAPublicKey.ImportFromPem((string)publicKey["key"]);
+            var jweToken = JWT.Encode(payload, RSAPublicKey, JweAlgorithm.RSA_OAEP_256, JweEncryption.A256GCM, null, new Dictionary<string, object> {{ "kid", (string)publicKey["kid"] }});
             return jweToken;
         }
 
-        public string Decrypt(string privateKey, string encPaylaod)
+        public string Decrypt(Dictionary<string, object> privateKey, string encPaylaod)
         {
             RSA RSAPrivateKey = RSA.Create();
-            RSAPrivateKey.ImportFromPem(privateKey);
+            RSAPrivateKey.ImportFromPem((string)privateKey["key"]);
             string jweToken = JWT.Decode(encPaylaod, RSAPrivateKey, JweAlgorithm.RSA_OAEP_256, JweEncryption.A256GCM);
             return jweToken;
         }
