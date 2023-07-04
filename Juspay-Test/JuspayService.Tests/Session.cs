@@ -11,8 +11,8 @@ namespace JuspayTest {
         {    
             string customerId = CustomerTest.CreateCustomerWithOutClientAuthToken();
             string orderId = OrderTest.CreateOrderTest();
-            CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
-            JuspayResponse sessionRes = new SessionService().CreateSession(sessionInput, null);
+            CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+            JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, null);
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
@@ -25,8 +25,8 @@ namespace JuspayTest {
         {    
             string customerId = CustomerTest.CreateCustomerWithOutClientAuthToken();
             string orderId = OrderTest.CreateOrderTest();
-            CreateSessionInput sessionInput = JuspayEntity.FromJson<CreateSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
-            JuspayResponse sessionRes = new SessionService().CreateSessionAsync(sessionInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+            JuspayResponse sessionRes = new SessionService().CreateOrderSessionAsync(sessionInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);

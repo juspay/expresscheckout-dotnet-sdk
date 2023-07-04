@@ -2,9 +2,9 @@ namespace Juspay {
     using Newtonsoft.Json;
     using System.Threading.Tasks;
     using System.Collections.Generic;
-    public class CreateSessionInput : JuspayEntity {
-        public CreateSessionInput() : base() {}
-        public CreateSessionInput(Dictionary<string, object> data) : base(data) {}
+    public class CreateOrderSessionInput : JuspayEntity {
+        public CreateOrderSessionInput() : base() {}
+        public CreateOrderSessionInput(Dictionary<string, object> data) : base(data) {}
         [JsonProperty("amount")]
         public string Amount
         {
@@ -54,11 +54,11 @@ namespace Juspay {
     
         public override string BasePath => "/session";
     
-        public async Task<JuspayResponse> CreateSessionAsync(CreateSessionInput input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             return await this.CreateAsync(input, requestOptions, ContentType.Json, true);
         }
-        public JuspayResponse CreateSession(CreateSessionInput input, RequestOptions requestOptions)
+        public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             return this.Create(input, requestOptions, ContentType.Json, true);
         }
