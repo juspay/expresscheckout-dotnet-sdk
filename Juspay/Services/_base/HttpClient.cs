@@ -165,7 +165,6 @@ namespace Juspay
                 { "sdk_version", JuspayEnvironment.SDK_VERSION },
                 { "juspay_net_target_framework", JuspayNetTargetFramework },
             };
-            // Console.WriteLine($"target framework {JuspayNetTargetFramework}");
             request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
             request.Headers.Add("User-Agent", userAgent);
         }
@@ -221,13 +220,11 @@ namespace Juspay
                 var key = string.IsNullOrEmpty(prefix) ? entry.Key : $"{prefix}.{entry.Key}";
                 if (entry.Value is Dictionary<string, object> nestedDictionary)
                 {
-                    // Console.WriteLine("Nested dictionary");
                     FlattenDictionary(nestedDictionary, key, flattenedDictionary);
                 }
                 else
                 {
                     var value = entry.Value?.ToString() ?? string.Empty;
-                    // Console.WriteLine($"Not nested dictionary key => {key} value => {value}");
                     flattenedDictionary[key] = value;
                 }
             }

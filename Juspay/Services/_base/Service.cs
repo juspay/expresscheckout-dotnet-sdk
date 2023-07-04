@@ -26,7 +26,7 @@ namespace Juspay {
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new JuspayException("The id cannot be null or whitespace." + nameof(id));
+                throw new JuspayException("ID_REQUIRED_IN_INSTANCE_URL" + nameof(id));
             }
             return $"{this.BasePath}/{Uri.EscapeDataString(id)}";
         }

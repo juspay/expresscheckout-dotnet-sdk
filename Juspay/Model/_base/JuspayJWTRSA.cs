@@ -37,7 +37,7 @@ namespace Juspay
             }
             catch (Exception e)
             {
-                throw new JWTException(e.Message ?? "JWT exception while preparing payload");
+                throw new JWTException(e.Message ?? "PREPARE_PAYLOAD_JWT_EXCEPTION");
             }
         }
 
@@ -52,7 +52,7 @@ namespace Juspay
            }
            catch (Exception e)
            {
-            throw new JWTException(e.Message ?? "JWT exception while consuming payload");
+            throw new JWTException(e.Message ?? "CONSUMER_PAYLOAD_JWT_EXCEPTION");
            }
         }
 

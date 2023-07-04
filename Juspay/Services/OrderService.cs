@@ -206,13 +206,13 @@ namespace Juspay {
 
         public JuspayResponse EncryptedOrderStatus(string orderId, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("JuspayJWT request option is required");
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
          public async Task<JuspayResponse> EncryptedOrderStatusAsync(string orderId, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("JuspayJWT request option is required");
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
     }

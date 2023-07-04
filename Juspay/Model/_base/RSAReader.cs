@@ -31,7 +31,7 @@ namespace Juspay
             }
             else
             {
-                throw new JWTException("Invalid RSA key format.");
+                throw new JWTException("INVALID_RSA_KEY_FORMAT");
             }
         }
     }
