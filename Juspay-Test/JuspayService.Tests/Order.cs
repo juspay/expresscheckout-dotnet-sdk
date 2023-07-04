@@ -126,14 +126,14 @@ namespace JuspayTest {
         }
 
         public static void TestOrderService() {
-            // GetOrderTest();
-            // CreateOrderWithMetadataEntityTest();
-            // CreateOrderTest();
-            // CreateOrderTestAsync();
-            // InstantRefundTest();
-            // InstantRefundAsyncTest();
-            // UpdateOrderTest();
-            // UpdateOrderAsyncTest();
+            GetOrderTest();
+            CreateOrderWithMetadataEntityTest();
+            CreateOrderTest();
+            CreateOrderTestAsync();
+            InstantRefundTest();
+            InstantRefundAsyncTest();
+            UpdateOrderTest();
+            UpdateOrderAsyncTest();
             GetEncryptedOrderTest();
         }
     }
