@@ -37,17 +37,17 @@ namespace Juspay {
             }
             return input;
         }
-        public async Task<JuspayResponse> CreateAsync(JuspayEntity input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded", string prefix = "")
+        public async Task<JuspayResponse> CreateAsync(JuspayEntity input, RequestOptions requestOptions, ContentType contentType = ContentType.FormUrlEncoded, string prefix = "")
         {
             return await this.Client.RequestAsync(HttpMethod.Post, this.BasePath + prefix, getInput(input), null, requestOptions, contentType).ConfigureAwait(false);
         }
-        public async Task<JuspayResponse> GetAsync(string id, JuspayEntity input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
+        public async Task<JuspayResponse> GetAsync(string id, JuspayEntity input, object queryParams, RequestOptions requestOptions, ContentType contentType = ContentType.FormUrlEncoded , string prefix = "") {
             return await this.Client.RequestAsync(HttpMethod.Get, this.InstanceUrl(id) + prefix, input, queryParams, requestOptions, contentType).ConfigureAwait(false);
         }
-        public JuspayResponse Create(JuspayEntity input, RequestOptions requestOptions, string contentType = "application/x-www-form-urlencoded", string prefix = "") {
+        public JuspayResponse Create(JuspayEntity input, RequestOptions requestOptions, ContentType contentType = ContentType.FormUrlEncoded, string prefix = "") {
              return CreateAsync(input, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
-        public JuspayResponse Get(string id, JuspayEntity input, object queryParams, RequestOptions requestOptions, string contentType = "", string prefix = "") {
+        public JuspayResponse Get(string id, JuspayEntity input, object queryParams, RequestOptions requestOptions, ContentType contentType = ContentType.FormUrlEncoded, string prefix = "") {
             return GetAsync(id, input, queryParams, requestOptions, contentType, prefix).ConfigureAwait(false).GetAwaiter().GetResult();
         }
     }

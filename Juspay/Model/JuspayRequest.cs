@@ -17,7 +17,7 @@ namespace Juspay
 
         public string Path { get; set; }
 
-        public string ContentType { get; set; }
+        public ContentType ContentType { get; set; }
 
         public HttpMethod Method { get; set; }
 
@@ -27,7 +27,7 @@ namespace Juspay
         
         public string ApiBase { get; set; }
 
-        public JuspayRequest(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, string contentType, string apiKey, string baseUrl)
+        public JuspayRequest(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, string apiKey, string baseUrl)
         {
 
             this.RequestOptions = requestOptions;

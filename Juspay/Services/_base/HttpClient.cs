@@ -118,11 +118,11 @@ namespace Juspay
             object input = juspayRequest.Input;
             if (apiMethod == HttpMethod.Post && input != null) {
                 var flattenedData = FlattenObject(input);
-                if (juspayRequest.ContentType == "application/json") {
+                if (juspayRequest.ContentType == ContentType.Json) {
                     var jsonRequest = JsonConvert.SerializeObject(flattenedData);
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
-                        if (requestOptions.EncryptionEnabled && requestOptions.JuspayJWT != null)
+                        if (requestOptions.JuspayJWT != null)
                         {
                             requestOptions.JuspayJWT.Initialize();
                             jsonRequest = requestOptions.JuspayJWT.PreparePayload(jsonRequest);

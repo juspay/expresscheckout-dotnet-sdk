@@ -4,7 +4,7 @@ namespace Juspay {
      using System.Net.Http;
      using System;
      public class RequestOptions {
-      public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds, IJuspayJWT juspayJWT) {
+      public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds, IJuspayJWT juspayJWT = null) {
          if (merchantId != null) this.MerchantId = merchantId;
          if (apiKey != null) this.ApiKey = apiKey;
          if (ssl.HasValue) this.SSL = ssl.Value;
@@ -28,7 +28,6 @@ namespace Juspay {
 
          public IJuspayJWT JuspayJWT { get; set; }
 
-         public bool EncryptionEnabled { get; set; } = false;
         public override string ToString()
         {
             return string.Format(

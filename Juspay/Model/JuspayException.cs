@@ -45,5 +45,14 @@ namespace Juspay
         public InvalidRequestException(int httpStatusCode, JuspayError Error, JuspayResponse juspayResponse) : base(httpStatusCode, Error, juspayResponse, "INVALID REQUEST") {}
     }
 
+    public class ValidationException : JuspayException
+    {
+        public ValidationException(string message) : base(message) {}
+    }
+
+    public class JWTException : JuspayException
+    {
+        public JWTException(string message) : base(message) {}  
+    }
     
 }

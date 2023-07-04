@@ -2,6 +2,7 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using Juspay;
+using System.IO;
 
 namespace JuspayTest {
     public class OrderTest {
@@ -109,16 +110,31 @@ namespace JuspayTest {
             }
             
         }
+        public static void GetEncryptedOrderTest()
+        {
+            string orderId = CreateOrderTest();
+            string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
+            string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
+            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+            JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+            Console.WriteLine(orderStatus.Response);
+            Assert.NotNull(orderStatus);
+            Assert.NotNull(orderStatus.Response);
+            Assert.NotNull(orderStatus.ResponseBase);
+            Assert.NotNull(orderStatus.RawContent);
+            Assert.IsType<JuspayResponse>(orderStatus);
+        }
 
         public static void TestOrderService() {
-            GetOrderTest();
-            CreateOrderWithMetadataEntityTest();
-            CreateOrderTest();
-            CreateOrderTestAsync();
-            InstantRefundTest();
-            InstantRefundAsyncTest();
-            UpdateOrderTest();
-            UpdateOrderAsyncTest();
+            // GetOrderTest();
+            // CreateOrderWithMetadataEntityTest();
+            // CreateOrderTest();
+            // CreateOrderTestAsync();
+            // InstantRefundTest();
+            // InstantRefundAsyncTest();
+            // UpdateOrderTest();
+            // UpdateOrderAsyncTest();
+            GetEncryptedOrderTest();
         }
     }
 }

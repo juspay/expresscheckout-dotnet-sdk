@@ -56,11 +56,11 @@ namespace Juspay {
     
         public async Task<JuspayResponse> CreateSessionAsync(CreateSessionInput input, RequestOptions requestOptions)
         {
-            return await this.CreateAsync(input, requestOptions, "application/json");
+            return await this.CreateAsync(input, requestOptions, ContentType.Json);
         }
         public JuspayResponse CreateSession(CreateSessionInput input, RequestOptions requestOptions)
         {
-            return this.Create(input, requestOptions, "application/json");
+            return this.Create(input, requestOptions, ContentType.Json);
         }
     }
 }
