@@ -27,7 +27,9 @@ namespace Juspay
         
         public string ApiBase { get; set; }
 
-        public JuspayRequest(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, string apiKey, string baseUrl)
+        public bool IsJwtSupported { get; set; }
+
+        public JuspayRequest(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, string apiKey, string baseUrl, bool isJWTSupported)
         {
 
             this.RequestOptions = requestOptions;
@@ -47,6 +49,8 @@ namespace Juspay
             this.ApiBase = baseUrl;
 
             this.Input = input;
+
+            this.IsJwtSupported = isJWTSupported;
         }
 
        

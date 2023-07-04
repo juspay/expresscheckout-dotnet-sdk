@@ -21,8 +21,8 @@ namespace Juspay {
             ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new JuspayException("Base Url not Initialized");
             httpClient = client ?? throw new JuspayException("Http Client not initialized");
         }
-        public async Task<JuspayResponse> RequestAsync(HttpMethod apiMethod, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType) {
-            JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase);
+        public async Task<JuspayResponse> RequestAsync(HttpMethod apiMethod, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, bool isJWTSupported) {
+            JuspayRequest juspayRequest = new JuspayRequest(apiMethod, path, input, queryParams, requestOptions, contentType, this.apiKey, ApiBase, isJWTSupported);
             JuspayResponse responseObj = await httpClient.MakeRequestAsync(juspayRequest);
             if (responseObj.ResponseBase.IsSuccessStatusCode)
             {

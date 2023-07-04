@@ -195,25 +195,25 @@ namespace Juspay {
         public async Task<JuspayResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return await this.CreateAsync(input, requestOptions,  ContentType.FormUrlEncoded, "/refunds");
+            return await this.CreateAsync(input, requestOptions,  ContentType.FormUrlEncoded, false, "/refunds");
         }
 
         public JuspayResponse RefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions) {
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return this.Create(input, requestOptions, ContentType.FormUrlEncoded, "/refunds");
+            return this.Create(input, requestOptions, ContentType.FormUrlEncoded, false, "/refunds");
         }
 
         public JuspayResponse EncryptedOrderStatus(string orderId, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
             if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("JuspayJWT request option is required");
-            return this.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json);
+            return this.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
          public async Task<JuspayResponse> EncryptedOrderStatusAsync(string orderId, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
             if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("JuspayJWT request option is required");
-            return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json);
+            return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
     }
 

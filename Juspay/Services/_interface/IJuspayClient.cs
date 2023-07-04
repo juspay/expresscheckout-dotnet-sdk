@@ -15,6 +15,6 @@ namespace Juspay {
 
         // string MerchantId { get; }
 
-        Task<JuspayResponse> RequestAsync(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType);
+        Task<JuspayResponse> RequestAsync(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, bool isJWTSupported);
     }
 }
