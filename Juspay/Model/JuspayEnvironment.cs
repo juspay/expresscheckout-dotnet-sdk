@@ -66,8 +66,7 @@ namespace Juspay {
         {
             if (ApiKey != null && ApiKey.Length == 0)
             {
-                var message = "API key is invalid";
-                throw new JuspayException(message);
+                throw new JuspayException("INVALID_API_KEY");
             }
             IHttpClient httpClient = new SystemHttpClient(connectTimeoutInMilliSeconds, readTimeoutInMilliSeconds);
             return new JuspayClient(httpClient, ApiKey, BaseUrl);
