@@ -69,7 +69,16 @@ RequestOptions.ReadTimeoutInMilliSeconds = 7000;
 // using constructor
 RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
 ```
+### JWT
+Pass JuspayJWTRSA in request option. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
 
+```cs
+string orderId = "order id";
+string privateKey1 = "private key pem contents as string";
+string publicKey2 = "public key pem contents as string";
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key id" } }}};
+JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
 ```cs
