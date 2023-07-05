@@ -52,14 +52,22 @@ namespace Juspay {
         {
         }
     
-        public override string BasePath => "/session";
+        public override string BasePath { get; set; } = "/session";
     
         public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
+            this.BasePath = "/session";
             return await this.CreateAsync(input, requestOptions, ContentType.Json, true);
         }
         public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
+            this.BasePath = "/session";
+            return this.Create(input, requestOptions, ContentType.Json);
+        }
+
+        public JuspayResponse EncryptedCreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
+        {
+             this.BasePath = "/v4/session";
             return this.Create(input, requestOptions, ContentType.Json, true);
         }
     }

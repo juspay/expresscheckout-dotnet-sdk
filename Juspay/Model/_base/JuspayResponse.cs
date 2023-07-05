@@ -20,7 +20,7 @@ namespace Juspay
         {
             this.ResponseBase = new JuspayResponseBase(statusCode, headers, isSuccessStatusCode);
             this.RawContent = content;
-            this.Response = JObject.Parse(content);
+            this.Response = content == "" ? "" : JObject.Parse(content);
         }
 
         public dynamic FromJson(string value)
