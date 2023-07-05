@@ -26,9 +26,8 @@ JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
 ```cs
 using Juspay;
 JuspayEnvironment.ApiKey = "api_key";
+JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
 ```
-### Configure Endpoint
-By default Juspay.net SDK uses [Sandbox](https://sandbox.juspay.in) as endpoint. There are predefined endpoints(```JuspayEnvironment.SANDBOX_BASE_URL```, ```JuspayEnvironment.PRODUCTION_BASE_URL```) which can be set to ```JuspayEnvironment.BaseUrl``` attribute. To change the endpoint to custom url use ```JuspayEnvironment.BaseUrl = "custom domain"``` 
 ### Services
 Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse. All service has both Synchronous and Asynchronous version.
 
