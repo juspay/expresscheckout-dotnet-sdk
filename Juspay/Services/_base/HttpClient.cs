@@ -97,7 +97,7 @@ namespace Juspay
             var reader = new StreamReader(
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             var rawResponse = await reader.ReadToEndAsync().ConfigureAwait(false);
-            if (request.IsJwtSupported && request.RequestOptions != null && request.RequestOptions.JuspayJWT != null) {
+            if (request.IsJwtSupported && request.RequestOptions != null && request.RequestOptions.JuspayJWT != null && response.IsSuccessStatusCode) {
                 rawResponse = request.RequestOptions.JuspayJWT.ConsumePayload(rawResponse);
             }
             JuspayResponse responseObj = new JuspayResponse(

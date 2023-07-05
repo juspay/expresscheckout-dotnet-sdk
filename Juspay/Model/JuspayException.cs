@@ -2,6 +2,8 @@ namespace Juspay
 {
     using System;
     using System.Net;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     public class JuspayException : Exception
     {
@@ -16,7 +18,7 @@ namespace Juspay
         }
 
         public JuspayException(int httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
-            : base(message)
+            : base(JsonConvert.SerializeObject(new { Message = message, Error = JuspayError, Response = juspayResponse.RawContent }))
         {
             this.HttpStatusCode = httpStatusCode;
             this.JuspayError = JuspayError;
