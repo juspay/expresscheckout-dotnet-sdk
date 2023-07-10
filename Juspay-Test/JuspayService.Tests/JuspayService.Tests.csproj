@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net5.0;net6.0;net461;net452</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="2.9.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
+    <PackageReference Include="Moq" Version="4.14.7" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+   <ItemGroup Condition="'$(TargetFramework)' == 'net452' Or 
+                      '$(TargetFramework)' == 'net46' Or 
+                      '$(TargetFramework)' == 'net461' Or 
+                      '$(TargetFramework)' == 'net462' Or 
+                      '$(TargetFramework)' == 'net47' Or 
+                      '$(TargetFramework)' == 'net471' Or 
+                      '$(TargetFramework)' == 'net472' Or 
+                      '$(TargetFramework)' == 'net48' Or 
+                      '$(TargetFramework)' == 'net481' Or 
+                      '$(TargetFramework)' == 'net482'">
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.3.3" />  
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Juspay\Juspay.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -309,6 +309,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-
+.vs
+.vscode
+*.pem
 # End of https://www.gitignore.io/api/macos
 

@@ -1,206 +1,99 @@
-﻿# Express Checkout C# SDK
+# Juspay.net
+Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framework 4.5.2+, .NET Core 2.0+ and .NET 5.0+
 
-## Using .NET 4.5? 
+## Usage
 
-All API calls to `https://api.juspay.in` must be over TLS1.2. In .NET 4.5 TLS1.2 support is not enabled
-by default. To enable, update the `System.Net.ServicePointManager.SecurityProtocol` property.
+### Import
+All Juspay.net SDK's classes resides under namespace `Juspay`
+```cs 
+using Juspay;
+```
+### Authentication
+Juspay authenticates API request using API key. API key are passed in Authorization headers.
+
+Use `JuspayEnvironment.ApiKey` property to set the API key
+
+### Environment Settings
+```cs
+JuspayEnvironment.ApiKey = "Api key";
+JuspayEnvironment.MerchantId = "merchant id";
+JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironment.SANDBOX_BASE_URL, JuspayEnvironment.PRODUCTION_BASE_URL
+)
+JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
+JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
+JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
+```
+```cs
+using Juspay;
+JuspayEnvironment.ApiKey = "api_key";
+JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
+```
+### Services
+Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse. All service has both Synchronous and Asynchronous version.
 
 ```cs
-System.Net.ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+string customerId = "customer id";
+CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("merchant_id", null, null, null));
+```
+```cs
+// Async version
+string customerId = "customer id";
+CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+JuspayResponse newCustomer = new CustomerService().CreateCustomerAsync(createCustomerInput, new RequestOptions("merchant_id", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
 ```
 
-Refer: [https://stackoverflow.com/questions/28286086/default-securityprotocol-in-net-4-5](https://stackoverflow.com/questions/28286086/default-securityprotocol-in-net-4-5)
+#### Input Object
+Input object as Dictionary<string, object> as input and provides getters and setters for fields accepted by the endpoint.
 
-## Configure the SDK
-Configure the SDK by invoking the `Juspay.ExpressCheckout.Base.Config.Configure` method:
+#### JuspayResponse Object
+Response object contains Juspay endpoint response along with Headers, Status Code, getters and setters. Use ```.RawContent``` to get the raw response as string. Use ```.Response``` to get the response as ```dynamic```. To access the Headers and Status Code use ```.ResponseBase.Headers``` and ```.ResponseBase.StatusCode``` respectively. Response object also provides getter and setter for important fields. Getters are provided for retriving x-request-id (```.ResponseBase.XRequestId```), x-response-id (```.ResponseBase.XResponseId```) and x-jp-merchant-id (```.ResponseBase.XMerchantId```) from headers.
+```cs
+string orderId = $"order_id}";
+OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
+JuspayResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
+Console.WriteLine(order.Response);
+Assert.WriteLine(order.ResponseBase);
+Console.WriteLine(order.RawContent);
+Console.WriteLine(((string)order.Response.order_id));
+```
+
+#### Request Options
+RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
+```cs
+RequestOptions.MerchantId = "merchant id";
+RequestOptions.ApiKey = "new api key";
+RequestOptions.SSL = SecurityProtocolType.Tls13;
+RequestOptions.ReadTimeoutInMilliSeconds = 7000;
+// using constructor
+RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
+```
+### JWT
+Pass JuspayJWTRSA in request option. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
 
 ```cs
-using Juspay.ExpressCheckout.Base;
-
-namespace MyApplication
+string orderId = "order id";
+string privateKey1 = "private key pem contents as string";
+string publicKey2 = "public key pem contents as string";
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key id" } }}};
+JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
+### Errors
+Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
+```cs
+using Juspay;
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
+try
 {
-    class MyClass
-    {
-        static MyClass()
-        {
-            Config.Configure(Config.Environment.SANDBOX, 
-                "my-merchant-id", "my-api-key");
-        }
-    }
+    JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
 }
-```
-
-## API Usage
-
-### General notes / Before starting
-
-Ensure that the ExpressCheckout client is configured correctly by invoking the configuration logic. None of the
-APIs described below will work if the configuration is not done / configuration is incorrect.
-
-### Note on `ECApiResponse` and `async`
-All APIs of the ExpressCheckout SDK return instances of `ECApiResponse`. An instance of `ECApiResponse` contains the following data:
-
-- HTTP status code `StatusCode` of type `HttpStatusCode`
-- Response headers `Headers` of type `HttpResponseHeaders`
-- Response body `RawResponse` of type `string`
-- Parsed response body `Response` of type `JObject`
-
-Additionally note that all the APIs exposed are `async`
-
-### Order APIs
-
-##### Create Order
-#
-```cs
-using Juspay.ExpressCheckout;
-using Newtonsoft.Json.Linq;
-
-namespace MyApplication 
+catch (JuspayException Ex)
 {
-    public class MyClass
-    {
-        public static async void CreateOrder()
-        {
-            // Prepare a dictionary of parameters.
-            // the minimum 2 parameters required to create the order are the orderId and the order amount
-            var OrderDetails = new Dictionary<string, string>();
-            
-            // Generate an order_id
-            var OrderId = RandomOrderId();
-            
-            // Set the details
-            OrderDetails.Add("order_id", OrderId);
-            OrderDetails.Add("amount", "10.00");
-            
-
-            // Wait for the task to finish and
-            ECApiResponse OrderResponse = await Orders.CreateOrder(OrderDetails);
-        }
-    }
+    Console.WriteLine(Ex.JuspayError.ErrorMessage);
+    Console.WriteLine(Ex.JuspayResponse.RawContent);
 }
-```
-
-
-##### Order Status API
-#
-```cs
-using Juspay.ExpressCheckout;
-
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void FetchOrderStatus()
-        {
-            var OrderId = "Csharp-SDK-b2b78e5c-c2bf-481d-aae5-2003ec9738df";
-            
-            // Wait for the Task to finish and get the response
-            ECApiResponse OrderStatusResponse = await Orders.GetStatus(OrderId);
-        }
-    }
-}
-
-```
-##### Order List
-#
-```cs
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void GetOrderList()
-        {
-            int count = 20;
-            
-            // Wait for the Task to finish and get the response
-            EcApiResponse OrderListResponse = await Orders.List(count);
-        }
-    }
-}
-```
-
-##### Order Refund
-#
-```cs
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void RefundOrder()
-        {
-            // Pass the order id, the amount to be refunded and a unique identifier which is recorded in your system.
-            EcApiReponse RefundResponse = await Order.Refund("my-order-id", 12.00, Guid.NewGuid().ToString());
-        }
-    }
-}
-```
-
-### Customer APIs
-
-##### Customer Create
-#
-```cs
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void CreateCustomer()
-        {
-            // The UniqueCustomerId must be generated by the merchant and should be provided when creating
-            // the customer. This is later used to get / update the same customer.
-            string UniqueCustomerId = String.format("customer_{0}", Guid.NewGuild().ToString());
-
-            string CustomerMobileNumber = "9876543210";
-            string EmailId = "customer@email.com"
-
-            EcApiReponse CustomerCreateResponse = await Customer.CreateCustomer(UniqueCustomerId, 
-                                                                                CustomerMobileNumber,
-                                                                                EmailId);
-        }
-    }
-}
-```
-
-
-##### Get Customer
-#
-```cs
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void GetCustomer()
-        {
-            // Unique customerId provided when creating the customer. This reference must be stored by you.
-            string CustomerId = "my_customer_945b1fca-768e-430b-9115-eb6dbaf5b3f4";
-
-            EcApiResponse CustomerDetails = await Customer.GetCustomer(CustomerId);
-        }
-    }
-}
-```
-
-##### Edit Customer
-```cs
-namespace MyApplication
-{
-    class MyClass
-    {
-        public static async void UpdateCustomer()
-        {
-            // Unique customerId provided when creating the customer. This reference must be stored by you.
-            string CustomerId = "my_customer_945b1fca-768e-430b-9115-eb6dbaf5b3f4";
-            string FirstName = "Jon";
-            string LastName = "Doe";
-            string MobileNumber = "9876543210";
-
-            EcApiresponse UpdateCustomerDetails = 
-                await Customer.UpdateCustomer(CustomerId, 
-                                              new Dictionary<string, string>() {
-                                                    { "first_name", FirstName },
-                                                    { "mobile_number", MobileNumber },
-                                                    { "last_name", LastName } });
-        }
-    }
-}
-```
+``` 
+### Test
+All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```. 
