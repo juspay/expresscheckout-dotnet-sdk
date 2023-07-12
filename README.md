@@ -96,8 +96,8 @@ catch (JuspayException Ex)
 }
 ```
 ### Docs
-- [Order](/Juspay/docs/order.md)
-- [Session](/Juspay/docs/order_session.md)
-- [Customer](/Juspay/docs/customer.md)
+- [Order](Juspay/docs/order.md)
+- [Session](Juspay/docs/order_session.md)
+- [Customer](Juspay/docs/customer.md)
 ### Test
 All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```. 
