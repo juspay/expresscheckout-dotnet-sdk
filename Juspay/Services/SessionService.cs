@@ -57,7 +57,7 @@ namespace Juspay {
         public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             this.BasePath = "/session";
-            return await this.CreateAsync(input, requestOptions, ContentType.Json, true);
+            return await this.CreateAsync(input, requestOptions, ContentType.Json);
         }
         public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
