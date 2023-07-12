@@ -1,10 +1,7 @@
 ## Create Order
 [POST /orders](https://developer.juspay.in/reference/create-order-1)
 ```cs
-using System;
-using System.Collections.Generic;
-using Juspay;
-string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+string orderId = $"order_id";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
 JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
 ```
