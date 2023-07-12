@@ -1,4 +1,4 @@
-# Juspay.net
+﻿# Juspay.net
 Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framework 4.5.2+, .NET Core 2.0+ and .NET 5.0+
 
 ## Usage
@@ -23,7 +23,7 @@ JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0
 JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
 JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
 ```
-```csv
+```cs
 using Juspay;
 JuspayEnvironment.ApiKey = "api_key";
 JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
