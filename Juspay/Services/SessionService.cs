@@ -67,8 +67,15 @@ namespace Juspay {
 
         public JuspayResponse EncryptedCreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
-             this.BasePath = "/v4/session";
+            this.BasePath = "/v4/session";
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(input, requestOptions, ContentType.Json, true);
+        }
+        public async Task<JuspayResponse> EncryptedCreateOrderSessionAsyn(CreateOrderSessionInput input, RequestOptions requestOptions)
+        {
+            this.BasePath = "/v4/session";
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
+            return await this.CreateAsync(input, requestOptions, ContentType.Json, true);
         }
     }
 }

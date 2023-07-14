@@ -216,10 +216,19 @@ namespace Juspay {
             return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
+        public async Task<JuspayResponse> EncryptedRefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions)
+        {
+            this.BasePath = "/v4/orders";
+            this.BasePath = this.InstanceUrl(orderId);
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
+            return await this.CreateAsync(input, requestOptions, ContentType.Json, true, "/refunds");
+        }
+
         public JuspayResponse EncryptedRefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/orders";
             this.BasePath = this.InstanceUrl(orderId);
+            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(input, requestOptions, ContentType.Json, true, "/refunds");
         }
     }
