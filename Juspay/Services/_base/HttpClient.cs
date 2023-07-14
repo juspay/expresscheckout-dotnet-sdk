@@ -113,9 +113,8 @@ namespace Juspay
             HttpRequestMessage request = new HttpRequestMessage(apiMethod, apiBase + path ?? "");
             object input = juspayRequest.Input;
             if (apiMethod == HttpMethod.Post && input != null) {
-                var flattenedData = FlattenObject(input);
                 if (juspayRequest.ContentType == ContentType.Json) {
-                    var jsonRequest = JsonConvert.SerializeObject(flattenedData);
+                    var jsonRequest = JsonConvert.SerializeObject(input);
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)
@@ -127,6 +126,7 @@ namespace Juspay
                     var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
                     request.Content = content;
                 } else {
+                    var flattenedData = FlattenObject(input);
                     var content = new FormUrlEncodedContent(flattenedData.Select(kv => new KeyValuePair<string, string>(kv.Key, kv.Value.ToString() ?? "")));
                     request.Content = content;
                 }
@@ -220,8 +220,20 @@ namespace Juspay
                 }
                 else
                 {
-                    var value = entry.Value?.ToString() ?? string.Empty;
-                    flattenedDictionary[key] = value;
+                    var value = entry.Value;
+                    if (value != null)
+                    {
+                        var valueType = value?.GetType();
+                        if (valueType != null && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>))
+                        {
+                            flattenedDictionary[key] = JsonConvert.SerializeObject(value);
+                        }
+                        else
+                        {
+                            flattenedDictionary[key] = value;
+                        }
+                    }
+                    
                 }
             }
         }
