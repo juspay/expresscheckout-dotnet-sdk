@@ -25,10 +25,6 @@ namespace Juspay
             "net6.0"
 #elif NET5_0
             "net5.0"
-#elif NETCOREAPP2_1
-            "netcoreapp2.1"
-#elif NETCOREAPP3_1
-            "netcoreapp3.1"
 #elif NETSTANDARD2_0
             "netstandard2.0"
 #elif NET461

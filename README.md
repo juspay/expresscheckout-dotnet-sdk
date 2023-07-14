@@ -1,5 +1,5 @@
-# Juspay.net
-Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framework 4.5.2+, .NET Core 2.0+ and .NET 5.0+
+﻿# Juspay.net
+Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framework 4.5.2+ and .NET 5.0+
 
 ## Usage
 
@@ -73,9 +73,9 @@ Pass JuspayJWTRSA in request option. JuspayJWTRSA implements IJuspayJWT interfac
 
 ```cs
 string orderId = "order id";
-string privateKey1 = "private key pem contents as string";
-string publicKey2 = "public key pem contents as string";
-Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key id" } }}};
+string privateKey = "private key pem contents as string";
+string publicKey = "public key pem contents as string";
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
 JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
 ```
 ### Errors
@@ -94,6 +94,10 @@ catch (JuspayException Ex)
     Console.WriteLine(Ex.JuspayError.ErrorMessage);
     Console.WriteLine(Ex.JuspayResponse.RawContent);
 }
-``` 
+```
+### Docs
+- [Order](Juspay/docs/order.md)
+- [Session](Juspay/docs/order_session.md)
+- [Customer](Juspay/docs/customer.md)
 ### Test
 All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```. 
