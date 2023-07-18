@@ -23,7 +23,7 @@ JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
 ```cs
 string orderId = "order_id";
 string uniqueRequestId = $"request_id";
-RefundInput RefundInput = new RefundInput(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
+RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
 JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
 ```
 ## Transaction Refund
@@ -43,4 +43,15 @@ string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
 JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
+
+## Encrypted Order Refund
+[POST /v4/order/:order_id/refunds](#)
+```cs
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+string privateKey = File.ReadAllText("privateKey.pem");
+string publicKey = File.ReadAllText("publicKey.pem");
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "testJwe" } }}};
+RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
 ```
