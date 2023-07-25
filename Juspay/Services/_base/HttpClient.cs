@@ -84,6 +84,12 @@ namespace Juspay
             AddRequestOptions(request, juspayRequest);
             AddAuthorizationHeaders(request, juspayRequest);
             AddClientUserAgentString(request);
+            Console.WriteLine($"Request => {request.ToString()}");
+            if (request.Content != null)
+            {
+                Console.Write("Request content => ");
+                Console.WriteLine(await request.Content.ReadAsStringAsync());
+            }
             var response = await httpClient.SendAsync(request).ConfigureAwait(false);
             return await BuildJuspayResponse(juspayRequest, response);
             
@@ -94,8 +100,10 @@ namespace Juspay
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             var rawResponse = await reader.ReadToEndAsync().ConfigureAwait(false);
             if (request.IsJwtSupported && request.RequestOptions != null && request.RequestOptions.JuspayJWT != null && response.IsSuccessStatusCode) {
+                Console.WriteLine($"Encrypted Response {rawResponse}");
                 rawResponse = request.RequestOptions.JuspayJWT.ConsumePayload(rawResponse);
             }
+            Console.WriteLine($"Raw Response => {rawResponse}");
             JuspayResponse responseObj = new JuspayResponse(
                 (int)response.StatusCode,
                 response.Headers,
