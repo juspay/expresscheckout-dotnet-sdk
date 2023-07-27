@@ -9,7 +9,7 @@ JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
 [GET /orders/:order_id](https://developer.juspay.in/reference/get-order-status)
 ```cs
 string orderId = "order_id";
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null);
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
 ```
 
 ## Update Order

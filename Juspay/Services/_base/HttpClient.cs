@@ -140,7 +140,7 @@ namespace Juspay
             string apiBase = juspayRequest.ApiBase;
             if (queryParams != null)
             {
-                if (path != null) path = "";
+                if (path == null) path = "";
                 var flattenedQueryParams = FlattenObject(queryParams);
                 var queryString = string.Join("&", flattenedQueryParams.Select(x => $"{Uri.EscapeDataString(x.Key)}={Uri.EscapeDataString(x.Value.ToString() ?? "")}"));
                 path += $"?{queryString}";
@@ -254,7 +254,9 @@ namespace Juspay
         private void AddAuthorizationHeaders(HttpRequestMessage request, JuspayRequest juspayRequest) {
             RequestOptions requestOptions = juspayRequest.RequestOptions;
             if (requestOptions != null && requestOptions.ApiKey != null) {
-                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
+                     if (requestOptions.ApiKey != "") {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
+                     }
             } else {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{juspayRequest.ApiKey}:")));
             }

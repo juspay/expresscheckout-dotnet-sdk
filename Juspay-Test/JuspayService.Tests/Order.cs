@@ -60,14 +60,14 @@ namespace JuspayTest {
         public static void GetOrderTest() 
         {
             string orderId = CreateOrderTest();
-            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
             Assert.NotNull(orderStatus.RawContent);
             Assert.IsType<JuspayResponse>(orderStatus);
             // Async Test
-            orderStatus = new OrderService().GetOrderAsync(orderId, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            orderStatus = new OrderService().GetOrderAsync(orderId, null, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
@@ -163,6 +163,16 @@ namespace JuspayTest {
                 Assert.NotNull(Ex.JuspayResponse.RawContent);
             }
         }
+        public static void GetOrderClientAuthToken() {
+            string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
+            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+            JuspayResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, null);
+            string clientAuthToken = newCustomer.Response.juspay.client_auth_token;
+            string orderId = CreateOrderTest();
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, null));
+            Assert.NotNull(orderStatus.Response);
+
+        }
         public static void TestOrderService() {
             GetOrderTest();
             CreateOrderWithMetadataEntityTest();
@@ -175,6 +185,7 @@ namespace JuspayTest {
             GetEncryptedOrderTest();
             RefundOrderTest();
             EncryptedRefundOrderTest();
+            GetOrderClientAuthToken();
         }
     }
 }

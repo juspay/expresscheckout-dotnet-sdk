@@ -31,7 +31,6 @@ namespace Juspay
 
         public JuspayRequest(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, string apiKey, string baseUrl, bool isJWTSupported)
         {
-
             this.RequestOptions = requestOptions;
 
             this.Method = method;
