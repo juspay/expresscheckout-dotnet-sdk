@@ -56,22 +56,28 @@ namespace Juspay {
     
         public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
+            if (requestOptions != null && requestOptions.JuspayJWT != null) {
+                return await this.EncryptedCreateOrderSessionAsync(input, requestOptions);
+            }
             this.BasePath = "/session";
             return await this.CreateAsync(input, requestOptions, ContentType.Json);
         }
         public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
+            if (requestOptions != null && requestOptions.JuspayJWT != null) {
+                return this.EncryptedCreateOrderSession(input, requestOptions);
+            }
             this.BasePath = "/session";
             return this.Create(input, requestOptions, ContentType.Json);
         }
 
-        public JuspayResponse EncryptedCreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
+        private JuspayResponse EncryptedCreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/session";
             if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(input, requestOptions, ContentType.Json, true);
         }
-        public async Task<JuspayResponse> EncryptedCreateOrderSessionAsyn(CreateOrderSessionInput input, RequestOptions requestOptions)
+        private async Task<JuspayResponse> EncryptedCreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/session";
             if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");

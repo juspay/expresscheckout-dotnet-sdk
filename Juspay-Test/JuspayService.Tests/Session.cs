@@ -30,7 +30,7 @@ namespace JuspayTest {
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
             Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
-            JuspayResponse sessionRes = new SessionService().EncryptedCreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+            JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);

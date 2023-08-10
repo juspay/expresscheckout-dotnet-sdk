@@ -76,7 +76,7 @@ string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
-JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
 ```
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
