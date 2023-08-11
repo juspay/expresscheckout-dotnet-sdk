@@ -21,6 +21,8 @@ JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironm
 JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
 JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
 JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
 ```
 ```cs
 using Juspay;
@@ -68,14 +70,24 @@ RequestOptions.ReadTimeoutInMilliSeconds = 7000;
 RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
 ```
 ### JWT
-Pass JuspayJWTRSA in request option. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
+Pass JuspayJWTRSA in request option or set JuspayEnvironment.JuspayJWT. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
 
+#### Using RequestOptions
 ```cs
 string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
 JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
+#### Using JuspayEnvironment
+```cs
+string orderId = "order id";
+string privateKey = "private key pem contents as string";
+string publicKey = "public key pem contents as string";
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
 ```
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
