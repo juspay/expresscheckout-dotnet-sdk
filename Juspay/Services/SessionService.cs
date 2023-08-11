@@ -56,7 +56,8 @@ namespace Juspay {
     
         public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
-            if (requestOptions != null && requestOptions.JuspayJWT != null) {
+            if (routeToEncryptedRoute(requestOptions))
+            {
                 return await this.EncryptedCreateOrderSessionAsync(input, requestOptions);
             }
             this.BasePath = "/session";
@@ -64,7 +65,7 @@ namespace Juspay {
         }
         public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
-            if (requestOptions != null && requestOptions.JuspayJWT != null) {
+            if (routeToEncryptedRoute(requestOptions)) {
                 return this.EncryptedCreateOrderSession(input, requestOptions);
             }
             this.BasePath = "/session";
@@ -74,13 +75,11 @@ namespace Juspay {
         private JuspayResponse EncryptedCreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/session";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(input, requestOptions, ContentType.Json, true);
         }
         private async Task<JuspayResponse> EncryptedCreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/session";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return await this.CreateAsync(input, requestOptions, ContentType.Json, true);
         }
     }

@@ -114,7 +114,15 @@ namespace Juspay
             object input = juspayRequest.Input;
             if (apiMethod == HttpMethod.Post && input != null) {
                 if (juspayRequest.ContentType == ContentType.Json) {
-                    var jsonRequest = JsonConvert.SerializeObject(input);
+                    var jsonRequest = JsonConvert.SerializeObject(input); 
+                    if (juspayRequest.RequestOptions == null && JuspayEnvironment.JuspayJWT != null)
+                    {
+                        juspayRequest.RequestOptions =  new RequestOptions(null, null, null, null,  JuspayEnvironment.JuspayJWT);
+                    }
+                    else if (juspayRequest.RequestOptions != null && juspayRequest.RequestOptions.JuspayJWT == null && JuspayEnvironment.JuspayJWT != null)
+                    {
+                        juspayRequest.RequestOptions.JuspayJWT = JuspayEnvironment.JuspayJWT;
+                    }
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)

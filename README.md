@@ -17,8 +17,7 @@ Use `JuspayEnvironment.ApiKey` property to set the API key
 ```cs
 JuspayEnvironment.ApiKey = "Api key";
 JuspayEnvironment.MerchantId = "merchant id";
-JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironment.SANDBOX_BASE_URL, JuspayEnvironment.PRODUCTION_BASE_URL
-)
+JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironment.SANDBOX_BASE_URL, JuspayEnvironment.PRODUCTION_BASE_URL)
 JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
 JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
 JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;

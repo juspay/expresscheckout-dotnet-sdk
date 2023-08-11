@@ -37,6 +37,15 @@ namespace Juspay {
             }
             return input;
         }
+
+        protected bool routeToEncryptedRoute(RequestOptions requestOptions)
+        {
+            if ((requestOptions != null && requestOptions.JuspayJWT != null) || JuspayEnvironment.JuspayJWT != null)
+            {
+                return true;
+            }
+            return false;
+        }
         public async Task<JuspayResponse> CreateAsync(JuspayEntity input, RequestOptions requestOptions, ContentType contentType = ContentType.FormUrlEncoded, bool isJWTSupported = false, string prefix = "", object queryParams = null)
         {
             return await this.Client.RequestAsync(HttpMethod.Post, this.BasePath + prefix, getInput(input), queryParams , requestOptions, contentType, isJWTSupported).ConfigureAwait(false);

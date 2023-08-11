@@ -170,15 +170,14 @@ namespace Juspay {
         }
 
         public async Task<JuspayResponse> GetOrderAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
-            if (requestOptions != null && requestOptions.JuspayJWT != null)
-            {
+            if (routeToEncryptedRoute(requestOptions)) {
                 return await this.EncryptedOrderStatusAsync(orderId, queryParams, requestOptions);
             }
             this.BasePath = "/orders";
             return await this.GetAsync(orderId, null, queryParams, requestOptions);
         }
         public JuspayResponse GetOrder(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
-            if (requestOptions != null && requestOptions.JuspayJWT != null)
+            if (routeToEncryptedRoute(requestOptions))
             {
                 return this.EncryptedOrderStatus(orderId, queryParams, requestOptions);
             }
@@ -201,7 +200,7 @@ namespace Juspay {
         }
 
         public async Task<JuspayResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
-            if (requestOptions != null && requestOptions.JuspayJWT != null)
+            if (routeToEncryptedRoute(requestOptions))
             {
                 return await this.EncryptedRefundOrderAsync(orderId, input, requestOptions);
             }
@@ -211,7 +210,7 @@ namespace Juspay {
         }
 
         public JuspayResponse RefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions) {
-            if (requestOptions != null && requestOptions.JuspayJWT != null)
+            if (routeToEncryptedRoute(requestOptions))
             {
                 return this.EncryptedRefundOrder(orderId, input, requestOptions);
             }
@@ -222,13 +221,11 @@ namespace Juspay {
 
         private JuspayResponse EncryptedOrderStatus(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
         private async Task<JuspayResponse> EncryptedOrderStatusAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
@@ -236,7 +233,6 @@ namespace Juspay {
         {
             this.BasePath = "/v4/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return await this.CreateAsync(input, requestOptions, ContentType.Json, true, "/refunds");
         }
 
@@ -244,7 +240,6 @@ namespace Juspay {
         {
             this.BasePath = "/v4/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            if (requestOptions == null || requestOptions.JuspayJWT == null) throw new ValidationException("MISSING_JUSPAY_JWT");
             return this.Create(input, requestOptions, ContentType.Json, true, "/refunds");
         }
     }
