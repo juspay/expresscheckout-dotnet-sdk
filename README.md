@@ -6,11 +6,11 @@ Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framew
 #### Installation
 Using dotnet
 ```sh
-dotnet add package {package_name} --version {version_number}
+dotnet add package expresscheckout --version {version_number}
 ```
 using Nuget Package Manager
 ```sh
-Install-Package {package_name} -Version {version_number}
+Install-Package expresscheckout -Version {version_number}
 ```
 ### Import
 All Juspay.net SDK's classes resides under namespace `Juspay`
@@ -101,23 +101,242 @@ JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
 ```cs
-using Juspay;
-string orderId = "order_id";
-string uniqueRequestId = $"request_id";
-TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
-try
+string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
+try 
 {
-    JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
+    JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+}
+catch (AuthorizationException Ex)
+{
+    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+//Handler for authorization exception 
+}
+catch (AuthenticationException Ex)
+{
+    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+// Handler for authentication exception
+}
+catch (InvalidRequestException Ex)
+{
+    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+// Handler for invalid request exception
+}
+catch (JWTException Ex)
+{
+    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+// Thrown when there is issue with private or public key
+// Handler for validation exception
 }
 catch (JuspayException Ex)
 {
-    Console.WriteLine(Ex.JuspayError.ErrorMessage);
-    Console.WriteLine(Ex.JuspayResponse.RawContent);
+    // All the above Exception inherits JuspayException. Use this as default handler.
+    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
 }
 ```
-### Docs
-- [Order](Juspay/docs/order.md)
-- [Session](Juspay/docs/order_session.md)
-- [Customer](Juspay/docs/customer.md)
+
+# Docs
+
+## Create Order
+[POST /orders](https://developer.juspay.in/reference/create-order-1)
+```cs
+string orderId = $"order_id";
+OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
+JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+```
+## Get Order
+[GET /orders/:order_id](https://developer.juspay.in/reference/get-order-status)
+```cs
+string orderId = "order_id";
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
+```
+
+## Update Order
+[Post /orders/:order_id](https://developer.juspay.in/reference/update-order)
+```cs
+string orderId = "order_id";
+JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
+```
+## Refund Order
+[POST /orders/:order_id/refunds](https://developer.juspay.in/reference/refund-order)
+```cs
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
+JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
+```
+## Transaction Refund
+[POST /refunds](https://developer.juspay.in/reference/instant-refund)
+```cs
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
+JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
+```
+
+## Encrypted Order Status
+[POST /v4/order-status](https://developer.juspay.in/reference/get-order-status)
+```cs
+string orderId = CreateOrderTest();
+string privateKey = File.ReadAllText("privateKey.pem");
+string publicKey = File.ReadAllText("publicKey.pem");
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
+
+## Encrypted Order Refund
+[POST /v4/order/:order_id/refunds](#)
+```cs
+string orderId = "order_id";
+string uniqueRequestId = $"request_id";
+string privateKey = File.ReadAllText("privateKey.pem");
+string publicKey = File.ReadAllText("publicKey.pem");
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "testJwe" } }}};
+RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
+```
+## Create Order Session
+[PO#ST /session](#)
+```cs
+string customerId = "customer_id";
+string orderId = "order_id";
+CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, null);
+Console.WrtieLine(sessionRes.Response);
+```
+
+### Encrypted Create Session
+[Post /v4/session](#)
+```cs
+string customerId = "customer_id";
+string orderId = "order_id";
+CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+string privateKey = File.ReadAllText("privateKey.pem");
+string publicKey = File.ReadAllText("publicKey.pem");
+Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
+JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+```
+## Create Customer
+[POST /customers](https://developer.juspay.in/reference/customer)
+```cs
+string customerId = "customer_id"; 
+JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, null);
+```
+
+## Get Customer
+[GET /customers/:customer_id](https://developer.juspay.in/reference/get-customer)
+```cs
+string customerId = "customer_id";
+JuspayResponse customer = new CustomerService().GetCustomer(customerId, null, null);
+```
+
+### Sample Integration
+```cs
+using Juspay; 
+
+namespace custom {
+    public class Program()
+    {
+        static void Main()
+        {
+            try
+            {
+                 //Create Order
+               
+                string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+                OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 1 } } );
+                JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+                string createdOrderId = order.Response.order_id; // same as  input order id
+                Console.WriteLine(order.Response.payment_links.web); // load this link in browser to do a transaction
+
+                // Update Order amount
+                JuspayResponse order = new OrderService().UpdateOrder(orderId, 10, null); // use this to update the order amount
+
+                // Create Session
+                CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
+                JuspayResponse sessionRes = new SessionService().CreateOrderSession(createOrderSessionInput, null);
+                Console.WriteLine(sessionRes.Response.payment_links.web) // load this link in browser to do a transaction
+
+                // Get order status
+                JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
+                Console.WriteLine(orderStatus.Response.status) // verify status of the order ("NEW", "CHARGED"..)
+
+                // Refund Order
+                RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
+                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
+                Console.WriteLine(refundResponse.Response.amount_refunded) // check the refunded amount value
+            }
+            catch (AuthorizationException Ex)
+            {
+                    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+                    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+                    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+                    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+                //Handler for authorization exception 
+            }
+            catch (AuthenticationException Ex)
+            {
+                    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+                    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+                    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+                    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+                // Handler for authentication exception
+            }
+            catch (InvalidRequestException Ex)
+            {
+                    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+                    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+                    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+                    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+                // Handler for invalid request exception
+            }
+            catch (JWTException Ex)
+            {
+                    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+                    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+                    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+                    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+                // Thrown when there is issue with private or public key
+                // Handler for validation exception
+            }
+            catch (JuspayException Ex)
+            {
+                // All the above Exception inherits JuspayException. Use this as default handler.
+                Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+                Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
+                Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
+                Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+            }
+           
+        }
+    }
+}
+```
+
 ### Test
 All unit test are under Juspay-Test directory. To run the test set    ```API_KEY``` and ```MERCHANT_ID``` env variable, go to Juspay-Test directory and run ```dotnet test```, this will run test for all the .net versions supported by Juspay.net sdk. To run test for specific .net version use ```dotnet test -f net6.0```. 
