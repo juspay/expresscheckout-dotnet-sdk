@@ -118,40 +118,20 @@ catch (AuthorizationException Ex)
 }
 catch (AuthenticationException Ex)
 {
-    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
-    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
-    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
-    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
 // Handler for authentication exception
 }
 catch (InvalidRequestException Ex)
 {
-    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
-    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
-    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
-    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
 // Handler for invalid request exception
 }
 catch (JWTException Ex)
 {
-    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
-    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
-    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
-    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
 // Thrown when there is issue with private or public key
 // Handler for validation exception
 }
 catch (JuspayException Ex)
 {
     // All the above Exception inherits JuspayException. Use this as default handler.
-    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
-    Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
-    Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
-    Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
 }
 ```
 
