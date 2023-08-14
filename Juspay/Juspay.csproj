@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>express-checkout-dotnet-sdk</PackageId>
+    <PackageId>expresscheckout</PackageId>
     <Company>Juspay</Company>
     <Product>Express Checkout dotnet sdk</Product>
     <TargetFrameworks>net7.0;net5.0;net6.0;net461;net452</TargetFrameworks>

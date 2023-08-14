@@ -38,7 +38,7 @@ namespace Juspay {
             return input;
         }
 
-        protected bool routeToEncryptedRoute(RequestOptions requestOptions)
+        protected bool shouldUseJwt(RequestOptions requestOptions)
         {
             if ((requestOptions != null && requestOptions.JuspayJWT != null) || JuspayEnvironment.JuspayJWT != null)
             {

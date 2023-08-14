@@ -56,7 +56,7 @@ namespace Juspay {
     
         public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
-            if (routeToEncryptedRoute(requestOptions))
+            if (shouldUseJwt(requestOptions))
             {
                 return await this.EncryptedCreateOrderSessionAsync(input, requestOptions);
             }
@@ -65,7 +65,7 @@ namespace Juspay {
         }
         public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
-            if (routeToEncryptedRoute(requestOptions)) {
+            if (shouldUseJwt(requestOptions)) {
                 return this.EncryptedCreateOrderSession(input, requestOptions);
             }
             this.BasePath = "/session";

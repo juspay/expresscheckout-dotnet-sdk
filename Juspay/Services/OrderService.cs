@@ -170,14 +170,14 @@ namespace Juspay {
         }
 
         public async Task<JuspayResponse> GetOrderAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
-            if (routeToEncryptedRoute(requestOptions)) {
+            if (shouldUseJwt(requestOptions)) {
                 return await this.EncryptedOrderStatusAsync(orderId, queryParams, requestOptions);
             }
             this.BasePath = "/orders";
             return await this.GetAsync(orderId, null, queryParams, requestOptions);
         }
         public JuspayResponse GetOrder(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
-            if (routeToEncryptedRoute(requestOptions))
+            if (shouldUseJwt(requestOptions))
             {
                 return this.EncryptedOrderStatus(orderId, queryParams, requestOptions);
             }
@@ -200,7 +200,7 @@ namespace Juspay {
         }
 
         public async Task<JuspayResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
-            if (routeToEncryptedRoute(requestOptions))
+            if (shouldUseJwt(requestOptions))
             {
                 return await this.EncryptedRefundOrderAsync(orderId, input, requestOptions);
             }
@@ -210,7 +210,7 @@ namespace Juspay {
         }
 
         public JuspayResponse RefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions) {
-            if (routeToEncryptedRoute(requestOptions))
+            if (shouldUseJwt(requestOptions))
             {
                 return this.EncryptedRefundOrder(orderId, input, requestOptions);
             }
