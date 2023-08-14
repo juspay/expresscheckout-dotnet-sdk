@@ -3,6 +3,15 @@ Official [Juspay](https://developer.juspay.in/) .NET SDK, supporting .NET Framew
 
 ## Usage
 
+#### Installation
+Using dotnet
+```sh
+dotnet add package {package_name} --version {version_number}
+```
+using Nuget Package Manager
+```sh
+Install-Package {package_name} -Version {version_number}
+```
 ### Import
 All Juspay.net SDK's classes resides under namespace `Juspay`
 ```cs 
