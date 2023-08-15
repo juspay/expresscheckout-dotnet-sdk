@@ -59,7 +59,7 @@ Input object as Dictionary<string, object> as input and provides getters and set
 #### JuspayResponse Object
 Response object contains Juspay endpoint response along with Headers, Status Code, getters and setters. Use ```.RawContent``` to get the raw response as string. Use ```.Response``` to get the response as ```dynamic```. To access the Headers and Status Code use ```.ResponseBase.Headers``` and ```.ResponseBase.StatusCode``` respectively. Response object also provides getter and setter for important fields. Getters are provided for retriving x-request-id (```.ResponseBase.XRequestId```), x-response-id (```.ResponseBase.XResponseId```) and x-jp-merchant-id (```.ResponseBase.XMerchantId```) from headers.
 ```cs
-string orderId = $"order_id}";
+string orderId = "order_id";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
 JuspayResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
 Console.WriteLine(order.Response);
@@ -140,7 +140,7 @@ catch (JuspayException Ex)
 ## Create Order
 [POST /orders](https://developer.juspay.in/reference/create-order-1)
 ```cs
-string orderId = $"order_id";
+string orderId = "order_id";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
 JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
 ```
@@ -161,7 +161,7 @@ JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
 [POST /orders/:order_id/refunds](https://developer.juspay.in/reference/refund-order)
 ```cs
 string orderId = "order_id";
-string uniqueRequestId = $"request_id";
+string uniqueRequestId = "request_id";
 RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
 JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
 ```
@@ -169,7 +169,7 @@ JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundIn
 [POST /refunds](https://developer.juspay.in/reference/instant-refund)
 ```cs
 string orderId = "order_id";
-string uniqueRequestId = $"request_id";
+string uniqueRequestId = "request_id";
 TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
 JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
 ```
@@ -188,7 +188,7 @@ JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOpt
 [POST /v4/order/:order_id/refunds](#)
 ```cs
 string orderId = "order_id";
-string uniqueRequestId = $"request_id";
+string uniqueRequestId = "request_id";
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "testJwe" } }}};
@@ -241,30 +241,38 @@ namespace custom {
         {
             try
             {
-                 //Create Order
+                //ENV Initialization
+
+                JuspayEnvironment.ApiKey = "Api key";
+                JuspayEnvironment.MerchantId = "merchant id";
+                JuspayEnvironment.BaseUrl = "custom url";
+
+                //Create Order
                
-                string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
+                string orderId = "order_id";
+                string customerId = "customer_id";
                 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 1 } } );
                 JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
                 string createdOrderId = order.Response.order_id; // same as  input order id
                 Console.WriteLine(order.Response.payment_links.web); // load this link in browser to do a transaction
 
                 // Update Order amount
-                JuspayResponse order = new OrderService().UpdateOrder(orderId, 10, null); // use this to update the order amount
+                JuspayResponse updatedOrder = new OrderService().UpdateOrder(orderId, 10, null); // use this to update the order amount
 
                 // Create Session
                 CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
                 JuspayResponse sessionRes = new SessionService().CreateOrderSession(createOrderSessionInput, null);
-                Console.WriteLine(sessionRes.Response.payment_links.web) // load this link in browser to do a transaction
+                Console.WriteLine(sessionRes.Response.payment_links.web); // load this link in browser to do a transaction
 
                 // Get order status
-                JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
-                Console.WriteLine(orderStatus.Response.status) // verify status of the order ("NEW", "CHARGED"..)
+                JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
+                Console.WriteLine(orderStatus.Response.status); // verify status of the order ("NEW", "CHARGED"..)
 
                 // Refund Order
+                string uniqueRequestId = "unique_request_id";
                 RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
-                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
-                Console.WriteLine(refundResponse.Response.amount_refunded) // check the refunded amount value
+                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, refundInput, null);
+                Console.WriteLine(refundResponse.Response.amount_refunded); // check the refunded amount value
             }
             catch (JuspayException Ex)
             {
@@ -272,8 +280,8 @@ namespace custom {
                 Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
                 Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
                 Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
-                Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
-                Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
+                Console.WriteLine(Ex.JuspayError.ErrorCode); // to get the juspay error code from the response
+                Console.WriteLine(Ex.HttpStatusCode); // to get the status code of the response
             }
            
         }

@@ -15,10 +15,7 @@
     <PackageTags>juspay express-checkout sdk juspay-technologies dotnet .NET</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-      <Content Include="./docs/*">
-        <Pack>True</Pack>
-        <PackagePath>Juspay</PackagePath>
-      </Content>
+      <None Include="..\juspay_icon.jpeg" Pack="true" PackagePath="\"/>
      <None Include="../README.md" Pack="true" PackagePath="\"/>
      <None Include="../LICENSE" Pack="true" PackagePath=""/>
     <PackageReference Include="jose-jwt" Version="4.1.0" />
