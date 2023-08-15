@@ -17,7 +17,7 @@ namespace Juspay {
     
         public JuspayClient(IHttpClient client, string apiKey, string baseUrl)
         {
-            this.apiKey = apiKey ?? JuspayEnvironment.ApiKey ?? throw new JuspayException("API_KEY_NOT_INITIALIZED");
+            this.apiKey = apiKey ?? JuspayEnvironment.ApiKey;
             ApiBase =  baseUrl ?? JuspayEnvironment.BaseUrl ?? throw new JuspayException("BASE_URL_NOT_INITIALIZED");
             httpClient = client ?? throw new JuspayException("HTTP_CLIENT_NOT_INITIALIZED");
         }

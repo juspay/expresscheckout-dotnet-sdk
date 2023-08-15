@@ -1,12 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>expresscheckout</PackageId>
+    <Company>Juspay</Company>
+    <Product>Express Checkout dotnet sdk</Product>
     <TargetFrameworks>net7.0;net5.0;net6.0;net461;net452</TargetFrameworks>
     <RootNamespace>Juspay</RootNamespace>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <Version>1.0.0</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>Copyright (c) Juspay 2023.</Copyright>
+    <Description>Official Juspay .NET SDK, supporting .NET Framework 4.5.2+ and .NET 5.0+</Description>
+    <PackageTags>juspay express-checkout sdk juspay-technologies dotnet .NET</PackageTags>
   </PropertyGroup>
   <ItemGroup>
+      <None Include="..\juspay_icon.jpeg" Pack="true" PackagePath="\"/>
+     <None Include="../README.md" Pack="true" PackagePath="\"/>
+     <None Include="../LICENSE" Pack="true" PackagePath=""/>
     <PackageReference Include="jose-jwt" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>

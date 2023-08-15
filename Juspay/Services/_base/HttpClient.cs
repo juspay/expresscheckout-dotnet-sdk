@@ -114,7 +114,15 @@ namespace Juspay
             object input = juspayRequest.Input;
             if (apiMethod == HttpMethod.Post && input != null) {
                 if (juspayRequest.ContentType == ContentType.Json) {
-                    var jsonRequest = JsonConvert.SerializeObject(input);
+                    var jsonRequest = JsonConvert.SerializeObject(input); 
+                    if (juspayRequest.RequestOptions == null && JuspayEnvironment.JuspayJWT != null)
+                    {
+                        juspayRequest.RequestOptions =  new RequestOptions(null, null, null, null,  JuspayEnvironment.JuspayJWT);
+                    }
+                    else if (juspayRequest.RequestOptions != null && juspayRequest.RequestOptions.JuspayJWT == null && JuspayEnvironment.JuspayJWT != null)
+                    {
+                        juspayRequest.RequestOptions.JuspayJWT = JuspayEnvironment.JuspayJWT;
+                    }
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)
@@ -140,7 +148,7 @@ namespace Juspay
             string apiBase = juspayRequest.ApiBase;
             if (queryParams != null)
             {
-                if (path != null) path = "";
+                if (path == null) path = "";
                 var flattenedQueryParams = FlattenObject(queryParams);
                 var queryString = string.Join("&", flattenedQueryParams.Select(x => $"{Uri.EscapeDataString(x.Key)}={Uri.EscapeDataString(x.Value.ToString() ?? "")}"));
                 path += $"?{queryString}";
@@ -254,7 +262,9 @@ namespace Juspay
         private void AddAuthorizationHeaders(HttpRequestMessage request, JuspayRequest juspayRequest) {
             RequestOptions requestOptions = juspayRequest.RequestOptions;
             if (requestOptions != null && requestOptions.ApiKey != null) {
-                     request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
+                     if (requestOptions.ApiKey != "") {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
+                     }
             } else {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{juspayRequest.ApiKey}:")));
             }

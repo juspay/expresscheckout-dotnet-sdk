@@ -60,14 +60,14 @@ namespace JuspayTest {
         public static void GetOrderTest() 
         {
             string orderId = CreateOrderTest();
-            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, new RequestOptions(JuspayEnvironment.MerchantId, null, null, null));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
             Assert.NotNull(orderStatus.RawContent);
             Assert.IsType<JuspayResponse>(orderStatus);
             // Async Test
-            orderStatus = new OrderService().GetOrderAsync(orderId, null).ConfigureAwait(false).GetAwaiter().GetResult();
+            orderStatus = new OrderService().GetOrderAsync(orderId, null, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
@@ -116,12 +116,36 @@ namespace JuspayTest {
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
             Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
-            JuspayResponse orderStatus = new OrderService().EncryptedOrderStatus(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
             Assert.NotNull(orderStatus.RawContent);
             Assert.IsType<JuspayResponse>(orderStatus);
+        }
+
+        public static void GetEncryptedOrderTestGlobal()
+        {
+            string orderId = CreateOrderTest();
+            string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
+            string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
+            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+            try
+            {
+                JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
+                Assert.NotNull(orderStatus);
+                Assert.NotNull(orderStatus.Response);
+                Assert.NotNull(orderStatus.ResponseBase);
+                Assert.NotNull(orderStatus.RawContent);
+                Assert.IsType<JuspayResponse>(orderStatus);
+            }
+            catch (JuspayException)
+            {
+                JuspayEnvironment.JuspayJWT = null;
+                Assert.True(false);
+            }
+            JuspayEnvironment.JuspayJWT = null;
         }
 
         public static string RefundOrderTest()
@@ -153,7 +177,7 @@ namespace JuspayTest {
             RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
             try
             {
-                JuspayResponse refundResponse = new OrderService().EncryptedRefundOrder(orderId, RefundInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
             }
             catch (JuspayException Ex)
             {
@@ -162,6 +186,55 @@ namespace JuspayTest {
                 Assert.True(Ex.JuspayError.ErrorMessage == "Cannot process unsuccessful order.");
                 Assert.NotNull(Ex.JuspayResponse.RawContent);
             }
+        }
+        public static void EncryptedRefundOrderTestGlobal()
+        {
+            string orderId = CreateOrderTest();
+            string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
+            string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
+            string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
+            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+            RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
+            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+            try
+            {
+                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
+            }
+            catch (JuspayException Ex)
+            {
+                Assert.NotNull(Ex.JuspayError);
+                Assert.NotNull(Ex.JuspayError.ErrorMessage);
+                Assert.True(Ex.JuspayError.ErrorMessage == "Cannot process unsuccessful order.");
+                Assert.NotNull(Ex.JuspayResponse.RawContent);
+            }
+            JuspayEnvironment.JuspayJWT = null;
+        }
+        public static void GetOrderClientAuthToken() {
+            string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
+            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+            JuspayResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, null);
+            string clientAuthToken = newCustomer.Response.juspay.client_auth_token;
+            string orderId = CreateOrderTest();
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, null));
+            Assert.NotNull(orderStatus.Response);
+
+        }
+
+
+        public static void GetEncryptedOrderClientAuthTokenTest() {
+            string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
+            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+            JuspayResponse newCustomer = new CustomerService().CreateCustomer((CreateCustomerInput)createCustomerInput, null);
+            string clientAuthToken = newCustomer.Response.juspay.client_auth_token;
+            string orderId = CreateOrderTest();
+            string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
+            string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
+            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, new JuspayJWTRSA(keys)));
+            Assert.NotNull(orderStatus);
+            Assert.NotNull(orderStatus.Response);
+            Assert.NotNull(orderStatus.ResponseBase);
+            Assert.NotNull(orderStatus.RawContent);
         }
         public static void TestOrderService() {
             GetOrderTest();
@@ -172,9 +245,12 @@ namespace JuspayTest {
             InstantRefundAsyncTest();
             UpdateOrderTest();
             UpdateOrderAsyncTest();
-            GetEncryptedOrderTest();
             RefundOrderTest();
             EncryptedRefundOrderTest();
+            GetOrderClientAuthToken();
+            GetEncryptedOrderClientAuthTokenTest();
+            GetEncryptedOrderTestGlobal();
+            EncryptedRefundOrderTestGlobal();
         }
     }
 }
