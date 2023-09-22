@@ -13,7 +13,7 @@ namespace Juspay {
          if (readTimeoutInMilliSeconds.HasValue) this.ReadTimeoutInMilliSeconds = readTimeoutInMilliSeconds.Value;
          if (juspayJWT != null) this.JuspayJWT = juspayJWT;
       }
-        [JsonProperty("x-merchantid")]
+        [JsonProperty("X-Merchant-Id")]
         public string MerchantId { get; set; }
         public string ApiKey { get; set; }
         public SecurityProtocolType SSL { get; set; }
@@ -29,7 +29,7 @@ namespace Juspay {
          }
 
          public IJuspayJWT JuspayJWT { get; set; }
-         [JsonProperty("x-customer-id")]
+         [JsonProperty("X-Customer-Id")]
          public string CustomerId { get; set; }
         public override string ToString()
         {
