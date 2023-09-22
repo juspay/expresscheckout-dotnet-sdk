@@ -246,7 +246,10 @@ namespace Juspay
             }
         }
         private void AddRequestOptions(HttpRequestMessage request, JuspayRequest juspayRequest) {
-            request.Headers.Add("x-merchantid", JuspayEnvironment.MerchantId);
+            if (JuspayEnvironment.MerchantId != null)
+            {
+                request.Headers.Add("x-merchantid", JuspayEnvironment.MerchantId);
+            }
             if (juspayRequest.RequestOptions != null) {
                 RequestOptions requestOptions = juspayRequest.RequestOptions;
                 foreach (var x in FlattenObject(requestOptions)) {

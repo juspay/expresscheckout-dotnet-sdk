@@ -4,6 +4,8 @@ namespace Juspay {
      using System.Net.Http;
      using System;
      public class RequestOptions {
+
+      public RequestOptions() {}
       public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds, IJuspayJWT juspayJWT = null) {
          if (merchantId != null) this.MerchantId = merchantId;
          if (apiKey != null) this.ApiKey = apiKey;
@@ -27,7 +29,8 @@ namespace Juspay {
          }
 
          public IJuspayJWT JuspayJWT { get; set; }
-
+         [JsonProperty("x-customer-id")]
+         public string CustomerId { get; set; }
         public override string ToString()
         {
             return string.Format(
