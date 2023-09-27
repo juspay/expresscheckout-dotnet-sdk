@@ -20,13 +20,13 @@ namespace Juspay
         {
             this.ResponseBase = new JuspayResponseBase(statusCode, headers, isSuccessStatusCode);
             this.RawContent = content;
-            if (content == "")
-            {
-                this.Response = "";
-            }
-            else
+            try
             {
                 this.Response = JObject.Parse(content);
+            }
+            catch (JsonReaderException)
+            {
+                this.Response = content;
             }
         }
 

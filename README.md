@@ -69,12 +69,13 @@ Console.WriteLine(((string)order.Response.order_id));
 ```
 
 #### Request Options
-RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), Security protocol type and read timeout.
+RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), CustomerId, Security protocol type and read timeout.
 ```cs
 RequestOptions.MerchantId = "merchant id";
 RequestOptions.ApiKey = "new api key";
 RequestOptions.SSL = SecurityProtocolType.Tls13;
 RequestOptions.ReadTimeoutInMilliSeconds = 7000;
+RequsetOptions.CustomerId = "x-customer-id";
 // using constructor
 RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
 ```
@@ -109,8 +110,9 @@ try
 }
 catch (AuthorizationException Ex)
 {
-    Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-    Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+    Console.WriteLine(Ex.Message) // to get error message
+    if (Ex.JuspayError != null) Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
+    if (Ex.JuspayResponse != null) Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
     Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
     Console.WriteLine(Ex.JuspayError.ErrorCode) // to get the juspay error code from the response
     Console.WriteLine(Ex.HttpStatusCode) // to get the status code of the response
@@ -277,8 +279,9 @@ namespace custom {
             catch (JuspayException Ex)
             {
                 // All the above Exception inherits JuspayException. Use this as default handler.
-                Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get the error message
-                Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
+                Console.WriteLine(Ex.Message) // to get error message
+                if (Ex.JuspayError != null) Console.WriteLine(Ex.JuspayError.ErrorMessage); // to get juspay API error message
+                if (Ex.JuspayResponse != null) Console.WriteLine(Ex.JuspayResponse.RawContent); // to get the raw response from the api
                 Console.WriteLine(Ex.JuspayError.Status); // to get the juspay error status of the response
                 Console.WriteLine(Ex.JuspayError.ErrorCode); // to get the juspay error code from the response
                 Console.WriteLine(Ex.HttpStatusCode); // to get the status code of the response

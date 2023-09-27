@@ -18,7 +18,7 @@ namespace Juspay
         }
 
         public JuspayException(int httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
-            : base(JsonConvert.SerializeObject(new { Message = message, Error = JuspayError, Response = juspayResponse.RawContent }))
+            : base(message)
         {
             this.HttpStatusCode = httpStatusCode;
             this.JuspayError = JuspayError;
