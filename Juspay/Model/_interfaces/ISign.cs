@@ -4,7 +4,7 @@ namespace Juspay
 {
     public interface ISign
     {
-        string Sign(Dictionary<string, object> key, string data);
-        string VerifySign(Dictionary<string, object> key, string data);
+        string Sign(string key, string keyId, string data);
+        string VerifySign(string key, string data);
     }
 }

@@ -269,6 +269,7 @@ namespace Juspay
                         request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
                      }
             } else {
+                if (juspayRequest.ApiKey != null && juspayRequest.ApiKey != "")
                 request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{juspayRequest.ApiKey}:")));
             }
             

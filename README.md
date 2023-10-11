@@ -31,7 +31,7 @@ JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0
 JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
 JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
-JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys, "keyId");
 ```
 ```cs
 using Juspay;
@@ -87,8 +87,8 @@ Pass JuspayJWTRSA in request option or set JuspayEnvironment.JuspayJWT. JuspayJW
 string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
-Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+Dictionary<string, object> keys = new Dictionary<string, string> { { "privateKey", privateKey }, { "publicKey", publicKey } }, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys, "keyId")));
 ```
 #### Using JuspayEnvironment
 ```cs
@@ -96,7 +96,7 @@ string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
 Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "testJwe" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "testJwe" } }}};
-JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys, "keyId");
 JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
 ```
 ### Errors
@@ -182,8 +182,8 @@ JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndIn
 string orderId = CreateOrderTest();
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
-Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+Dictionary<string, object> keys = new Dictionary<string, string> { { "privateKey", privateKey }, { "publicKey", publicKey } }, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
+JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys, "keyId")));
 ```
 
 ## Encrypted Order Refund
@@ -214,8 +214,8 @@ string orderId = "order_id";
 CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
-Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey }, { "kid", "key id" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
-JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+Dictionary<string, object> keys = new Dictionary<string, string> { { "privateKey", privateKey }, { "publicKey", publicKey } }, { "publicKey", new Dictionary<string, object> { {"key", publicKey }, { "kid", "key id" } }}};
+JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys, "keyId")));
 ```
 ## Create Customer
 [POST /customers](https://developer.juspay.in/reference/customer)

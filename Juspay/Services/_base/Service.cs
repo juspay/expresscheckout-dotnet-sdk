@@ -20,8 +20,6 @@ namespace Juspay {
 
         public virtual string BasePath { get; set; }
 
-        public virtual string BaseUrl => this.Client.ApiBase;
-
          protected virtual string InstanceUrl(string id)
         {
             if (string.IsNullOrWhiteSpace(id))

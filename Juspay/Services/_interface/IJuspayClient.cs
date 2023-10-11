@@ -11,9 +11,6 @@ namespace Juspay {
     using System.Threading.Tasks;
     public interface IJuspayClient
     {
-        string ApiBase { get; set; }
-
-        // string MerchantId { get; }
 
         Task<JuspayResponse> RequestAsync(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, bool isJWTSupported);
     }
