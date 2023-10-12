@@ -6,9 +6,10 @@ namespace Juspay
 
     public class JuspayJWTRSA : IJuspayJWT
     {
-        public JuspayJWTRSA (Dictionary<string, string> keys, string keyId)
+       
+        public JuspayJWTRSA(string keyId, string publicKey, string privateKey)
         {
-            Keys = keys;
+            Keys = new Dictionary<string, string>{ {"publicKey", publicKey }, {"privateKey", privateKey } };
             KeyId = keyId;
         }
 

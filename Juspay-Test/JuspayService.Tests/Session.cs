@@ -28,8 +28,7 @@ namespace JuspayTest {
             string orderId = OrderTest.CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, string> keys = new Dictionary<string, string> { { "privateKey", privateKey1 }, { "publicKey", publicKey2 } };
-            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys, "key_26b1a82e16cf4c6e850325c3d98368cb");
+            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1);
             try
             {
                 CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
@@ -55,9 +54,8 @@ namespace JuspayTest {
             string orderId = OrderTest.CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, string> keys = new Dictionary<string, string> { { "privateKey", privateKey1 }, { "publicKey", publicKey2 } };
             CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
-            JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput,  new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys, "key_26b1a82e16cf4c6e850325c3d98368cb")));
+            JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput,  new RequestOptions(null, null, null, null, new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1)));
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
