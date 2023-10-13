@@ -260,11 +260,11 @@ namespace JuspayTest {
             UpdateOrderTest();
             UpdateOrderAsyncTest();
             RefundOrderTest();
-            // EncryptedRefundOrderTest();
+            EncryptedRefundOrderTest();
             GetOrderClientAuthToken();
             GetEncryptedOrderClientAuthTokenTest();
             GetEncryptedOrderTestGlobal();
-            // EncryptedRefundOrderTestGlobal();
+            EncryptedRefundOrderTestGlobal();
             CreateOrderWithCustomerIdTest();
         }
     }
