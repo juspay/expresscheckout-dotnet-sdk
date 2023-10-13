@@ -134,8 +134,7 @@ namespace JuspayTest {
             string orderId = CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}};
-            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, new RequestOptions(null, null, null, null, new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1)));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);
@@ -148,8 +147,7 @@ namespace JuspayTest {
             string orderId = CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "d1a82e16cf4c6e850325c3d98368cb" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}};
-            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1);
             try
             {
                 JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
@@ -192,11 +190,10 @@ namespace JuspayTest {
             string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}};
             RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
             try
             {
-                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA(keys)));
+                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, new RequestOptions(null, null, null, null, new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1)));
             }
             catch (JuspayException Ex)
             {
@@ -212,9 +209,8 @@ namespace JuspayTest {
             string uniqueRequestId = $"request_{JuspayServiceTest.Rnd.Next()}";
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}};
             RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
-            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA(keys);
+            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA( "key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1);
             try
             {
                 JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
@@ -248,8 +244,7 @@ namespace JuspayTest {
             string orderId = CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            Dictionary<string, object> keys = new Dictionary<string, object> { { "privateKey", new Dictionary<string, object> { {"key", privateKey1 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}, { "publicKey", new Dictionary<string, object> { {"key", publicKey2 }, { "kid", "key_26b1a82e16cf4c6e850325c3d98368cb" } }}};
-            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, new JuspayJWTRSA(keys)));
+            JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1)));
             Assert.NotNull(orderStatus);
             Assert.NotNull(orderStatus.Response);
             Assert.NotNull(orderStatus.ResponseBase);

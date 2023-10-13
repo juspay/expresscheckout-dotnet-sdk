@@ -6,24 +6,24 @@ namespace Juspay
 {
     public class JWTSign : ISign
     {
-        public string Sign (Dictionary<string, object> privateKey, string payload)
+        public string Sign (string privateKey, string keyId, string payload)
         {
             #if NETFRAMEWORK
-                RSA RSAPrivateKey = RSAReader.ReadRsaKeyFromPemFile((string)privateKey["key"]);
+                RSA RSAPrivateKey = RSAReader.ReadRsaKeyFromPemFile(privateKey);
             #else
                 RSA RSAPrivateKey = RSA.Create();
-                RSAPrivateKey.ImportFromPem((string)privateKey["key"]);
+                RSAPrivateKey.ImportFromPem(privateKey);
             #endif
-            return JWT.Encode(payload, RSAPrivateKey, JwsAlgorithm.RS256, new Dictionary<string, object> { { "kid", (string)privateKey["kid"] }});
+            return JWT.Encode(payload, RSAPrivateKey, JwsAlgorithm.RS256, new Dictionary<string, object> { { "kid", keyId }});
         }
 
-        public string VerifySign(Dictionary<string, object> publicKey, string signedPayload)
+        public string VerifySign(string publicKey, string signedPayload)
         {
             #if NETFRAMEWORK
-                RSA RSAPublicKey = RSAReader.ReadRsaKeyFromPemFile((string)publicKey["key"]);
+                RSA RSAPublicKey = RSAReader.ReadRsaKeyFromPemFile(publicKey);
             #else
                 RSA RSAPublicKey = RSA.Create();
-                RSAPublicKey.ImportFromPem((string)publicKey["key"]);
+                RSAPublicKey.ImportFromPem(publicKey);
             #endif
             return JWT.Decode(signedPayload, RSAPublicKey, JwsAlgorithm.RS256);
         }

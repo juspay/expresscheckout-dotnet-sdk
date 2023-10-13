@@ -66,7 +66,7 @@ namespace Juspay {
                 throw new JuspayException("INVALID_API_KEY");
             }
             IHttpClient httpClient = new SystemHttpClient(connectTimeoutInMilliSeconds, readTimeoutInMilliSeconds);
-            return new JuspayClient(httpClient, ApiKey, BaseUrl);
+            return new JuspayClient(httpClient);
         }
 
     }
