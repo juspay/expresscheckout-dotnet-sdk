@@ -7,7 +7,7 @@
     <TargetFrameworks>net7.0;net5.0;net6.0;net461;net452</TargetFrameworks>
     <RootNamespace>Juspay</RootNamespace>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>juspay_icon.jpeg</PackageIcon>
@@ -22,6 +22,7 @@
      <None Include="../LICENSE" Pack="true" PackagePath=""/>
     <PackageReference Include="jose-jwt" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+     <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net452' Or 
                       '$(TargetFramework)' == 'net46' Or 
@@ -36,7 +37,11 @@
    <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
   </ItemGroup>
-
+   <ItemGroup>
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
