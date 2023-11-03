@@ -84,7 +84,7 @@ namespace Juspay {
             ((Hierarchy)LogManager.GetRepository()).Root.Level = logLevel;
         }
 
-        public static bool ChangeLogFileName(string filePath)
+        public static bool SetLogFile(string filePath)
         { 
             log4net.Repository.ILoggerRepository RootRep = log.Logger.Repository;
             foreach (log4net.Appender.IAppender iApp in RootRep.GetAppenders())

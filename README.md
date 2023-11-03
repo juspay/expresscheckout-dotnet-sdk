@@ -96,7 +96,7 @@ string publicKey = "public key pem contents as string";
 JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
 JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
 JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
-JuspayEnvironment.ChangeLogFileName("log file name"); // by default log/juspay_sdk
+JuspayEnvironment.SetLogFile("log file name"); // by default log/juspay_sdk
 ```
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
