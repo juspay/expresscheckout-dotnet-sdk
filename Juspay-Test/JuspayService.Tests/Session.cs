@@ -10,8 +10,8 @@ namespace JuspayTest {
 
         public static void JuspaySessionAPITest()
         {    
-            string customerId = CustomerTest.CreateCustomerWithOutClientAuthToken();
-            string orderId = OrderTest.CreateOrderTest();
+            string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}";
+            string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
             CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
             JuspayResponse sessionRes = new SessionService().CreateOrderSession(createOrderSessionInput, null);
             Assert.NotNull(sessionRes);

@@ -4,7 +4,7 @@
     <PackageId>expresscheckout</PackageId>
     <Company>Juspay</Company>
     <Product>Express Checkout dotnet sdk</Product>
-    <TargetFrameworks>net7.0;net5.0;net6.0;net461;net452</TargetFrameworks>
+    <TargetFrameworks>net7.0;net5.0;net6.0;net452;net46;net47;net48;net481</TargetFrameworks>
     <RootNamespace>Juspay</RootNamespace>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <Version>2.0.3</Version>
@@ -25,19 +25,17 @@
      <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net452' Or 
-                      '$(TargetFramework)' == 'net46' Or 
-                      '$(TargetFramework)' == 'net461' Or 
-                      '$(TargetFramework)' == 'net462'
+                      '$(TargetFramework)' == 'net46' Or
+                      '$(TargetFramework)' == 'net47' Or
+                      '$(TargetFramework)' == 'net48' Or 
+                      '$(TargetFramework)' == 'net481'
                       ">
     <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <Reference Include="System.Net.Http" />
     <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
     <Reference Include="System.Configuration" />
   </ItemGroup>
-   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-  </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <None Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -10,10 +10,10 @@ namespace Juspay {
 
     public abstract class JuspayEnvironment {
         public static readonly string API_VERSION = "2021-03-25";
-        #if (NET6_0 || NET7_0)
+        #if (NET6_0 || NET7_0 || NET5_0 || (NET47_OR_GREATER && !NET481))
             public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
         #else
-            public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.Tls12;
+            public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         #endif
         public static SecurityProtocolType SSL { get; set; } = DEFAULT_SSL_PROTOCOL;
         public static readonly string juspaySDKVersion  = getJupaySDKVersion();

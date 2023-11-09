@@ -67,10 +67,8 @@ namespace Juspay
         {
             #if (NET6_0 || NET7_0)
                 this.httpClient = ConnectTimeoutInMilliSeconds != TimeSpan.Zero ? new HttpClient(new SocketsHttpHandler { ConnectTimeout = ConnectTimeoutInMilliSeconds}) : new HttpClient();
-                ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
             #else
                 this.httpClient = new HttpClient();
-                ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
             #endif
             if (ReadTimeoutInMilliSeconds != TimeSpan.Zero) httpClient.Timeout = ReadTimeoutInMilliSeconds;
         }
@@ -92,8 +90,20 @@ namespace Juspay
 
             }
             JuspayEnvironment.SerializedLog(logRequest, JuspayEnvironment.JuspayLogLevel.Debug);
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            return await BuildJuspayResponse(juspayRequest, response);
+            ServicePointManager.SecurityProtocol = JuspayEnvironment.SSL;
+            try
+            {
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                return await BuildJuspayResponse(juspayRequest, response);
+            }   
+            catch (Exception ex)
+            {
+                if (ex is HttpRequestException || ex is TaskCanceledException)
+                {
+                    throw new JuspayException(ex.InnerException.Message, ex);
+                }
+                throw;
+            }
             
         }
 
