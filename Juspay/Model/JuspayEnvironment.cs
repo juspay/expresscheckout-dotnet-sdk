@@ -1,12 +1,13 @@
-
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config")]
 namespace Juspay {
     using System;
-    using System.Collections.Generic;
-    using System.Configuration;
     using System.Reflection;
     using Newtonsoft.Json;
     using System.Net;
-    using System.Net.Http;
+    using log4net;
+    using log4net.Core;
+    using log4net.Repository.Hierarchy;
+
     public abstract class JuspayEnvironment {
         public static readonly string API_VERSION = "2021-03-25";
         #if (NET6_0 || NET7_0)
@@ -29,6 +30,76 @@ namespace Juspay {
             set => readTimeoutInMilliSeconds = TimeSpan.FromTicks(value);
         }
 
+        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public enum JuspayLogLevel
+        {
+            All,
+            Debug,
+            Error,
+            Info,
+            Off,
+        }
+
+        public static void SerializedLog(dynamic message, JuspayLogLevel level)
+        {
+            string jMessage = JsonConvert.SerializeObject(message).ToString();
+            switch (level) 
+            {
+                case JuspayLogLevel.Debug:
+                    log.Debug(jMessage);
+                    break;
+                case JuspayLogLevel.Error:
+                    log.Error(jMessage);
+                    break;
+                default:
+                    log.Info(jMessage);
+                    break;
+            }
+        }
+        public static void SetLogLevel(JuspayLogLevel level)
+        {
+            Level logLevel;
+
+            switch (level)
+            {
+                case JuspayLogLevel.All:
+                    logLevel = Level.All;
+                    break;
+                case JuspayLogLevel.Debug:
+                    logLevel = Level.Debug;
+                    break;
+                case JuspayLogLevel.Error:
+                    logLevel = Level.Error;
+                    break;
+                case JuspayLogLevel.Info:
+                    logLevel = Level.Info;
+                    break;
+                case JuspayLogLevel.Off:
+                    logLevel = Level.Off;
+                    break;
+                default:
+                    logLevel = Level.All;
+                    break;
+            }
+            ((Hierarchy)LogManager.GetRepository()).Root.Level = logLevel;
+        }
+
+        public static bool SetLogFile(string filePath)
+        { 
+            log4net.Repository.ILoggerRepository RootRep = log.Logger.Repository;
+            foreach (log4net.Appender.IAppender iApp in RootRep.GetAppenders())
+            {
+                if (iApp.Name.ToString() == "FileAppender")
+                {
+                    log4net.Appender.FileAppender fApp = (log4net.Appender.FileAppender)iApp;
+                    fApp.File = filePath;
+                    fApp.ActivateOptions();
+                    return true;
+                }
+            }
+             return false;
+        }
+        
         public static IJuspayJWT JuspayJWT { get; set; }
         private static TimeSpan connectTimeoutInMilliSeconds;
         private static TimeSpan readTimeoutInMilliSeconds;

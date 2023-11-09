@@ -14,6 +14,8 @@ namespace JuspayTest
             JuspayEnvironment.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
             JuspayEnvironment.MerchantId = Environment.GetEnvironmentVariable("MERCHANT_ID");
             JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
+            JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
+            JuspayEnvironment.SetLogFile("/Users/ramprakash.v/expresscheckout-dotnet-client/Juspay-Test/JuspayService.Tests/juspay_sdk");
             Rnd = new Random();
         }
 

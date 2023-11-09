@@ -100,16 +100,14 @@ namespace Juspay
         public override string ToString()
         {
             return string.Format(
-                "<{0}@{1} id={2}> JSON: {3}",
+                "<{0}> JSON: {1}",
                 this.GetType().FullName,
-                RuntimeHelpers.GetHashCode(this),
-                this.GetIdString(),
                 this.ToJson());
         }
 
         public string ToJson()
         {
-            if (Data != null) {
+            if (Data != null && Data.Count != 0) {
                 return JsonConvert.SerializeObject(Data, Formatting.Indented);
             }
             return JsonConvert.SerializeObject(

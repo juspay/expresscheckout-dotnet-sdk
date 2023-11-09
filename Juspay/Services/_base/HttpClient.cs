@@ -84,6 +84,14 @@ namespace Juspay
             AddRequestOptions(request, juspayRequest);
             AddAuthorizationHeaders(request, juspayRequest);
             AddClientUserAgentString(request);
+            dynamic logRequest = new Dictionary <string, dynamic> {{ "request", request.ToString() }};
+            if (request.Content != null)
+            {
+
+                logRequest["body"] = await request.Content.ReadAsStringAsync();
+
+            }
+            JuspayEnvironment.SerializedLog(logRequest, JuspayEnvironment.JuspayLogLevel.Debug);
             var response = await httpClient.SendAsync(request).ConfigureAwait(false);
             return await BuildJuspayResponse(juspayRequest, response);
             
@@ -93,8 +101,10 @@ namespace Juspay
             var reader = new StreamReader(
                 await response.Content.ReadAsStreamAsync().ConfigureAwait(false));
             var rawResponse = await reader.ReadToEndAsync().ConfigureAwait(false);
+            JuspayEnvironment.SerializedLog(new Dictionary<string, string> { { "response", rawResponse }, { "status_code", ((int)response.StatusCode).ToString() }, { "headers", response.Headers.ToString()  } }, JuspayEnvironment.JuspayLogLevel.Debug);
             if (request.IsJwtSupported && request.RequestOptions != null && request.RequestOptions.JuspayJWT != null && response.IsSuccessStatusCode) {
                 rawResponse = request.RequestOptions.JuspayJWT.ConsumePayload(rawResponse);
+                JuspayEnvironment.SerializedLog(new Dictionary<string, string> { { "decrypted_response", rawResponse } }, JuspayEnvironment.JuspayLogLevel.Debug);
             }
             JuspayResponse responseObj = new JuspayResponse(
                 (int)response.StatusCode,
@@ -248,7 +258,7 @@ namespace Juspay
         private void AddRequestOptions(HttpRequestMessage request, JuspayRequest juspayRequest) {
             if (JuspayEnvironment.MerchantId != null)
             {
-                request.Headers.Add("X-Merchant-Id", JuspayEnvironment.MerchantId);
+                request.Headers.Add("x-merchantid", JuspayEnvironment.MerchantId);
             }
             if (juspayRequest.RequestOptions != null) {
                 RequestOptions requestOptions = juspayRequest.RequestOptions;
