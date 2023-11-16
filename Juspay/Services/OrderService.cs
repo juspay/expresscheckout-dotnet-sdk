@@ -147,123 +147,123 @@ namespace Juspay {
         }
 
     }
-    public class OrderService : Service {
-        public OrderService()
+    public class Order : Service {
+        public Order()
             : base()
         {
         }
-        public OrderService(IJuspayClient client) : base(client)
+        public Order(IJuspayClient client) : base(client)
         {
         }
 
         public override string BasePath { get; set; } = "/orders";
 
-        public async Task<JuspayResponse> CreateOrderAsync(OrderCreate input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateAsync(OrderCreate input, RequestOptions requestOptions)
         {
             this.BasePath = "/orders";
-            return await this.CreateAsync(input, requestOptions);
+            return await base.CreateAsync(input, requestOptions);
         }
 
-        public JuspayResponse CreateOrder(OrderCreate input, RequestOptions requestOptions) {
+        public JuspayResponse Create(OrderCreate input, RequestOptions requestOptions) {
             this.BasePath = "/orders";
-            return this.Create(input, requestOptions);
+            return base.Create(input, requestOptions);
         }
 
-        public async Task<JuspayResponse> GetOrderAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
+        public async Task<JuspayResponse> GetAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             if (shouldUseJwt(requestOptions)) {
                 return await this.EncryptedOrderStatusAsync(orderId, queryParams, requestOptions);
             }
             this.BasePath = "/orders";
-            return await this.GetAsync(orderId, null, queryParams, requestOptions);
+            return await base.GetAsync(orderId, null, queryParams, requestOptions);
         }
-        public JuspayResponse GetOrder(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
+        public JuspayResponse Get(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             if (shouldUseJwt(requestOptions))
             {
                 return this.EncryptedOrderStatus(orderId, queryParams, requestOptions);
             }
             this.BasePath = "/orders";
-            return this.Get(orderId, null, queryParams, requestOptions);
+            return base.Get(orderId, null, queryParams, requestOptions);
         }
 
-        public JuspayResponse UpdateOrder(string orderId, double amount, RequestOptions requestOptions)
+        public JuspayResponse Update(string orderId, double amount, RequestOptions requestOptions)
         {
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return this.Create(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
+            return base.Create(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
         }
 
-        public Task<JuspayResponse> UpdateOrderAsync(string orderId, double amount, RequestOptions requestOptions)
+        public Task<JuspayResponse> UpdateAsync(string orderId, double amount, RequestOptions requestOptions)
         {
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return this.CreateAsync(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
+            return base.CreateAsync(new JuspayEntity(new Dictionary<string, object>(){ {"amount", amount } }), requestOptions);
         }
 
-        public async Task<JuspayResponse> RefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
+        public async Task<JuspayResponse> RefundAsync(string orderId, RefundOrder input, RequestOptions requestOptions) {
             if (shouldUseJwt(requestOptions))
             {
                 return await this.EncryptedRefundOrderAsync(orderId, input, requestOptions);
             }
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return await this.CreateAsync(input, requestOptions,  ContentType.FormUrlEncoded, false, "/refunds");
+            return await base.CreateAsync(input, requestOptions,  ContentType.FormUrlEncoded, false, "/refunds");
         }
 
-        public JuspayResponse RefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions) {
+        public JuspayResponse Refund(string orderId, RefundOrder input, RequestOptions requestOptions) {
             if (shouldUseJwt(requestOptions))
             {
                 return this.EncryptedRefundOrder(orderId, input, requestOptions);
             }
             this.BasePath = "/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return this.Create(input, requestOptions, ContentType.FormUrlEncoded, false, "/refunds");
+            return base.Create(input, requestOptions, ContentType.FormUrlEncoded, false, "/refunds");
         }
 
         private JuspayResponse EncryptedOrderStatus(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            return this.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
+            return base.Create(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
         private async Task<JuspayResponse> EncryptedOrderStatusAsync(string orderId, Dictionary<string, object> queryParams, RequestOptions requestOptions) {
             this.BasePath = "/v4/order-status";
-            return await this.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
+            return await base.CreateAsync(new JuspayEntity(new Dictionary<string, object> {{"order_id", orderId}}), requestOptions, ContentType.Json, true);
         }
 
         private async Task<JuspayResponse> EncryptedRefundOrderAsync(string orderId, RefundOrder input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return await this.CreateAsync(input, requestOptions, ContentType.Json, true, "/refunds");
+            return await base.CreateAsync(input, requestOptions, ContentType.Json, true, "/refunds");
         }
 
         private JuspayResponse EncryptedRefundOrder(string orderId, RefundOrder input, RequestOptions requestOptions)
         {
             this.BasePath = "/v4/orders";
             this.BasePath = this.InstanceUrl(orderId);
-            return this.Create(input, requestOptions, ContentType.Json, true, "/refunds");
+            return base.Create(input, requestOptions, ContentType.Json, true, "/refunds");
         }
     }
 
-    public class InstantRefundService : Service
+    public class Refund : Service
     {
-        public InstantRefundService()
+        public Refund()
             : base()
         {
         }
-        public InstantRefundService(IJuspayClient client) : base(client)
+        public Refund(IJuspayClient client) : base(client)
         {
         }
 
         public override string BasePath => "/refunds";
 
-        public JuspayResponse GetTransactionIdAndInstantRefund(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
+        public JuspayResponse Create(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
         {
-            return this.Create(input, requestOptions);
+            return base.Create(input, requestOptions);
         }
 
-        public async Task<JuspayResponse> GetTransactionIdAndInstantRefundAsync(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateAsync(TransactionIdAndInstantRefund input, RequestOptions requestOptions)
         {
-            return await this.CreateAsync(input, requestOptions);
+            return await base.CreateAsync(input, requestOptions);
         }
     }
 

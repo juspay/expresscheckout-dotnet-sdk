@@ -69,32 +69,32 @@ namespace Juspay {
         }
     }
 
-    public class CustomerService : Service {
-        public CustomerService()
+    public class Customer : Service {
+        public Customer()
             : base()
         {
         }
 
-        public CustomerService(IJuspayClient client)
+        public Customer(IJuspayClient client)
             : base(client)
         {
         }
     
         public override string BasePath => "/customers";
     
-        public async Task<JuspayResponse> CreateCustomerAsync(CreateCustomerInput input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateAsync(CreateCustomerInput input, RequestOptions requestOptions)
         {
-            return await this.CreateAsync(input, requestOptions);
+            return await base.CreateAsync(input, requestOptions);
         }
-        public JuspayResponse CreateCustomer(CreateCustomerInput input, RequestOptions requestOptions)
+        public JuspayResponse Create(CreateCustomerInput input, RequestOptions requestOptions)
         {
-            return this.Create(input, requestOptions);
+            return base.Create(input, requestOptions);
         }
-        public async Task<JuspayResponse> GetCustomerAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
-            return await this.GetAsync(customerId, null, getCustomerOptions, requestOptions);
+        public async Task<JuspayResponse> GetAsync(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+            return await base.GetAsync(customerId, null, getCustomerOptions, requestOptions);
         }
-        public JuspayResponse GetCustomer(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
-            return this.Get(customerId, null, getCustomerOptions, requestOptions);
+        public JuspayResponse Get(string customerId, GetCustomerOptions getCustomerOptions, RequestOptions requestOptions) {
+            return base.Get(customerId, null, getCustomerOptions, requestOptions);
         }
     }
 }

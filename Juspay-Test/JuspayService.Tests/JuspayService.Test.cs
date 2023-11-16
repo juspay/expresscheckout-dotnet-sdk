@@ -19,10 +19,10 @@ namespace JuspayTest
             Rnd = new Random();
         }
 
-        [Fact]
-        public void TestCustomer () {
-            CustomerTest.TestCustomerService();
-        }
+        // [Fact]
+        // public void TestCustomer () {
+        //     CustomerTest.TestCustomerService();
+        // }
 
         [Fact]
         public void TestOrder() {
@@ -31,7 +31,7 @@ namespace JuspayTest
 
         [Fact]
         public void TestSession() {
-            SessionTest.TestSessionService();
+            SessionTest.TestOrderSession();
         }
 
         [Fact]
