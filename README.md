@@ -43,13 +43,13 @@ Use Juspay Service classes to create, get or update Juspay resources. Each Servi
 ```cs
 string customerId = "customer id";
 CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
-JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, new RequestOptions("merchant_id", null, null, null));
+JuspayResponse newCustomer = new Customer().Create(createCustomerInput, new RequestOptions("merchant_id", null, null, null));
 ```
 ```cs
 // Async version
 string customerId = "customer id";
 CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
-JuspayResponse newCustomer = new CustomerService().CreateCustomerAsync(createCustomerInput, new RequestOptions("merchant_id", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
+JuspayResponse newCustomer = new Customer().CreateAsync(createCustomerInput, new RequestOptions("merchant_id", null, null, null)).ConfigureAwait(false).GetAwaiter().GetResult();
 ```
 
 #### Input Object
@@ -60,7 +60,7 @@ Response object contains Juspay endpoint response along with Headers, Status Cod
 ```cs
 string orderId = "order_id";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
-JuspayResponse order = new OrderService().CreateOrder(createOrderInput, new RequestOptions("azhar_test", null, null, null));
+JuspayResponse order = new Order().Create(createOrderInput, new RequestOptions("azhar_test", null, null, null));
 Console.WriteLine(order.Response);
 Assert.WriteLine(order.ResponseBase);
 Console.WriteLine(order.RawContent);
@@ -86,7 +86,7 @@ Pass JuspayJWTRSA in request option or set JuspayEnvironment.JuspayJWT. JuspayJW
 string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA("keyId", publicKey, privateKey)));
+JuspayResponse orderStatus = new Order().Get(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA("keyId", publicKey, privateKey)));
 ```
 #### Using JuspayEnvironment
 ```cs
@@ -94,7 +94,7 @@ string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
 JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId);
+JuspayResponse orderStatus = new Order().Get(orderId);
 JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
 JuspayEnvironment.SetLogFile("log file name"); // by default logs/juspay_sdk
 ```
@@ -105,7 +105,7 @@ string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
 try 
 {
-    JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+    JuspayResponse order = new Order().Create(createOrderInput, null);
 }
 catch (AuthorizationException Ex)
 {
@@ -143,20 +143,20 @@ catch (JuspayException Ex)
 ```cs
 string orderId = "order_id";
 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 10 } } );
-JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+JuspayResponse order = new Order().Create(createOrderInput, null);
 ```
 ## Get Order
 [GET /orders/:order_id](https://developer.juspay.in/reference/get-order-status)
 ```cs
 string orderId = "order_id";
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
+JuspayResponse orderStatus = new Order().Get(orderId, null, null);
 ```
 
 ## Update Order
 [Post /orders/:order_id](https://developer.juspay.in/reference/update-order)
 ```cs
 string orderId = "order_id";
-JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
+JuspayResponse order = new Order().Update(orderId, 99.99, null);
 ```
 ## Refund Order
 [POST /orders/:order_id/refunds](https://developer.juspay.in/reference/refund-order)
@@ -164,7 +164,7 @@ JuspayResponse order = new OrderService().UpdateOrder(orderId, 99.99, null);
 string orderId = "order_id";
 string uniqueRequestId = "request_id";
 RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
-JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, RefundInput, null);
+JuspayResponse refundResponse = new Order().Refund(orderId, RefundInput, null);
 ```
 ## Transaction Refund
 [POST /refunds](https://developer.juspay.in/reference/instant-refund)
@@ -181,7 +181,7 @@ JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndIn
 string orderId = CreateOrderTest();
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
-JuspayResponse orderStatus = new OrderService().GetOrder(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA("keyId", publicKey, privateKey)));
+JuspayResponse orderStatus = new Order().Get(orderId, new RequestOptions(null, null, null, null, new JuspayJWTRSA("keyId", publicKey, privateKey)));
 ```
 
 ## Encrypted Order Refund
@@ -200,7 +200,7 @@ RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "or
 string customerId = "customer_id";
 string orderId = "order_id";
 CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
-JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, null);
+JuspayResponse sessionRes = new OrderSession().Create(sessionInput, null);
 Console.WrtieLine(sessionRes.Response);
 ```
 
@@ -212,21 +212,21 @@ string orderId = "order_id";
 CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
-JuspayResponse sessionRes = new SessionService().CreateOrderSession(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRS("keyId", publicKey, privateKey)));
+JuspayResponse sessionRes = new OrderSession().Create(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRS("keyId", publicKey, privateKey)));
 ```
 ## Create Customer
 [POST /customers](https://developer.juspay.in/reference/customer)
 ```cs
 string customerId = "customer_id"; 
 JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
-JuspayResponse newCustomer = new CustomerService().CreateCustomer(createCustomerInput, null);
+JuspayResponse newCustomer = new Customer().Create(createCustomerInput, null);
 ```
 
 ## Get Customer
 [GET /customers/:customer_id](https://developer.juspay.in/reference/get-customer)
 ```cs
 string customerId = "customer_id";
-JuspayResponse customer = new CustomerService().GetCustomer(customerId, null, null);
+JuspayResponse customer = new Customer().Get(customerId, null, null);
 ```
 
 ### Sample Integration
@@ -251,26 +251,26 @@ namespace custom {
                 string orderId = "order_id";
                 string customerId = "customer_id";
                 OrderCreate createOrderInput = new OrderCreate(new Dictionary<string, object> { {"order_id", $"{orderId}"},  {"amount", 1 } } );
-                JuspayResponse order = new OrderService().CreateOrder(createOrderInput, null);
+                JuspayResponse order = new Order().Create(createOrderInput, null);
                 string createdOrderId = order.Response.order_id; // same as  input order id
                 Console.WriteLine(order.Response.payment_links.web); // load this link in browser to do a transaction
 
                 // Update Order amount
-                JuspayResponse updatedOrder = new OrderService().UpdateOrder(orderId, 10, null); // use this to update the order amount
+                JuspayResponse updatedOrder = new Order().Update(orderId, 10, null); // use this to update the order amount
 
                 // Create Session
                 CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
-                JuspayResponse sessionRes = new SessionService().CreateOrderSession(createOrderSessionInput, null);
+                JuspayResponse sessionRes = new OrderSession().Create(createOrderSessionInput, null);
                 Console.WriteLine(sessionRes.Response.payment_links.web); // load this link in browser to do a transaction
 
                 // Get order status
-                JuspayResponse orderStatus = new OrderService().GetOrder(orderId, null, null);
+                JuspayResponse orderStatus = new Order().Get(orderId, null, null);
                 Console.WriteLine(orderStatus.Response.status); // verify status of the order ("NEW", "CHARGED"..)
 
                 // Refund Order
                 string uniqueRequestId = "unique_request_id";
                 RefundOrder refundInput = new RefundOrder(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId } });
-                JuspayResponse refundResponse = new OrderService().RefundOrder(orderId, refundInput, null);
+                JuspayResponse refundResponse = new Order().Refund(orderId, refundInput, null);
                 Console.WriteLine(refundResponse.Response.amount_refunded); // check the refunded amount value
             }
             catch (JuspayException Ex)
