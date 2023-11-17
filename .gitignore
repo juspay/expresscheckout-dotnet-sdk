@@ -313,4 +313,6 @@ Temporary Items
 .vscode
 *.pem
 # End of https://www.gitignore.io/api/macos
+Dockerfile
+.dockerignore
 

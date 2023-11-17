@@ -41,20 +41,20 @@ namespace Juspay {
         }
     }
 
-    public class SessionService : Service {
-        public SessionService()
+    public class OrderSession : Service {
+        public OrderSession()
             : base()
         {
         }
 
-        public SessionService(IJuspayClient client)
+        public OrderSession(IJuspayClient client)
             : base(client)
         {
         }
     
         public override string BasePath { get; set; } = "/session";
     
-        public async Task<JuspayResponse> CreateOrderSessionAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
+        public async Task<JuspayResponse> CreateAsync(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             if (shouldUseJwt(requestOptions))
             {
@@ -63,7 +63,7 @@ namespace Juspay {
             this.BasePath = "/session";
             return await this.CreateAsync(input, requestOptions, ContentType.Json);
         }
-        public JuspayResponse CreateOrderSession(CreateOrderSessionInput input, RequestOptions requestOptions)
+        public JuspayResponse Create(CreateOrderSessionInput input, RequestOptions requestOptions)
         {
             if (shouldUseJwt(requestOptions)) {
                 return this.EncryptedCreateOrderSession(input, requestOptions);

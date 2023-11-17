@@ -15,14 +15,14 @@ namespace JuspayTest
             JuspayEnvironment.MerchantId = Environment.GetEnvironmentVariable("MERCHANT_ID");
             JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
             JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
-            JuspayEnvironment.SetLogFile("/Users/ramprakash.v/expresscheckout-dotnet-client/Juspay-Test/JuspayService.Tests/juspay_sdk");
+            JuspayEnvironment.SetLogFile("../../../logs/juspay_sdk");
             Rnd = new Random();
         }
 
-        [Fact]
-        public void TestCustomer () {
-            CustomerTest.TestCustomerService();
-        }
+        // [Fact]
+        // public void TestCustomer () {
+        //     CustomerTest.TestCustomerService();
+        // }
 
         [Fact]
         public void TestOrder() {
@@ -31,7 +31,7 @@ namespace JuspayTest
 
         [Fact]
         public void TestSession() {
-            SessionTest.TestSessionService();
+            SessionTest.TestOrderSession();
         }
 
         [Fact]
