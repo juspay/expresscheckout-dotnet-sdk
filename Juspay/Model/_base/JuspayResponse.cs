@@ -10,6 +10,14 @@ namespace Juspay
     using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
     using System;
+
+    public interface IJuspayResponseEntity
+    {
+        dynamic response { get; set; }
+        dynamic Response { get; set; }
+        JuspayResponseBase ResponseBase { get; set; }
+        string RawContent { get; set; }
+    }
     public class JuspayResponse : IJuspayResponseEntity
     {
         public dynamic response { get; set; } = new Dictionary<string, dynamic>();

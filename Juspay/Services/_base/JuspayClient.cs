@@ -9,6 +9,13 @@ namespace Juspay {
     using System.Text;
     using Newtonsoft.Json.Linq;
     using System.Threading.Tasks;
+
+    public interface IJuspayClient
+    {
+
+        Task<JuspayResponse> RequestAsync(HttpMethod method, string path, object input, object queryParams, RequestOptions requestOptions, ContentType contentType, bool isJWTSupported);
+    }
+
     public class JuspayClient : IJuspayClient
     {
         private IHttpClient httpClient;

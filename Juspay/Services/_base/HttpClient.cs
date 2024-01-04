@@ -14,6 +14,12 @@ namespace Juspay
     using System.Text;
     using System.Reflection;
 
+    public interface IHttpClient
+    {
+
+        Task<JuspayResponse> MakeRequestAsync(JuspayRequest request);
+
+    }
     public class SystemHttpClient : IHttpClient
     {
         public static TimeSpan DefaultHttpTimeout => TimeSpan.FromSeconds(80);
@@ -147,7 +153,6 @@ namespace Juspay
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)
                         {
-                            requestOptions.JuspayJWT.Initialize();
                             jsonRequest = requestOptions.JuspayJWT.PreparePayload(jsonRequest);
                         }
                     }

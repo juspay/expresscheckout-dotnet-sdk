@@ -4,33 +4,48 @@ namespace Juspay
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
+    public interface IJuspayJWT
+    {
+
+        string KeyId { get; set; }
+        string PreparePayload(string payload);
+
+        string ConsumePayload(string encPaylaod);
+
+        JWS Jws { get; set; }
+
+        JWE Jwe { get; set; }
+
+    }
+
     public class JuspayJWTRSA : IJuspayJWT
     {
        
         public JuspayJWTRSA(string keyId, string publicKey, string privateKey)
         {
-            Keys = new Dictionary<string, string>{ {"publicKey", publicKey }, {"privateKey", privateKey } };
             KeyId = keyId;
+            Jws = new JWSRSA(publicKey, privateKey);
+            Jwe = new JWEAES(publicKey, privateKey);
         }
 
         public string KeyId { get; set; }
-        public ISign Sign { get; set; }
+        public JWS Jws { get; set; }
 
-        public IEnc Enc { get; set; }
+        public JWE Jwe { get; set; }
 
         public Dictionary<string, string> Keys { get; set; }
         public string PreparePayload(string payload)
         {
             try
             {
-                string signedData = Sign.Sign(Keys["privateKey"], KeyId, payload);
-              #if !NETFRAMEWORK
+                string signedData = Jws.Encode(payload, KeyId);
+                #if !NETFRAMEWORK
                     string[] split = signedData.Split(".");
                 #else
                     string[] split = signedData.Split(new[] { "." }, StringSplitOptions.None);
                 #endif
                 signedData = $"{{\"header\":\"{split[0]}\",\"payload\":\"{split[1]}\",\"signature\":\"{split[2]}\"}}";
-                string encryptedPayload = Enc.Encrypt(Keys["publicKey"], KeyId, signedData);
+                string encryptedPayload = Jwe.CreateJWE(signedData, KeyId);
                 #if !NETFRAMEWORK
                     string[] encSplit = encryptedPayload.Split(".");
                 #else
@@ -49,20 +64,14 @@ namespace Juspay
            try
            {
             var encryptedJsonObject = JsonConvert.DeserializeObject<dynamic>(encryptedResponse); 
-            string signedPayload = Enc.Decrypt(Keys["privateKey"], $"{encryptedJsonObject.header}.{encryptedJsonObject.encryptedKey}.{encryptedJsonObject.iv}.{encryptedJsonObject.encryptedPayload}.{encryptedJsonObject.tag}");
+            string signedPayload = Jwe.DecryptJWE($"{encryptedJsonObject.header}.{encryptedJsonObject.encryptedKey}.{encryptedJsonObject.iv}.{encryptedJsonObject.encryptedPayload}.{encryptedJsonObject.tag}");
             var signedJsonObject = JsonConvert.DeserializeObject<dynamic>(signedPayload);
-            return Sign.VerifySign(Keys["publicKey"], $"{signedJsonObject.header}.{signedJsonObject.payload}.{signedJsonObject.signature}");
+            return Jws.Decode($"{signedJsonObject.header}.{signedJsonObject.payload}.{signedJsonObject.signature}");
            }
            catch (Exception e)
            {
             throw new JWTException(e.Message ?? "CONSUMER_PAYLOAD_JWT_EXCEPTION");
            }
-        }
-
-        public void Initialize()
-        {
-            Sign = new JWTSign();
-            Enc = new JWEEnc();
         }
     }
 }

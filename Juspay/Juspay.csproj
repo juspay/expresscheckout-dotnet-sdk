@@ -14,13 +14,15 @@
     <Copyright>Copyright (c) Juspay 2023.</Copyright>
     <Description>Official Juspay .NET SDK, supporting .NET Framework 4.5.2+ and .NET 5.0+</Description>
     <PackageTags>juspay express-checkout sdk juspay-technologies dotnet .NET</PackageTags>
-    <PackageReleaseNotes>- updated JuspayJWT class to accept single keyId, public and private key in constructor instead of Dictionary</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - Removed jose-jwt
+      - Added custom JWE and JWS
+    </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
       <None Include="../juspay_icon.jpeg" Pack="true" PackagePath=""/>
      <None Include="../README.md" Pack="true" PackagePath="\"/>
      <None Include="../LICENSE" Pack="true" PackagePath=""/>
-    <PackageReference Include="jose-jwt" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
      <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>

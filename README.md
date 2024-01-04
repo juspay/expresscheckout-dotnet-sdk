@@ -172,7 +172,7 @@ JuspayResponse refundResponse = new Order().Refund(orderId, RefundInput, null);
 string orderId = "order_id";
 string uniqueRequestId = "request_id";
 TransactionIdAndInstantRefund RefundInput = new TransactionIdAndInstantRefund(new Dictionary<string, object> { { "order_id", orderId }, {"amount", 10 }, {"unique_request_id", uniqueRequestId }, { "order_type", "Juspay" }, {"refund_type", "STANDARD"} });
-JuspayResponse refundResponse = new InstantRefundService().GetTransactionIdAndInstantRefund(RefundInput, null);
+JuspayResponse refundResponse = new Refund().Create(RefundInput, null);
 ```
 
 ## Encrypted Order Status

@@ -5,6 +5,11 @@ namespace Juspay
     using System.Net.Http;
     using System.Text;
 
+    public enum ContentType
+    {
+        FormUrlEncoded,
+        Json
+    }
 
     /// <summary>
     /// Represents a request to Juspay's API.
