@@ -141,14 +141,6 @@ namespace Juspay
             if (apiMethod == HttpMethod.Post && input != null) {
                 if (juspayRequest.ContentType == ContentType.Json) {
                     var jsonRequest = JsonConvert.SerializeObject(input); 
-                    if (juspayRequest.RequestOptions == null && JuspayEnvironment.JuspayJWT != null)
-                    {
-                        juspayRequest.RequestOptions =  new RequestOptions(null, null, null, null,  JuspayEnvironment.JuspayJWT);
-                    }
-                    else if (juspayRequest.RequestOptions != null && juspayRequest.RequestOptions.JuspayJWT == null && JuspayEnvironment.JuspayJWT != null)
-                    {
-                        juspayRequest.RequestOptions.JuspayJWT = JuspayEnvironment.JuspayJWT;
-                    }
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)
@@ -187,11 +179,8 @@ namespace Juspay
             string userAgent = $"Juspay .NetBindings/{JuspayEnvironment.juspaySDKVersion}";
             var values = new Dictionary<string, object>
             {
-                { "binding_version", JuspayEnvironment.juspaySDKVersion },
-                { "api_version", JuspayEnvironment.API_VERSION },
+                { "sdk_version", JuspayEnvironment.juspaySDKVersion },
                 { "lang", ".net" },
-                { "publisher", "juspay" },
-                { "sdk_version", JuspayEnvironment.SDK_VERSION },
                 { "juspay_net_target_framework", JuspayNetTargetFramework },
             };
             request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
@@ -271,10 +260,6 @@ namespace Juspay
             }
         }
         private void AddRequestOptions(HttpRequestMessage request, JuspayRequest juspayRequest) {
-            if (JuspayEnvironment.MerchantId != null)
-            {
-                request.Headers.Add("x-merchantid", JuspayEnvironment.MerchantId);
-            }
             if (juspayRequest.RequestOptions != null) {
                 RequestOptions requestOptions = juspayRequest.RequestOptions;
                 foreach (var x in FlattenObject(requestOptions)) {
@@ -289,14 +274,8 @@ namespace Juspay
 
         private void AddAuthorizationHeaders(HttpRequestMessage request, JuspayRequest juspayRequest) {
             RequestOptions requestOptions = juspayRequest.RequestOptions;
-            if (requestOptions != null && requestOptions.ApiKey != null) {
-                     if (requestOptions.ApiKey != "") {
-                        request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{requestOptions.ApiKey}:")));
-                     }
-            } else {
-                if (juspayRequest.ApiKey != null && juspayRequest.ApiKey != "")
+            if (!(requestOptions != null && requestOptions.JuspayJWT != null) && juspayRequest.ApiKey != null && juspayRequest.ApiKey != "")
                 request.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{juspayRequest.ApiKey}:")));
-            }
             
         }
         private string ReplacePathParams (Dictionary<string, string> pathParams, string url) {

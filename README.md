@@ -199,7 +199,16 @@ RefundOrder RefundInput = new RefundOrder(new Dictionary<string, object> { { "or
 ```cs
 string customerId = "customer_id";
 string orderId = "order_id";
-CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+CreateOrderSessionInput sessionInput = new CreateOrderSessionInput(new Dictionary<string, object>
+                    {
+                        { "amount", "10.00" },
+                        { "order_id", orderId },
+                        { "customer_id", customerId },
+                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "action", "paymentPage" },
+                        { "return_url", "https://google.com" }
+                    }
+                );
 JuspayResponse sessionRes = new OrderSession().Create(sessionInput, null);
 Console.WrtieLine(sessionRes.Response);
 ```
@@ -209,7 +218,16 @@ Console.WrtieLine(sessionRes.Response);
 ```cs
 string customerId = "customer_id";
 string orderId = "order_id";
-CreateOrderSessionInput sessionInput = JuspayEntity.FromJson<CreateOrderSessionInput>($"{{\n\"amount\":\"10.00\",\n\"order_id\":\"{orderId}\",\n\"customer_id\":\"{customerId}\",\n\"payment_page_client_id\":\"{JuspayEnvironment.MerchantId}\",\n\"action\":\"paymentPage\",\n\"return_url\": \"https://google.com\"\n}}");
+CreateOrderSessionInput sessionInput = new CreateOrderSessionInput(new Dictionary<string, object>
+                    {
+                        { "amount", "10.00" },
+                        { "order_id", orderId },
+                        { "customer_id", customerId },
+                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "action", "paymentPage" },
+                        { "return_url", "https://google.com" }
+                    }
+                );
 string privateKey = File.ReadAllText("privateKey.pem");
 string publicKey = File.ReadAllText("publicKey.pem");
 JuspayResponse sessionRes = new OrderSession().Create(sessionInput, new RequestOptions(null, null, null, null, new JuspayJWTRS("keyId", publicKey, privateKey)));

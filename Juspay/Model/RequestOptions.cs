@@ -5,16 +5,26 @@ namespace Juspay {
      using System;
      public class RequestOptions {
 
-      public RequestOptions() {}
+      public RequestOptions() {
+         this.JuspayJWT = JuspayEnvironment.JuspayJWT;
+         this.MerchantId = JuspayEnvironment.MerchantId;
+      }
       public RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds, IJuspayJWT juspayJWT = null) {
          if (merchantId != null) this.MerchantId = merchantId;
+         else this.MerchantId = JuspayEnvironment.MerchantId;
          if (apiKey != null) this.ApiKey = apiKey;
          if (ssl.HasValue) this.SSL = ssl.Value;
          if (readTimeoutInMilliSeconds.HasValue) this.ReadTimeoutInMilliSeconds = readTimeoutInMilliSeconds.Value;
-         if (juspayJWT != null) this.JuspayJWT = juspayJWT;
+         if (juspayJWT != null) this.juspayJWT = juspayJWT;
+         else this.juspayJWT = JuspayEnvironment.JuspayJWT;
       }
-        [JsonProperty("x-merchantid")]
-        public string MerchantId { get; set; }
+         private string merchantId;
+
+         [JsonProperty("x-merchantid")]
+        public string MerchantId { get { return this.merchantId; } set {
+         if (value == null) this.merchantId = JuspayEnvironment.MerchantId;
+         else this.merchantId = value;
+        } }
         public string ApiKey { get; set; }
         public SecurityProtocolType SSL { get; set; }
         private TimeSpan readTimeout; 
@@ -28,17 +38,18 @@ namespace Juspay {
             set => readTimeout = value;
          }
 
-         public IJuspayJWT JuspayJWT { get; set; }
+         private IJuspayJWT juspayJWT;
+         public IJuspayJWT JuspayJWT { get { return this.juspayJWT; } set {
+            if(value == null) this.juspayJWT = JuspayEnvironment.JuspayJWT;
+            else this.juspayJWT = value;
+         } }
          [JsonProperty("x-customerid")]
          public string CustomerId { get; set; }
         public override string ToString()
         {
-            return string.Format(
-               "<{0} MerchantId={1} TimeSpan={2}",
-               this.GetType().FullName,
-               this.MerchantId == null ? "not added" : this.MerchantId,
-               this.readTimeout.ToString() != TimeSpan.Zero.ToString() ? "not added" : this.readTimeout.ToString()
-            );
+           return JsonConvert.SerializeObject(
+                this,
+                Formatting.Indented);
         }
      }
 }

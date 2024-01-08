@@ -30,29 +30,37 @@ public class Base64Url {
     }
 }
 
-public class AsymmetricKey {
+public class JWTRSAKey {
     protected RSA privateKey;
     protected RSA publicKey;
 
     public string PrivateKey {
         set {
-             #if NETFRAMEWORK
-                this.privateKey = RSAReader.ReadRsaKeyFromPemFile(value);
-            #else
-                this.privateKey = RSA.Create();
-                this.privateKey.ImportFromPem(value);
-            #endif
+            try {
+                #if NETFRAMEWORK
+                    this.privateKey = RSAReader.ReadRsaKeyFromPemFile(value);
+                #else
+                    this.privateKey = RSA.Create();
+                    this.privateKey.ImportFromPem(value);
+                #endif
+            } catch (Exception e) {
+                throw new JWKException(e.Message);
+            }
         }
     }
 
      public string PublicKey {
         set {
-             #if NETFRAMEWORK
-                this.publicKey = RSAReader.ReadRsaKeyFromPemFile(value);
-            #else
-                this.publicKey = RSA.Create();
-                this.publicKey.ImportFromPem(value);
-            #endif
+            try {
+                #if NETFRAMEWORK
+                    this.publicKey = RSAReader.ReadRsaKeyFromPemFile(value);
+                #else
+                    this.publicKey = RSA.Create();
+                    this.publicKey.ImportFromPem(value);
+                #endif
+            } catch (Exception e) {
+                throw new JWKException(e.Message);
+            }
         }
     }
 
@@ -86,7 +94,7 @@ public interface JweAlgorithm {
 
 }
 
-public class RSAAESGCM : AsymmetricKey, JweAlgorithm {
+public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
 
     public RSAAESGCM(string publicKey, string privateKey)
     {
@@ -116,7 +124,7 @@ public class RSAAESGCM : AsymmetricKey, JweAlgorithm {
             return cipherText;
         } catch (Exception e)
         {
-            throw new JWTException(e.Message);
+            throw new JWEException(e.Message);
         }
     }
     public byte[] Decrypt(byte[] cipherText, byte[] key, byte[] nonce, byte[] tag, byte[] aad)
@@ -149,7 +157,7 @@ public class RSAAESGCM : AsymmetricKey, JweAlgorithm {
     }
 }
 
-public class RSA256 : AsymmetricKey, JwsAlgorithm {
+public class RSA256 : JWTRSAKey, JwsAlgorithm {
 
 
     public RSA256(string publicKey, string privateKey)
@@ -164,7 +172,7 @@ public class RSA256 : AsymmetricKey, JwsAlgorithm {
             return this.privateKey.SignData(payload, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
         } catch (Exception e)
         {
-            throw new JWTException(e.Message);
+            throw new JWSException(e.Message);
         }
     }
 
@@ -205,12 +213,12 @@ public abstract class JWS {
             byte[] signature = Base64Url.DecodeBase64Url(jwsParts[2]);
             byte[] data = Encoding.UTF8.GetBytes($"{headers}.{payload}");
             if(!jws.VerifySign(data, signature)) {
-                throw new JWTException("unable to verify data");
+                throw new JWSException("unable to verify data");
             }
             return Encoding.UTF8.GetString(Base64Url.DecodeBase64Url(payload));
         } catch (Exception e)
         {
-            throw new JWTException(e.Message);
+            throw new JWSException(e.Message);
         }
     }
  }
@@ -244,13 +252,17 @@ public abstract class JWS {
 
     public string DecryptJWE (string jweToken)
     {
-        string[] jweParts = jweToken.Split('.');
-        byte[] aad = Encoding.UTF8.GetBytes(jweParts[0]);
-        byte[] key = jwe.DecryptKey(Base64Url.DecodeBase64Url(jweParts[1]));
-        byte[] nonce = Base64Url.DecodeBase64Url(jweParts[2]);
-        byte[] cipherText = Base64Url.DecodeBase64Url(jweParts[3]);
-        byte[] tag = Base64Url.DecodeBase64Url(jweParts[4]);
-        return Encoding.UTF8.GetString(jwe.Decrypt(cipherText, key, nonce, tag, aad));
+        try {
+            string[] jweParts = jweToken.Split('.');
+            byte[] aad = Encoding.UTF8.GetBytes(jweParts[0]);
+            byte[] key = jwe.DecryptKey(Base64Url.DecodeBase64Url(jweParts[1]));
+            byte[] nonce = Base64Url.DecodeBase64Url(jweParts[2]);
+            byte[] cipherText = Base64Url.DecodeBase64Url(jweParts[3]);
+            byte[] tag = Base64Url.DecodeBase64Url(jweParts[4]);
+            return Encoding.UTF8.GetString(jwe.Decrypt(cipherText, key, nonce, tag, aad));
+        } catch (Exception e) {
+            throw new JWEException(e.Message);
+        }
     }
  }
 

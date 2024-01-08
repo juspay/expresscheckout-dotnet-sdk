@@ -32,13 +32,13 @@ namespace Juspay
         public override string ToString()
         {
             return string.Format(
-                "<{0} status={1} Request-Id={2} Response-Id={3} Merchant-Id={4} Date={5}>",
+                "<{0} status={1} Request-Id={2} Response-Id={3} Merchant-Id={4} Headers={5}>",
                 this.GetType().FullName,
                 (int)this.StatusCode,
                 this.XRequestId,
                 this.XResponseId,
                 this.XMerchantId,
-                this.Date.ToString());
+                this.Headers.ToString());
         }
 
         private static string MaybeGetHeader(HttpHeaders headers, string name)

@@ -57,7 +57,15 @@ namespace Juspay {
                 return BuildInvalidResponseException(response);
             }
 
-            var juspayError =  JuspayEntity.FromJson<JuspayError>(response.RawContent);
+            JuspayError juspayError;
+            try
+            {
+                juspayError = JsonConvert.DeserializeObject<JuspayError>(response.RawContent);
+            }
+            catch (Exception)
+            {
+                juspayError = null;
+            }
 
             switch (response.ResponseBase.StatusCode)
             {

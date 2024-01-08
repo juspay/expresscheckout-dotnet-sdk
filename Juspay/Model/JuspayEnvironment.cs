@@ -9,15 +9,14 @@ namespace Juspay {
     using log4net.Repository.Hierarchy;
 
     public abstract class JuspayEnvironment {
-        public static readonly string API_VERSION = "2021-03-25";
-        #if (NET6_0 || NET7_0 || NET5_0 || (NET47_OR_GREATER && !NET481))
+        
+        #if NET6_0 || NET7_0 || NET5_0 || (NET47_OR_GREATER && !NET481)
             public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
         #else
             public static readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         #endif
         public static SecurityProtocolType SSL { get; set; } = DEFAULT_SSL_PROTOCOL;
         public static readonly string juspaySDKVersion  = getJupaySDKVersion();
-        public static readonly string SDK_VERSION = getSdkVersion();
         public static string BaseUrl { get; set; }
         public static string ApiKey { get; set; }
         public static string MerchantId { get; set; }
@@ -30,7 +29,7 @@ namespace Juspay {
             set => readTimeoutInMilliSeconds = TimeSpan.FromTicks(value);
         }
 
-        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public enum JuspayLogLevel
         {
             All,
@@ -42,7 +41,7 @@ namespace Juspay {
 
         public static void SerializedLog(dynamic message, JuspayLogLevel level)
         {
-            string jMessage = JsonConvert.SerializeObject(message).ToString();
+            string jMessage = JsonConvert.SerializeObject(message);
             switch (level) 
             {
                 case JuspayLogLevel.Debug:
@@ -110,9 +109,6 @@ namespace Juspay {
                 return new AssemblyName(assemblyName)?.Version?.ToString(3);
             }
             return null;
-        }
-        private static string getSdkVersion() {
-            return "2023-06-02";
         }
 
         public static IJuspayClient JuspayClient
