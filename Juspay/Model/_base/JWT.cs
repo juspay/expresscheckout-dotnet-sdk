@@ -2,8 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.Json;
 using Juspay;
+using Newtonsoft.Json;
+#if NETFRAMEWORK
+    using Org.BouncyCastle.Crypto;
+    using Org.BouncyCastle.Crypto.Engines;
+    using Org.BouncyCastle.Crypto.Modes;
+    using Org.BouncyCastle.Crypto.Parameters;
+    using Org.BouncyCastle.Crypto.Encodings;
+    using Org.BouncyCastle.Security;
+    using Org.BouncyCastle.Crypto.Digests;
+
+#endif
 
 public class Base64Url {
     public static string encodeToBase64Url(string input) {
@@ -34,11 +44,16 @@ public class JWTRSAKey {
     protected RSA privateKey;
     protected RSA publicKey;
 
+    #if NETFRAMEWORK
+    protected RsaKeyParameters publicKeyParameter;
+    protected AsymmetricKeyParameter privateKeyParameter;
+    #endif
     public string PrivateKey {
         set {
             try {
                 #if NETFRAMEWORK
                     this.privateKey = RSAReader.ReadRsaKeyFromPemFile(value);
+                    this.privateKeyParameter = DotNetUtilities.GetRsaKeyPair(this.privateKey.ExportParameters(true)).Private;
                 #else
                     this.privateKey = RSA.Create();
                     this.privateKey.ImportFromPem(value);
@@ -54,6 +69,7 @@ public class JWTRSAKey {
             try {
                 #if NETFRAMEWORK
                     this.publicKey = RSAReader.ReadRsaKeyFromPemFile(value);
+                    this.publicKeyParameter = DotNetUtilities.GetRsaPublicKey(this.publicKey.ExportParameters(false));
                 #else
                     this.publicKey = RSA.Create();
                     this.publicKey.ImportFromPem(value);
@@ -96,6 +112,7 @@ public interface JweAlgorithm {
 
 public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
 
+
     public RSAAESGCM(string publicKey, string privateKey)
     {
         PublicKey = publicKey;
@@ -110,17 +127,36 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     
     public byte[] Nonce { get; set; }
 
+   
     public byte[] Encrypt(byte[] data, byte[] aad)
     {
         try {
             this.Key = new byte[32];
-            this.Nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
-            this.Tag = new byte[AesGcm.TagByteSizes.MaxSize];
-            RandomNumberGenerator.Fill(this.Key);
-            RandomNumberGenerator.Fill(this.Nonce);
-            AesGcm aesGcm = new AesGcm(this.Key);
+            this.Nonce = new byte[12];
+            this.Tag = new byte[16];
             byte[] cipherText = new byte[data.Length];
-            aesGcm.Encrypt(this.Nonce, data, cipherText, this.Tag, aad);
+            #if NETFRAMEWORK
+                RandomNumberGenerator rng = new RNGCryptoServiceProvider();
+                rng.GetBytes(this.Key);
+                rng.GetBytes(this.Nonce);
+            #else
+                RandomNumberGenerator.Fill(this.Key);
+                RandomNumberGenerator.Fill(this.Nonce);
+            #endif
+            #if NETFRAMEWORK
+                GcmBlockCipher cipher = new GcmBlockCipher(new AesEngine());
+                AeadParameters parameters = new AeadParameters(new KeyParameter(this.Key), this.Tag.Length * 8, this.Nonce, aad);
+                byte[] cipherTextAndTag = new byte[data.Length + this.Tag.Length];
+                cipher.Init(true, parameters);
+                int length = cipher.ProcessBytes(data, 0, data.Length, cipherTextAndTag, 0);
+                cipher.DoFinal(cipherTextAndTag, length);
+                Buffer.BlockCopy(cipherTextAndTag, 0, cipherText, 0, data.Length);
+                Buffer.BlockCopy(cipherTextAndTag, data.Length, this.Tag, 0, this.Tag.Length);
+                this.Tag = cipher.GetMac();
+            #else
+                AesGcm aesGcm = new AesGcm(this.Key);
+                aesGcm.Encrypt(this.Nonce, data, cipherText, this.Tag, aad);
+            #endif
             return cipherText;
         } catch (Exception e)
         {
@@ -129,9 +165,22 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     }
     public byte[] Decrypt(byte[] cipherText, byte[] key, byte[] nonce, byte[] tag, byte[] aad)
     {
-         AesGcm aesGcm = new AesGcm(key);
-         byte[] plainText = new byte[cipherText.Length];
-         aesGcm.Decrypt(nonce, cipherText, tag, plainText, aad);
+         #if NETFRAMEWORK
+            GcmBlockCipher cipher = new GcmBlockCipher(new AesEngine());
+            AeadParameters parameters = new AeadParameters(new KeyParameter(key), tag.Length * 8, nonce, aad);
+            cipher.Init(false, parameters);
+            byte[] cipherTextAndTag = new byte[cipherText.Length + tag.Length];
+            Array.Copy(cipherText, 0, cipherTextAndTag, 0, cipherText.Length);
+            Array.Copy(tag, 0, cipherTextAndTag, cipherText.Length, tag.Length);
+            byte[] plainText = new byte[cipherTextAndTag.Length - tag.Length];
+            int offset = cipher.ProcessBytes(cipherTextAndTag, 0, cipherTextAndTag.Length, plainText, 0);
+            cipher.DoFinal(plainText, offset);
+
+         #else
+            byte[] plainText = new byte[cipherText.Length];
+            AesGcm aesGcm = new AesGcm(key);
+            aesGcm.Decrypt(nonce, cipherText, tag, plainText, aad);
+        #endif
          return plainText;    
     }
 
@@ -139,7 +188,13 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     {
         try
         {
-             return this.privateKey.Decrypt(key, RSAEncryptionPadding.OaepSHA256);
+            #if NETFRAMEWORK
+                OaepEncoding rsaEngine = new OaepEncoding(new RsaEngine(), new Sha256Digest());
+                rsaEngine.Init(false, this.privateKeyParameter);
+                return rsaEngine.ProcessBlock(key, 0, key.Length);
+            #else
+                return this.privateKey.Decrypt(key, RSAEncryptionPadding.OaepSHA256);
+            #endif
         } catch (Exception e) {
             throw new JWTException(e.Message);
         }
@@ -149,7 +204,13 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     {
         try
         {
-            return this.publicKey.Encrypt(key, RSAEncryptionPadding.OaepSHA256);
+            #if NETFRAMEWORK
+                OaepEncoding rsaEngine = new OaepEncoding(new RsaEngine(), new Sha256Digest());
+                rsaEngine.Init(true, this.publicKeyParameter);
+                return rsaEngine.ProcessBlock(key, 0, key.Length);
+            #else
+                return this.publicKey.Encrypt(key, RSAEncryptionPadding.OaepSHA256);
+            #endif
         } catch (Exception e)
         {
             throw new JWTException(e.Message);
@@ -198,7 +259,7 @@ public abstract class JWS {
 
     public string Encode(string stPayload, string kid) {
         Dictionary<string, string> headers = new Dictionary<string, string> { { "alg", this.jws.getAlgorithmName() }, { "kid", kid } };
-        string encodedHeaders = Base64Url.encodeToBase64Url(JsonSerializer.Serialize(headers));
+        string encodedHeaders = Base64Url.encodeToBase64Url(JsonConvert.SerializeObject(headers));
         string encodedPayload = Base64Url.encodeToBase64Url(stPayload);
         string signedData = Base64Url.encodeToBase64UrlByte(jws.Sign(Encoding.UTF8.GetBytes($"{encodedHeaders}.{encodedPayload}")));
         return $"{encodedHeaders}.{encodedPayload}.{signedData}";
@@ -240,7 +301,7 @@ public abstract class JWS {
     public string CreateJWE(string stPayload, string kid)
     {
         Dictionary<string, string> headers = new Dictionary<string, string> { { "alg", jwe.getKeyEncAlgorithmName() }, { "enc", jwe.getEncAlgorithmName() }, { "kid", kid } };
-        string encodedHeaders = Base64Url.encodeToBase64Url(JsonSerializer.Serialize(headers));
+        string encodedHeaders = Base64Url.encodeToBase64Url(JsonConvert.SerializeObject(headers));
         byte[] aad = Encoding.UTF8.GetBytes(encodedHeaders);
         byte[] payload = Encoding.UTF8.GetBytes(stPayload);
         string cipherText = Base64Url.encodeToBase64UrlByte(jwe.Encrypt(payload, aad));
