@@ -50,10 +50,10 @@ namespace Juspay
         {
            try
            {
-            var encryptedJsonObject = JsonConvert.DeserializeObject<dynamic>(encryptedResponse); 
-            string signedPayload = Jwe.DecryptJWE($"{encryptedJsonObject.header}.{encryptedJsonObject.encryptedKey}.{encryptedJsonObject.iv}.{encryptedJsonObject.encryptedPayload}.{encryptedJsonObject.tag}");
-            var signedJsonObject = JsonConvert.DeserializeObject<dynamic>(signedPayload);
-            return Jws.Decode($"{signedJsonObject.header}.{signedJsonObject.payload}.{signedJsonObject.signature}");
+            var encryptedJsonObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(encryptedResponse); 
+            string signedPayload = Jwe.DecryptJWE($"{encryptedJsonObject["header"]}.{encryptedJsonObject["encryptedKey"]}.{encryptedJsonObject["iv"]}.{encryptedJsonObject["encryptedPayload"]}.{encryptedJsonObject["tag"]}");
+            var signedJsonObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(signedPayload);
+            return Jws.Decode($"{signedJsonObject["header"]}.{signedJsonObject["payload"]}.{signedJsonObject["signature"]}");
            }
            catch (Exception e)
            {

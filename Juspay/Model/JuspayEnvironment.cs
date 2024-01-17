@@ -39,7 +39,7 @@ namespace Juspay {
             Off,
         }
 
-        public static void SerializedLog(dynamic message, JuspayLogLevel level)
+        public static void SerializedLog(object message, JuspayLogLevel level)
         {
             string jMessage = JsonConvert.SerializeObject(message);
             switch (level) 

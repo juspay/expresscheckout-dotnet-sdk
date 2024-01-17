@@ -88,7 +88,7 @@ namespace Juspay
             AddRequestOptions(request, juspayRequest);
             AddAuthorizationHeaders(request, juspayRequest);
             AddClientUserAgentString(request);
-            dynamic logRequest = new Dictionary <string, dynamic> {{ "request", request.ToString() }};
+            var logRequest = new Dictionary <string, object> {{ "request", request.ToString() }};
             if (request.Content != null)
             {
 

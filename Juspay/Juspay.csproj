@@ -33,11 +33,7 @@
                       '$(TargetFramework)' == 'net481'
                       ">
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <Reference Include="System.Net.Http" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <Reference Include="System.Configuration" />
-    
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config" Pack="true">
