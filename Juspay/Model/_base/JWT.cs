@@ -350,10 +350,16 @@ namespace Juspay
         {
             var pemReader = new PemReader(new StringReader(pemContents));
             var keyObject = pemReader.ReadObject();
-
             if (keyObject is AsymmetricCipherKeyPair keyPair)
             {
+
                 var rsaParams = DotNetUtilities.ToRSAParameters(keyPair.Private as RsaPrivateCrtKeyParameters);
+                var rsa = new RSACryptoServiceProvider();
+                rsa.ImportParameters(rsaParams);
+                return rsa;
+            }
+            else if (keyObject is RsaPrivateCrtKeyParameters keyParams) {
+                var rsaParams = DotNetUtilities.ToRSAParameters(keyParams);
                 var rsa = new RSACryptoServiceProvider();
                 rsa.ImportParameters(rsaParams);
                 return rsa;

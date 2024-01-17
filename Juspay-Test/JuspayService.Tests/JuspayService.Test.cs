@@ -35,6 +35,20 @@ namespace JuspayTest
         }
 
         [Fact]
+        public void TestJWT() {
+            JWTTest.readPrivateKeyPkcs1Test();
+            JWTTest.readPrivateKeyPkcs8Test();
+            JWTTest.readPublicKeyRSATest();
+            JWTTest.invalidPrivateKeyTest();
+            JWTTest.invalidRSAPublicKeyTest();
+            JWTTest.testSigningJWSRSA();
+            JWTTest.testVerifySignatureRSAFailure();
+            JWTTest.testKeyEncryptionRSA();
+            JWTTest.testContentEncryptionAESGCM();
+            JWTTest.testJWTRSAAESGCM();
+        }
+
+        [Fact]
         public void TestInputEntity()
         {
             InputEntityTest.TestInputEntity();

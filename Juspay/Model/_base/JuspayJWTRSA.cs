@@ -7,33 +7,20 @@ namespace Juspay
     public interface IJuspayJWT
     {
 
-        string KeyId { get; set; }
         string PreparePayload(string payload);
 
         string ConsumePayload(string encPaylaod);
 
-        JWS Jws { get; set; }
-
-        JWE Jwe { get; set; }
-
     }
 
-    public class JuspayJWTRSA : IJuspayJWT
+    public class JuspayJWT : IJuspayJWT
     {
-       
-        public JuspayJWTRSA(string keyId, string publicKey, string privateKey)
-        {
-            KeyId = keyId;
-            Jws = new JWSRSA(publicKey, privateKey);
-            Jwe = new JWEAES(publicKey, privateKey);
-        }
+        
 
         public string KeyId { get; set; }
         public JWS Jws { get; set; }
 
         public JWE Jwe { get; set; }
-
-        public Dictionary<string, string> Keys { get; set; }
         public string PreparePayload(string payload)
         {
             try
@@ -74,4 +61,17 @@ namespace Juspay
            }
         }
     }
+
+    public class JuspayJWTRSA : JuspayJWT
+    {
+       
+        public JuspayJWTRSA(string keyId, string publicKey, string privateKey)
+        {
+            this.KeyId = keyId;
+            this.Jwe = new JWEAES(publicKey, privateKey);
+            this.Jws = new JWSRSA(publicKey, privateKey);
+        }
+    }
+
+    // JuspayAES : IJuspayJWT
 }
