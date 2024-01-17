@@ -10,9 +10,10 @@ namespace Juspay
     using System.Net.Http.Headers;
     using System.Threading;
     using System.Threading.Tasks;
-    using Newtonsoft.Json;
     using System.Text;
     using System.Reflection;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     public interface IHttpClient
     {
@@ -140,7 +141,7 @@ namespace Juspay
             object input = juspayRequest.Input;
             if (apiMethod == HttpMethod.Post && input != null) {
                 if (juspayRequest.ContentType == ContentType.Json) {
-                    var jsonRequest = JsonConvert.SerializeObject(input); 
+                    var jsonRequest = JsonSerializer.Serialize(input); 
                     if (juspayRequest.RequestOptions != null) {
                         RequestOptions requestOptions = juspayRequest.RequestOptions;
                         if (juspayRequest.IsJwtSupported && requestOptions.JuspayJWT != null)
@@ -183,7 +184,7 @@ namespace Juspay
                 { "lang", ".net" },
                 { "juspay_net_target_framework", JuspayNetTargetFramework },
             };
-            request.Headers.Add("X-User-Agent", JsonConvert.SerializeObject(values, Formatting.None));
+            request.Headers.Add("X-User-Agent", JsonSerializer.Serialize(values, new JsonSerializerOptions(){ WriteIndented = false}));
             request.Headers.Add("User-Agent", userAgent);
         }
 
@@ -208,10 +209,10 @@ namespace Juspay
             foreach (var property in properties)
             {
                 var propertyName = property.Name;
-                var jsonPropertyAttribute = property.GetCustomAttribute<JsonPropertyAttribute>();
-                if (jsonPropertyAttribute != null)
+                var JsonPropertyNameAttribute = property.GetCustomAttribute<JsonPropertyNameAttribute>();
+                if (JsonPropertyNameAttribute != null)
                 {
-                    propertyName = jsonPropertyAttribute.PropertyName;
+                    propertyName = JsonPropertyNameAttribute.Name;
                 } else {
                     continue;
                 }
@@ -248,7 +249,7 @@ namespace Juspay
                         var valueType = value?.GetType();
                         if (valueType != null && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>))
                         {
-                            flattenedDictionary[key] = JsonConvert.SerializeObject(value);
+                            flattenedDictionary[key] = JsonSerializer.Serialize(value);
                         }
                         else
                         {

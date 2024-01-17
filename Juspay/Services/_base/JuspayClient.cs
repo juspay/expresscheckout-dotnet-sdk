@@ -5,10 +5,10 @@ namespace Juspay {
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Reflection;
-    using Newtonsoft.Json;
     using System.Text;
-    using Newtonsoft.Json.Linq;
     using System.Threading.Tasks;
+    using System.Text.Json;
+    using System.Text.Json.Nodes;
 
     public interface IJuspayClient
     {
@@ -40,13 +40,13 @@ namespace Juspay {
 
         private static JuspayException BuildJuspayException(JuspayResponse response)
         {
-            JObject jObject;
+            JsonObject jObject;
 
             try
             {
-                jObject = JObject.Parse(response.RawContent);
+                jObject = JsonSerializer.Deserialize<JsonObject>(response.RawContent);
             }
-            catch (Newtonsoft.Json.JsonException)
+            catch (JsonException)
             {
                 return BuildInvalidResponseException(response);
             }
@@ -60,7 +60,7 @@ namespace Juspay {
             JuspayError juspayError;
             try
             {
-                juspayError = JsonConvert.DeserializeObject<JuspayError>(response.RawContent);
+                juspayError = JsonSerializer.Deserialize<JuspayError>(response.RawContent);
             }
             catch (Exception)
             {

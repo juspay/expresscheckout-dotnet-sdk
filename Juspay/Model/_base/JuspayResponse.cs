@@ -1,15 +1,11 @@
 namespace Juspay
 {
-    using System.Net;
     using System.Net.Http.Headers;
-    using System.Linq;
     using System.Reflection;
-    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
-    using System;
+    using System.Text.Json;
+    using System.Text.Json.Nodes;
 
     public interface IJuspayResponseEntity
     {
@@ -30,9 +26,9 @@ namespace Juspay
             this.RawContent = content;
             try
             {
-                this.Response = JObject.Parse(content);
+                this.Response = JsonSerializer.Deserialize<JsonObject>(content);
             }
-            catch (JsonReaderException)
+            catch (JsonException)
             {
                 this.Response = content;
             }
@@ -40,7 +36,7 @@ namespace Juspay
 
         public dynamic FromJson(string value)
         {
-            this.Response = JObject.Parse(value);
+            this.Response = JsonSerializer.Deserialize<JsonObject>(value);
             return Response;
         }
 
@@ -78,9 +74,9 @@ namespace Juspay
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(
+            return JsonSerializer.Serialize(
                 this,
-                Formatting.Indented);
+                new JsonSerializerOptions() { WriteIndented = true,  Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
         }
     }
 }

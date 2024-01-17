@@ -22,7 +22,7 @@ namespace JuspayTest {
             Assert.NotNull(order.Response);
             Assert.NotNull(order.ResponseBase);
             Assert.NotNull(order.RawContent);
-            Assert.NotNull(order.Response.order_id);
+            Assert.NotNull(order.Response["order_id"]);
             Assert.IsType<JuspayResponse>(order);
             return orderId;
         }
@@ -40,7 +40,7 @@ namespace JuspayTest {
             Assert.NotNull(order.Response);
             Assert.NotNull(order.ResponseBase);
             Assert.NotNull(order.RawContent);
-            Assert.NotNull(order.Response.order_id);
+            Assert.NotNull(order.Response["order_id"]);
             Assert.IsType<JuspayResponse>(order);
             return orderId;
 
@@ -55,7 +55,7 @@ namespace JuspayTest {
             Assert.NotNull(order.Response);
             Assert.NotNull(order.ResponseBase);
             Assert.NotNull(order.RawContent);
-            Assert.NotNull(order.Response.order_id);
+            Assert.NotNull(order.Response["order_id"]);
             Assert.IsType<JuspayResponse>(order);
             return orderId;
         }
@@ -64,16 +64,16 @@ namespace JuspayTest {
         {
             string orderId = CreateOrderTest();
             JuspayResponse order = new Order().Update(orderId, 99.99, null);
-            Assert.True((string)order.Response.order_id == orderId);
-            Assert.True((double)order.Response.amount == 99.99);
+            Assert.True((string)order.Response["order_id"] == orderId);
+            Assert.True((double)order.Response["amount"] == 99.99);
         }
 
         public static void UpdateOrderAsyncTest()
         {
             string orderId = CreateOrderTest();
             JuspayResponse order = new Order().UpdateAsync(orderId, 99.99, null).ConfigureAwait(false).GetAwaiter().GetResult();;
-            Assert.True((string)order.Response.order_id == orderId);
-            Assert.True((double)order.Response.amount == 99.99);
+            Assert.True((string)order.Response["order_id"] == orderId);
+            Assert.True((double)order.Response["amount"] == 99.99);
         }
 
         public static void GetOrderTest() 
@@ -228,7 +228,7 @@ namespace JuspayTest {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
             JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
             JuspayResponse newCustomer = new Customer().Create((CreateCustomerInput)createCustomerInput, null);
-            string clientAuthToken = newCustomer.Response.juspay.client_auth_token;
+            string clientAuthToken = (string)newCustomer.Response["juspay"]["client_auth_token"];
             string orderId = CreateOrderTest();
             JuspayResponse orderStatus = new Order().Get(orderId, new Dictionary<string, object> {{"client_auth_token", clientAuthToken}}, new RequestOptions(null, "", null, null, null));
             Assert.NotNull(orderStatus.Response);
@@ -240,7 +240,7 @@ namespace JuspayTest {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
             JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
             JuspayResponse newCustomer = new Customer().Create((CreateCustomerInput)createCustomerInput, null);
-            string clientAuthToken = newCustomer.Response.juspay.client_auth_token;
+            string clientAuthToken = (string)newCustomer.Response["juspay"]["client_auth_token"];
             string orderId = CreateOrderTest();
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");

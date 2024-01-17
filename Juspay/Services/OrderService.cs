@@ -1,5 +1,5 @@
 namespace Juspay {
-    using Newtonsoft.Json;
+     using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using System.Collections.Generic;
     public class OrderCreate : JuspayEntity
@@ -7,35 +7,35 @@ namespace Juspay {
         public OrderCreate () : base() {}
         public OrderCreate(Dictionary<string, object> data) : base(data) {}
 
-        [JsonProperty("order_id")]
+        [JsonPropertyName("order_id")]
         public string OrderId
         {
             get { return GetValue<string>("order_id"); }
             set { SetValue("order_id", value); }
         }
 
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public double Amount
         {
             get { return GetValue<double>("amount"); }
             set { SetValue("amount", value); }
         }
 
-        [JsonProperty("currency")]
+        [JsonPropertyName("currency")]
         public string Currency
         {
             get { return GetValue<string>("currency"); }
             set { SetValue("currency", value); }
         }
 
-        [JsonProperty("metadata")]
+        [JsonPropertyName("metadata")]
         public Dictionary<string, object> Metadata
         {
             get { return GetValue<Dictionary<string, object>>("metadata"); }
             set { SetValue("metadata", value); }
         }
 
-        [JsonProperty("options")]
+        [JsonPropertyName("options")]
         public ClientAuthToken Options
         {
             get { return GetObject<ClientAuthToken>("options"); }
@@ -48,21 +48,21 @@ namespace Juspay {
         public RefundOrder() : base() {}
         public RefundOrder(Dictionary<string, object> data) : base(data) {}
 
-        [JsonProperty("order_id")]
+        [JsonPropertyName("order_id")]
         public string OrderId
         {
             get { return GetValue<string>("order_id"); }
             set { SetValue("order_id", value); }
         }
 
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public double Amount
         {
             get { return GetValue<double>("amount"); }
             set { SetValue("amount", value); }
         }
 
-        [JsonProperty("unique_request_id")]
+        [JsonPropertyName("unique_request_id")]
         public string RequestId
         {
             get { return GetValue<string>("unique_request_id"); }
@@ -77,49 +77,49 @@ namespace Juspay {
         public TransactionIdAndInstantRefund() : base() {}
         public TransactionIdAndInstantRefund(Dictionary<string, object> data) : base(data) {}
 
-        [JsonProperty("order_id")]
+        [JsonPropertyName("order_id")]
         public string OrderId
         {
             get { return GetValue<string>("order_id"); }
             set { SetValue("order_id", value); }
         }
 
-        [JsonProperty("amount")]
+        [JsonPropertyName("amount")]
         public double Amount
         {
             get { return GetValue<double>("amount"); }
             set { SetValue("amount", value); }
         }
 
-        [JsonProperty("unique_request_id")]
+        [JsonPropertyName("unique_request_id")]
         public string RequestId
         {
             get { return GetValue<string>("unique_request_id"); }
             set { SetValue("unique_request_id", value); }
         }
 
-        [JsonProperty("txn_id")]
+        [JsonPropertyName("txn_id")]
         public string TxnId
         {
             get { return GetValue<string>("txn_id"); }
             set { SetValue("txn_id", value); }
         }
 
-        [JsonProperty("refund_type")]
+        [JsonPropertyName("refund_type")]
         public string RefundType
         {
             get { return GetValue<string>("refund_type"); }
             set { SetValue("refund_type", value); }
         }
 
-        [JsonProperty("order_type")]
+        [JsonPropertyName("order_type")]
         public string OrderType
         {
             get { return GetValue<string>("order_type"); }
             set { SetValue("order_type", value); }
         }
 
-        [JsonProperty("beneficiary_details")]
+        [JsonPropertyName("beneficiary_details")]
         public List<TransactionIdAndInstantRefundBeneficiary> BeneficiaryDetails
         {
             get { return GetObjectList<TransactionIdAndInstantRefundBeneficiary>("beneficiary_details"); }
@@ -132,14 +132,14 @@ namespace Juspay {
         public TransactionIdAndInstantRefundBeneficiary() : base() {}
         public TransactionIdAndInstantRefundBeneficiary(Dictionary<string, object> data) : base(data) {}
 
-        [JsonProperty("name1")]
+        [JsonPropertyName("name1")]
         public string Name1
         {
             get { return GetValue<string>("name1"); }
             set { SetValue("name1", value); }
         }
 
-        [JsonProperty("name2")]
+        [JsonPropertyName("name2")]
         public string Name2
         {
             get { return GetValue<string>("name2"); }

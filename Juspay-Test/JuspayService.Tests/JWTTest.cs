@@ -3,8 +3,8 @@ using System;
 using Juspay;
 using System.IO;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace JuspayTest
 {
@@ -75,7 +75,7 @@ namespace JuspayTest
             string privateKey = File.ReadAllText("../../../privateKey1.pem");
             string publicKey =  File.ReadAllText("../../../publicPairPrivate.pem");
             var jwe = new RSAAESGCM(publicKey, privateKey);
-            string encodedHeaders = Base64Url.encodeToBase64Url(JsonConvert.SerializeObject(new Dictionary<string, string> { { "alg", jwe.getKeyEncAlgorithmName() }, { "enc", jwe.getEncAlgorithmName() }, { "kid", "key_xxxxx" } }));
+            string encodedHeaders = Base64Url.encodeToBase64Url(JsonSerializer.Serialize(new Dictionary<string, string> { { "alg", jwe.getKeyEncAlgorithmName() }, { "enc", jwe.getEncAlgorithmName() }, { "kid", "key_xxxxx" } }));
             byte[] aad = Encoding.UTF8.GetBytes(encodedHeaders);
             byte[] payload = Encoding.UTF8.GetBytes(stPayload);
             string cipherText = Base64Url.encodeToBase64UrlByte(jwe.Encrypt(payload, aad));
@@ -90,11 +90,11 @@ namespace JuspayTest
             string publicKey =  File.ReadAllText("../../../publicPairPrivate.pem");
             var juspayJWTRSA = new JuspayJWTRSA("key_xxxxx", publicKey, privateKey);
             string encryptedPayload = juspayJWTRSA.PreparePayload(payload);
-            var encryptedJsonObject = JsonConvert.DeserializeObject<dynamic>(encryptedPayload); 
-            var headers = JsonConvert.DeserializeObject<dynamic>(Encoding.UTF8.GetString(Base64Url.DecodeBase64Url((string)encryptedJsonObject.header)));
-            Assert.True((string)headers.alg == "RSA-OAEP-256");
-            Assert.True((string)headers.enc == "A256GCM");
-            Assert.True((string)headers.kid == "key_xxxxx");
+            var encryptedJsonObject = JsonSerializer.Deserialize<Dictionary<string, string>>(encryptedPayload); 
+            var headers = JsonSerializer.Deserialize<Dictionary<string, string>>(Encoding.UTF8.GetString(Base64Url.DecodeBase64Url((string)encryptedJsonObject["header"])));
+            Assert.True(headers["alg"] == "RSA-OAEP-256");
+            Assert.True(headers["enc"] == "A256GCM");
+            Assert.True(headers["kid"] == "key_xxxxx");
             Assert.True(juspayJWTRSA.ConsumePayload(encryptedPayload) == payload);
         }
     }

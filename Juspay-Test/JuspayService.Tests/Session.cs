@@ -18,7 +18,7 @@ namespace JuspayTest {
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
             Assert.NotNull(sessionRes.RawContent);
-            Assert.NotNull(sessionRes.Response.id);
+            Assert.NotNull(sessionRes.Response["id"]);
             Assert.IsType<JuspayResponse>(sessionRes);
         }
 
@@ -46,7 +46,7 @@ namespace JuspayTest {
                 Assert.NotNull(sessionRes.Response);
                 Assert.NotNull(sessionRes.ResponseBase);
                 Assert.NotNull(sessionRes.RawContent);
-                Assert.NotNull(sessionRes.Response.id);
+                Assert.NotNull(sessionRes.Response["id"]);
                 Assert.IsType<JuspayResponse>(sessionRes);
             }
             catch (JuspayException)
@@ -78,7 +78,7 @@ namespace JuspayTest {
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
             Assert.NotNull(sessionRes.RawContent);
-            Assert.NotNull(sessionRes.Response.id);
+            Assert.NotNull(sessionRes.Response["id"]);
             Assert.IsType<JuspayResponse>(sessionRes);
         }
 
@@ -101,7 +101,7 @@ namespace JuspayTest {
             Assert.NotNull(sessionRes.Response);
             Assert.NotNull(sessionRes.ResponseBase);
             Assert.NotNull(sessionRes.RawContent);
-            Assert.NotNull(sessionRes.Response.id);
+            Assert.NotNull(sessionRes.Response["id"]);
             Assert.IsType<JuspayResponse>(sessionRes);
         }
 

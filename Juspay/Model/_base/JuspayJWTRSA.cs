@@ -1,8 +1,8 @@
 namespace Juspay
 {
     using System;
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Nodes;
 
     public interface IJuspayJWT
     {
@@ -50,9 +50,10 @@ namespace Juspay
         {
            try
            {
-            var encryptedJsonObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(encryptedResponse); 
+            var encryptedJsonObject = JsonSerializer.Deserialize<JsonObject>(encryptedResponse); 
+            Console.WriteLine($"encrypted Json object {encryptedJsonObject["header"]}.{encryptedJsonObject["encryptedKey"]}.{encryptedJsonObject["iv"]}.{encryptedJsonObject["encryptedPayload"]}.{encryptedJsonObject["tag"]}");
             string signedPayload = Jwe.DecryptJWE($"{encryptedJsonObject["header"]}.{encryptedJsonObject["encryptedKey"]}.{encryptedJsonObject["iv"]}.{encryptedJsonObject["encryptedPayload"]}.{encryptedJsonObject["tag"]}");
-            var signedJsonObject = JsonConvert.DeserializeObject<Dictionary<string, string>>(signedPayload);
+            var signedJsonObject = JsonSerializer.Deserialize<JsonObject>(signedPayload);
             return Jws.Decode($"{signedJsonObject["header"]}.{signedJsonObject["payload"]}.{signedJsonObject["signature"]}");
            }
            catch (Exception e)

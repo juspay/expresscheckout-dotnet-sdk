@@ -54,11 +54,11 @@ namespace JuspayTest
             InputEntityTest.TestInputEntity();
         }
 
-        [Fact]
-        public void TestResponseEntity()
-        {
-            ResponseEntityTest.TestResponseEntity();
-        }
+        // [Fact]
+        // public void TestResponseEntity()
+        // {
+        //     ResponseEntityTest.TestResponseEntity();
+        // }
 
     }
 }

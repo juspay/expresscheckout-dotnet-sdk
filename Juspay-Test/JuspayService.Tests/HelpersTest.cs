@@ -2,8 +2,7 @@ using Xunit;
 using System;
 using System.Collections.Generic;
 using Juspay;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Serialization;
 
 namespace JuspayTest
 {
@@ -15,70 +14,70 @@ namespace JuspayTest
         
             public InputEntityObjectTest(Dictionary<string, object> data) : base(data) {}
         
-            [JsonProperty("basic_string_field")]
+            [JsonPropertyName("basic_string_field")]
             public string StringField
             {
                 get { return GetValue<string>("basic_string_field"); }
                 set { SetValue("basic_string_field", value); }
             }
 
-            [JsonProperty("basic_int_field")]
+            [JsonPropertyName("basic_int_field")]
             public int IntField
             {
                 get { return GetValue<int>("basic_int_field"); }
                 set { SetValue("basic_int_field", value); }
             }
 
-            [JsonProperty("basic_float_field")]
+            [JsonPropertyName("basic_float_field")]
             public float FloatField
             {
                 get { return GetValue<float>("basic_float_field"); }
                 set { SetValue("basic_float_field", value); }
             }
 
-            [JsonProperty("basic_double_field")]
+            [JsonPropertyName("basic_double_field")]
             public double DoubleField
             {
                 get { return GetValue<double>("basic_double_field"); }
                 set { SetValue("basic_double_field", value); }
             }
 
-            [JsonProperty("basic_bool_field")]
+            [JsonPropertyName("basic_bool_field")]
             public bool BoolField
             {
                 get { return GetValue<bool>("basic_bool_field"); }
                 set { SetValue("basic_bool_field", value); }
             }
 
-            [JsonProperty("basic_dictionary_field")]
+            [JsonPropertyName("basic_dictionary_field")]
             public Dictionary<string, object> DictionaryField
             {
                 get { return GetValue<Dictionary<string, object>>("basic_dictionary_field"); }
                 set {  SetValue("basic_dictionary_field", value); }
             }
 
-            [JsonProperty("basic_list_field")]
+            [JsonPropertyName("basic_list_field")]
             public List<string> ListField
             {
                 get { return GetValue<List<string>>("basic_list_field"); }
                 set { SetValue("basic_list_field", value); }
             }
 
-            [JsonProperty("object_a")]
+            [JsonPropertyName("object_a")]
             public ObjectA ObjectAField
             {
                 get { return GetObject<ObjectA>("object_a"); }
                 set { SetValue("object_a", value); }
             }
 
-            [JsonProperty("list_object_field")]
+            [JsonPropertyName("list_object_field")]
             public List<ObjectA> ListObjectField
             {
                 get { return GetObjectList<ObjectA>("list_object_field"); }
                 set { SetValue("list_object_field", value); }
             }
 
-            [JsonProperty("nested_list")]
+            [JsonPropertyName("nested_list")]
             public List<List<string>> NestedListField
             {
                 get { return GetValue<List<List<string>>>("nested_list"); }
@@ -93,56 +92,56 @@ namespace JuspayTest
             
             public ObjectA(Dictionary<string, object> data) : base(data) {}
 
-            [JsonProperty("basic_string_field")]
+            [JsonPropertyName("basic_string_field")]
             public string StringField
             {
                 get { return GetValue<string>("basic_string_field"); }
                 set { SetValue("basic_string_field", value); }
             }
 
-            [JsonProperty("basic_int_field")]
+            [JsonPropertyName("basic_int_field")]
             public int IntField
             {
                 get { return GetValue<int>("basic_int_field"); }
                 set { SetValue("basic_int_field", value); }
             }
 
-            [JsonProperty("basic_float_field")]
+            [JsonPropertyName("basic_float_field")]
             public float FloatField
             {
                 get { return GetValue<float>("basic_float_field"); }
                 set { SetValue("basic_float_field", value); }
             }
 
-            [JsonProperty("basic_double_field")]
+            [JsonPropertyName("basic_double_field")]
             public double DoubleField
             {
                 get { return GetValue<double>("basic_double_field"); }
                 set { SetValue("basic_double_field", value); }
             }
 
-            [JsonProperty("basic_bool_field")]
+            [JsonPropertyName("basic_bool_field")]
             public bool BoolField
             {
                 get { return GetValue<bool>("basic_bool_field"); }
                 set { SetValue("basic_bool_field", value); }
             }
 
-            [JsonProperty("basic_dictionary_field")]
+            [JsonPropertyName("basic_dictionary_field")]
             public Dictionary<string, object> DictionaryField
             {
                 get { return GetValue<Dictionary<string, object>>("basic_dictionary_field"); }
                 set {  SetValue("basic_dictionary_field", value); }
             }
 
-            [JsonProperty("basic_list_field")]
+            [JsonPropertyName("basic_list_field")]
             public List<string> ListField
             {
                 get { return GetValue<List<string>>("basic_list_field"); }
                 set {  SetValue("basic_list_field", value); }
             }
 
-            [JsonProperty("object_b")]
+            [JsonPropertyName("object_b")]
             public ObjectB ObjectBField
             {
                 get { return GetObject<ObjectB>("object_b"); }
@@ -157,7 +156,7 @@ namespace JuspayTest
             
             public ObjectB(Dictionary<string, object> data) : base(data) {}
 
-            [JsonProperty("basic_string_field")]
+            [JsonPropertyName("basic_string_field")]
             public string StringField
             {
                 get { return GetValue<string>("basic_string_field"); }
@@ -342,35 +341,35 @@ namespace JuspayTest
             setData();
             JuspayResponse InputObj = new JuspayResponse();
             InputObj.FromJson(response);
-            Assert.True((string)InputObj.Response.basic_string_field == "Hello");
-            Assert.True((int)InputObj.Response.basic_int_field == 123);
-            Assert.True((float)InputObj.Response.basic_float_field == 3.14f);
-            Assert.True((bool)InputObj.Response.basic_bool_field == true);
-            Assert.True((string)InputObj.Response.basic_list_field[0] == "item1");
-            Assert.True((string)InputObj.Response.nested_list[0][0] == "Item 1 of List 1");
-            Assert.True(((string)InputObj.Response.basic_object_field.key) == "value");
-            Assert.True((int)InputObj.Response.object_a.basic_int_field == 456);
-            Assert.True((string)InputObj.Response.object_a.basic_list_field[0] == "objectA 1");
-            Assert.True((string)InputObj.Response.object_a.object_b.basic_string_field == "Nested nested object");
-            Assert.True((int)InputObj.Response.list_object_field[0].basic_int_field == 111);
+            Assert.True((string)InputObj.Response["basic_string_field"] == "Hello");
+            Assert.True((int)InputObj.Response["basic_int_field"] == 123);
+            Assert.True((float)InputObj.Response["basic_float_field"] == 3.14f);
+            Assert.True((bool)InputObj.Response["basic_bool_field"] == true);
+            Assert.True((string)InputObj.Response["basic_list_field"][0] == "item1");
+            Assert.True((string)InputObj.Response["nested_list"][0][0] == "Item 1 of List 1");
+            Assert.True(((string)InputObj.Response["basic_object_field"]["key"]) == "value");
+            Assert.True((int)InputObj.Response["object_a"]["basic_int_field"] == 456);
+            Assert.True((string)InputObj.Response["object_a"]["basic_list_field"][0] == "objectA 1");
+            Assert.True((string)InputObj.Response["object_a"]["object_b"]["basic_string_field"] == "Nested nested object");
+            Assert.True((int)InputObj.Response["list_object_field"][0]["basic_int_field"] == 111);
         }
         public static void TestSetters()
         {
             setData();
             JuspayResponse InputObj = new JuspayResponse();
             InputObj.FromJson(response);
-            InputObj.Response.basic_list_field[0] = "item1 data updated";
-            Assert.True(InputObj.Response.basic_list_field[0] == "item1 data updated");
-            InputObj.Response.basic_string_field = "Hello updated";
-            Assert.True((string)InputObj.Response.basic_string_field == "Hello updated");
-            InputObj.Response.basic_int_field = 321;
-            Assert.True((int)InputObj.Response.basic_int_field == 321);
-            InputObj.Response.object_a.basic_int_field = 999;
-            Assert.True((int)InputObj.Response.object_a.basic_int_field == 999);
-            InputObj.Response.basic_list_field[0] = "item1 updated"; 
-            Assert.True((string)InputObj.Response.basic_list_field[0] == "item1 updated");
-            InputObj.Response.list_object_field[0].basic_int_field = 9999;
-            Assert.True((int)InputObj.Response.list_object_field[0].basic_int_field == 9999);
+            InputObj.Response["basic_list_field"][0] = "item1 data updated";
+            Assert.True(InputObj.Response["basic_list_field"][0] == "item1 data updated");
+            InputObj.Response["basic_string_field"] = "Hello updated";
+            Assert.True((string)InputObj.Response["basic_string_field"] == "Hello updated");
+            InputObj.Response["basic_int_field"] = 321;
+            Assert.True((int)InputObj.Response["basic_int_field"] == 321);
+            InputObj.Response["object_a"]["basic_int_field"] = 999;
+            Assert.True((int)InputObj.Response["object_a"]["basic_int_field"] == 999);
+            InputObj.Response["basic_list_field"][0] = "item1 updated"; 
+            Assert.True((string)InputObj.Response["basic_list_field"][0] == "item1 updated");
+            InputObj.Response["list_object_field"][0]["basic_int_field"] = 9999;
+            Assert.True((int)InputObj.Response["list_object_field"][0]["basic_int_field"] == 9999);
         }
     }
 

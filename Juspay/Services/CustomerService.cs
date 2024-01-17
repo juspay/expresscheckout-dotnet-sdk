@@ -1,5 +1,5 @@
 namespace Juspay {
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using System.Collections.Generic;
     public class CreateCustomerInput : JuspayEntity
@@ -7,49 +7,49 @@ namespace Juspay {
         public CreateCustomerInput() : base() {}
         public CreateCustomerInput(Dictionary<string, object> data) : base(data) {}
 
-        [JsonProperty("object_reference_id")]
+        [JsonPropertyName("object_reference_id")]
         public string ObjectReferenceId
         {
             get { return GetValue<string>("object_reference_id"); }
             set { SetValue("object_reference_id", value); }
         }
 
-        [JsonProperty("mobile_number")]
+        [JsonPropertyName("mobile_number")]
         public string MobileNumber
         {
             get { return GetValue<string>("mobile_number"); }
             set { SetValue("mobile_number", value); }
         }
 
-        [JsonProperty("email_address")]
+        [JsonPropertyName("email_address")]
         public string EmailAddress
         {
             get { return GetValue<string>("email_address"); }
             set { SetValue("email_address", value); }
         }
 
-        [JsonProperty("first_name")]
+        [JsonPropertyName("first_name")]
         public string FirstName
         {
             get { return GetValue<string>("first_name"); }
             set { SetValue("first_name", value); }
         }
 
-        [JsonProperty("last_name")]
+        [JsonPropertyName("last_name")]
         public string LastName
         {
             get { return GetValue<string>("last_name"); }
             set { SetValue("last_name", value); }
         }
 
-        [JsonProperty("mobile_country_code")]
+        [JsonPropertyName("mobile_country_code")]
         public string MobileCountryCode
         {
             get { return GetValue<string>("mobile_country_code"); }
             set { SetValue("mobile_country_code", value); }
         }
 
-        [JsonProperty("options")]
+        [JsonPropertyName("options")]
         public ClientAuthToken Options
         {
             get { return GetObject<ClientAuthToken>("options"); }
@@ -61,7 +61,7 @@ namespace Juspay {
         public GetCustomerOptions(Dictionary<string, object> data) : base(data) {
             
         }
-        [JsonProperty("options")]
+        [JsonPropertyName("options")]
         public ClientAuthToken Options
         {
             get { return GetObject<ClientAuthToken>("options"); }

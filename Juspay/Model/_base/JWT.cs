@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using Juspay;
-using Newtonsoft.Json;
 #if NETFRAMEWORK
     using Org.BouncyCastle.Crypto;
     using Org.BouncyCastle.Crypto.Engines;
@@ -259,7 +259,7 @@ public abstract class JWS {
 
     public string Encode(string stPayload, string kid) {
         Dictionary<string, string> headers = new Dictionary<string, string> { { "alg", this.jws.getAlgorithmName() }, { "kid", kid } };
-        string encodedHeaders = Base64Url.encodeToBase64Url(JsonConvert.SerializeObject(headers));
+        string encodedHeaders = Base64Url.encodeToBase64Url(JsonSerializer.Serialize(headers));
         string encodedPayload = Base64Url.encodeToBase64Url(stPayload);
         string signedData = Base64Url.encodeToBase64UrlByte(jws.Sign(Encoding.UTF8.GetBytes($"{encodedHeaders}.{encodedPayload}")));
         return $"{encodedHeaders}.{encodedPayload}.{signedData}";
@@ -301,7 +301,7 @@ public abstract class JWS {
     public string CreateJWE(string stPayload, string kid)
     {
         Dictionary<string, string> headers = new Dictionary<string, string> { { "alg", jwe.getKeyEncAlgorithmName() }, { "enc", jwe.getEncAlgorithmName() }, { "kid", kid } };
-        string encodedHeaders = Base64Url.encodeToBase64Url(JsonConvert.SerializeObject(headers));
+        string encodedHeaders = Base64Url.encodeToBase64Url(JsonSerializer.Serialize(headers));
         byte[] aad = Encoding.UTF8.GetBytes(encodedHeaders);
         byte[] payload = Encoding.UTF8.GetBytes(stPayload);
         string cipherText = Base64Url.encodeToBase64UrlByte(jwe.Encrypt(payload, aad));

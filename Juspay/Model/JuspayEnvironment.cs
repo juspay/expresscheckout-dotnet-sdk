@@ -2,12 +2,11 @@
 namespace Juspay {
     using System;
     using System.Reflection;
-    using Newtonsoft.Json;
     using System.Net;
     using log4net;
     using log4net.Core;
     using log4net.Repository.Hierarchy;
-
+    using System.Text.Json;
     public abstract class JuspayEnvironment {
         
         #if NET6_0 || NET7_0 || NET5_0 || (NET47_OR_GREATER && !NET481)
@@ -41,7 +40,10 @@ namespace Juspay {
 
         public static void SerializedLog(object message, JuspayLogLevel level)
         {
-            string jMessage = JsonConvert.SerializeObject(message);
+            string jMessage = JsonSerializer.Serialize(message, new JsonSerializerOptions() {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            });
             switch (level) 
             {
                 case JuspayLogLevel.Debug:

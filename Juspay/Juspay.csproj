@@ -20,11 +20,10 @@
     </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-      <None Include="../juspay_icon.jpeg" Pack="true" PackagePath=""/>
-     <None Include="../README.md" Pack="true" PackagePath="\"/>
-     <None Include="../LICENSE" Pack="true" PackagePath=""/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-     <PackageReference Include="log4net" Version="2.0.15" />
+    <None Include="../juspay_icon.jpeg" Pack="true" PackagePath=""/>
+    <None Include="../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../LICENSE" Pack="true" PackagePath=""/>
+    <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
   <ItemGroup Condition="
                       '$(TargetFramework)' == 'net461' Or
@@ -34,6 +33,7 @@
                       ">
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
     <Reference Include="System.Net.Http" />
+    <PackageReference Include="System.Text.Json" Version="6.0.9" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config" Pack="true">

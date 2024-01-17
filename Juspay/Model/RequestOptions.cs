@@ -1,9 +1,11 @@
 namespace Juspay {
-     using Newtonsoft.Json;
      using System.Net;
      using System.Net.Http;
      using System;
-     public class RequestOptions {
+      using System.Text.Json;
+    using System.Text.Json.Serialization;
+
+    public class RequestOptions {
 
       public RequestOptions() {
          this.JuspayJWT = JuspayEnvironment.JuspayJWT;
@@ -20,7 +22,7 @@ namespace Juspay {
       }
          private string merchantId;
 
-         [JsonProperty("x-merchantid")]
+         [JsonPropertyName("x-merchantid")]
         public string MerchantId { get { return this.merchantId; } set {
          if (value == null) this.merchantId = JuspayEnvironment.MerchantId;
          else this.merchantId = value;
@@ -43,13 +45,13 @@ namespace Juspay {
             if(value == null) this.juspayJWT = JuspayEnvironment.JuspayJWT;
             else this.juspayJWT = value;
          } }
-         [JsonProperty("x-customerid")]
+         [JsonPropertyName("x-customerid")]
          public string CustomerId { get; set; }
         public override string ToString()
         {
-           return JsonConvert.SerializeObject(
+           return JsonSerializer.Serialize(
                 this,
-                Formatting.Indented);
+                new JsonSerializerOptions() { WriteIndented = true });
         }
      }
 }

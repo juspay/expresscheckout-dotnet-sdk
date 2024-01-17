@@ -1,13 +1,9 @@
 namespace Juspay
 {
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     /// <summary>
     /// Interface that identifies all entities returned by Juspay.
@@ -17,7 +13,6 @@ namespace Juspay
         Dictionary<string, object> Data { get; set; }
     }
 
-    [JsonObject(MemberSerialization.OptIn)]
     public class JuspayEntity : IJuspayEntity
     {
         public JuspayEntity() {}
@@ -37,7 +32,7 @@ namespace Juspay
 
         public static T FromJson<T>(string value) where T : IJuspayEntity
         {
-            T response =  JsonConvert.DeserializeObject<T>(value);
+            T response =  JsonSerializer.Deserialize<T>(value);
             if (response != null) return response;
             throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
         }
@@ -116,11 +111,11 @@ namespace Juspay
         public string ToJson()
         {
             if (Data != null && Data.Count != 0) {
-                return JsonConvert.SerializeObject(Data, Formatting.Indented);
+                return JsonSerializer.Serialize(Data, new JsonSerializerOptions() { WriteIndented = true});
             }
-            return JsonConvert.SerializeObject(
+            return JsonSerializer.Serialize(
                 this,
-                Formatting.Indented);
+                new JsonSerializerOptions() { WriteIndented = true });
         }
     }
 }

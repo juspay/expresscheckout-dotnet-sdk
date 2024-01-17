@@ -34,14 +34,14 @@ namespace JuspayTest {
             JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
             JuspayResponse newCustomer = new Customer().Create((CreateCustomerInput)createCustomerInput, null);
             Assert.NotNull(newCustomer);
-            Assert.NotNull(newCustomer.Response.juspay.client_auth_token);
+            Assert.NotNull(newCustomer.Response["juspay"]["client_auth_token"]);
             Assert.NotNull(newCustomer.Response);
             Assert.NotNull(newCustomer.ResponseBase);
             Assert.True(newCustomer.ResponseBase.StatusCode == 200);
             Assert.NotNull(newCustomer.ResponseBase.XResponseId);
             Assert.True(newCustomer.ResponseBase.XMerchantId == JuspayEnvironment.MerchantId);
             Assert.NotNull(newCustomer.RawContent);
-            Assert.True((string)newCustomer.Response.object_reference_id == customerId);
+            Assert.True((string)newCustomer.Response["object_reference_id"] == customerId);
             Assert.IsType<JuspayResponse>(newCustomer);
             return customerId;
         }
@@ -53,7 +53,7 @@ namespace JuspayTest {
             CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
             JuspayResponse newCustomer = new Customer().Create(createCustomerInput, null);
             Assert.NotNull(newCustomer);
-            Assert.Null(newCustomer.Response.juspay);
+            Assert.Null(newCustomer.Response["juspay"]);
             Assert.IsType<JuspayResponse>(newCustomer);
             return customerId;
         }
@@ -77,7 +77,7 @@ namespace JuspayTest {
             Assert.NotNull(customer.ResponseBase);
             Assert.NotNull(customer.Response);
             Assert.NotNull(customer.RawContent);
-            Assert.True(customerId == (string)customer.Response.object_reference_id);
+            Assert.True(customerId == (string)customer.Response["object_reference_id"]);
             customer = new Customer().GetAsync(customerId, null, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(customer);
         }

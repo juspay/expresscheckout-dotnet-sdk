@@ -1,20 +1,20 @@
 namespace Juspay
 {
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
 
     public class JuspayError : JuspayEntity
     {
         
-        [JsonProperty("error_code")]
+        [JsonPropertyName("error_code")]
         public string ErrorCode { get; set; }
 
-        [JsonProperty("status")]
+        [JsonPropertyName("status")]
         public string Status { get; set; }
 
-        [JsonProperty("error_message")]
+        [JsonPropertyName("error_message")]
         public string ErrorMessage { get; set; }
 
-        [JsonProperty("user_message")]
+        [JsonPropertyName("user_message")]
         public string UserMessage { get; set; }
     }
 }
