@@ -10,21 +10,21 @@ namespace Juspay
     /// </summary>
     public interface IJuspayEntity
     {
-        Dictionary<string, object> Data { get; set; }
+        Dictionary<string, dynamic> Data { get; set; }
     }
 
     public class JuspayEntity : IJuspayEntity
     {
         public JuspayEntity() {}
     
-        private Dictionary<string, object> data = new Dictionary<string, object>();
+        private Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
 
-        public JuspayEntity(Dictionary<string, object> data) {
+        public JuspayEntity(Dictionary<string, dynamic> data) {
             this.Data = data;
         }
         
         [JsonIgnore]
-        public Dictionary<string, object> Data
+        public Dictionary<string, dynamic> Data
         {
             get { return data; }
             set { data = value; }
@@ -35,70 +35,6 @@ namespace Juspay
             T response =  JsonSerializer.Deserialize<T>(value);
             if (response != null) return response;
             throw new JuspayException($"Deserialization Failed for type {typeof(T)}");
-        }
-
-        protected T GetValue<T>(string key)
-        {
-            if (Data.ContainsKey(key))
-            {
-                try
-                {
-                    return (T)Data[key];
-                }
-                catch (Exception)
-                {
-                    return default(T);
-                }
-            }
-            return default(T);
-        }
-
-
-        protected List<T> GetObjectList<T>(string key) where T : IJuspayEntity, new()
-        {
-            List<T> listObj = new List<T>();
-            if (Data.ContainsKey(key)) {
-                try
-                {
-                    foreach (Dictionary<string,object> item in (Data[key] as List<Dictionary<string,object>>)) {
-                        T obj = new T();
-                        obj.Data = item;
-                        listObj.Add(obj);
-                    }
-                    return listObj;
-                }
-                catch (Exception)
-                {
-                    return default(List<T>);
-                }
-            }
-            return default(List<T>);
-        }
-
-        protected T GetObject<T>(string key) where T : IJuspayEntity, new()
-        {
-            T obj = new T();
-
-            if (Data.ContainsKey(key) && Data[key] != null) {
-                try {
-                    obj.Data = Data[key] as Dictionary<string, object>;
-                    return obj;
-                }
-                catch (Exception)
-                {
-                    return default(T);
-                }
-            }
-            return default(T);
-        }
-        
-        protected void SetValue<T>(string key, T value)
-        {
-            if (value is JuspayEntity) {
-                data[key] = ((IJuspayEntity)value).Data;
-            } else {
-                data[key] = value;
-            }
         }
         public override string ToString()
         {

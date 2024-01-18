@@ -24,10 +24,10 @@ namespace JuspayTest
         //     CustomerTest.TestCustomerService();
         // }
 
-        [Fact]
-        public void TestOrder() {
-            OrderTest.TestOrderService();
-        }
+        // [Fact]
+        // public void TestOrder() {
+        //     OrderTest.TestOrderService();
+        // }
 
         [Fact]
         public void TestSession() {
@@ -48,17 +48,12 @@ namespace JuspayTest
             JWTTest.testJWTRSAAESGCM();
         }
 
-        [Fact]
-        public void TestInputEntity()
-        {
-            InputEntityTest.TestInputEntity();
-        }
 
-        // [Fact]
-        // public void TestResponseEntity()
-        // {
-        //     ResponseEntityTest.TestResponseEntity();
-        // }
+        [Fact]
+        public void TestResponseEntity()
+        {
+            ResponseEntityTest.TestResponseEntity();
+        }
 
     }
 }

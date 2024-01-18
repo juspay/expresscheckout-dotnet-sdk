@@ -8,30 +8,30 @@ namespace JuspayTest {
 
         public static void TestGetterCustomerInput() {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
-            CreateCustomerInput CustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+            CreateCustomerInput CustomerInput = new CreateCustomerInput(new Dictionary<string, dynamic>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, dynamic> {{"get_client_auth_token", true }} }});
             bool token = (bool)(CustomerInput.Data["options"] as Dictionary<string, object>)["get_client_auth_token"];
-            Assert.NotNull(CustomerInput.ObjectReferenceId);
-            Assert.NotNull(CustomerInput.Options);
-            Assert.True(CustomerInput.Options.GetClientAuthToken);
+            Assert.NotNull(CustomerInput.Data["object_reference_id"]);
+            Assert.NotNull(CustomerInput.Data["options"]);
+            Assert.True(CustomerInput.Data["options"]["get_client_auth_token"]);
         }
 
         public static void TestSetterCustomerInput() {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
-            CreateCustomerInput CustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
-            CustomerInput.Options.GetClientAuthToken = false;
-            Assert.False(CustomerInput.Options.GetClientAuthToken);
+            CreateCustomerInput CustomerInput = new CreateCustomerInput(new Dictionary<string, dynamic>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, dynamic> {{"get_client_auth_token", true }} }});
+            CustomerInput.Data["options"]["get_client_auth_token"] = false;
+            Assert.False(CustomerInput.Data["options"]["get_client_auth_token"]);
             Assert.False((bool)(CustomerInput.Data["options"] as Dictionary<string, object>)["get_client_auth_token"]);
-            CustomerInput.Options.GetClientAuthToken = true;
-            Assert.True(CustomerInput.Options.GetClientAuthToken);
+            CustomerInput.Data["options"]["get_client_auth_token"] = true;
+            Assert.True(CustomerInput.Data["options"]["get_client_auth_token"]);
             Assert.True((bool)(CustomerInput.Data["options"] as Dictionary<string, object>)["get_client_auth_token"]);
             (CustomerInput.Data["options"] as Dictionary<string, object>)["get_client_auth_token"] = false;
-            Assert.False(CustomerInput.Options.GetClientAuthToken);
+            Assert.False(CustomerInput.Data["options"]["get_client_auth_token"]);
             Assert.False((bool)(CustomerInput.Data["options"] as Dictionary<string, object>)["get_client_auth_token"]);
         }
         public static string CreateCustomerWithClientAuthToken() 
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
-            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, object> {{"get_client_auth_token", true }} }});
+            JuspayEntity createCustomerInput = new CreateCustomerInput(new Dictionary<string, dynamic>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} , {"options", new Dictionary<string, dynamic> {{"get_client_auth_token", true }} }});
             JuspayResponse newCustomer = new Customer().Create((CreateCustomerInput)createCustomerInput, null);
             Assert.NotNull(newCustomer);
             Assert.NotNull(newCustomer.Response["juspay"]["client_auth_token"]);
@@ -50,7 +50,7 @@ namespace JuspayTest {
         public static string CreateCustomerWithOutClientAuthToken() 
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
-            CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+            CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, dynamic>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
             JuspayResponse newCustomer = new Customer().Create(createCustomerInput, null);
             Assert.NotNull(newCustomer);
             Assert.Null(newCustomer.Response["juspay"]);
@@ -61,7 +61,7 @@ namespace JuspayTest {
         public static string CreateCustomerAsync() 
         {
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}"; 
-            CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, object>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
+            CreateCustomerInput createCustomerInput = new CreateCustomerInput(new Dictionary<string, dynamic>{ {"object_reference_id", $"{customerId}"}, {"mobile_number", "1234567890"}, {"email_address", "customer@juspay.com"}, {"mobile_country_code", "91"} });
             JuspayResponse newCustomer = new Customer().CreateAsync(createCustomerInput, null).ConfigureAwait(false).GetAwaiter().GetResult();
             Assert.NotNull(newCustomer);
             Assert.IsType<JuspayResponse>(newCustomer);
