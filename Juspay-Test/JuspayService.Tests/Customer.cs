@@ -39,7 +39,7 @@ namespace JuspayTest {
             Assert.NotNull(newCustomer.ResponseBase);
             Assert.True(newCustomer.ResponseBase.StatusCode == 200);
             Assert.NotNull(newCustomer.ResponseBase.XResponseId);
-            Assert.True(newCustomer.ResponseBase.XMerchantId == JuspayEnvironment.MerchantId);
+            Assert.True(newCustomer.ResponseBase.XMerchantId == JuspayEnvironment.Instance.MerchantId);
             Assert.NotNull(newCustomer.RawContent);
             Assert.True((string)newCustomer.Response.object_reference_id == customerId);
             Assert.IsType<JuspayResponse>(newCustomer);

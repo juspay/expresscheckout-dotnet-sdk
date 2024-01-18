@@ -11,11 +11,11 @@ namespace JuspayTest
     {
         public static Random Rnd { get; set; }
         public JuspayServiceTest () {
-            JuspayEnvironment.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
-            JuspayEnvironment.MerchantId = Environment.GetEnvironmentVariable("MERCHANT_ID");
-            JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
-            JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
-            JuspayEnvironment.SetLogFile("../../../logs/juspay_sdk");
+            JuspayEnvironment.Instance.ApiKey = Environment.GetEnvironmentVariable("API_KEY");
+            JuspayEnvironment.Instance.MerchantId = Environment.GetEnvironmentVariable("MERCHANT_ID");
+            JuspayEnvironment.Instance.BaseUrl = "https://sandbox.juspay.in";
+            JuspayEnvironment.Instance.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
+            JuspayEnvironment.Instance.SetLogFile("../../../logs/juspay_sdk");
             Rnd = new Random();
         }
 

@@ -12,7 +12,7 @@ namespace JuspayTest {
         {    
             string customerId = $"customer_{JuspayServiceTest.Rnd.Next()}";
             string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
-            CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
+            CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
             JuspayResponse sessionRes = new OrderSession().Create(createOrderSessionInput, null);
             Assert.NotNull(sessionRes);
             Assert.NotNull(sessionRes.Response);
@@ -28,7 +28,7 @@ namespace JuspayTest {
             string orderId = $"order_{JuspayServiceTest.Rnd.Next()}";
             string privateKey1 = File.ReadAllText("../../../privateKey1.pem");
             string publicKey2 = File.ReadAllText("../../../publicKey2.pem");
-            JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1);
+            JuspayEnvironment.Instance.JuspayJWT =  new JuspayJWTRSA("key_26b1a82e16cf4c6e850325c3d98368cb", publicKey2, privateKey1);
             try
             {
                 CreateOrderSessionInput sessionInput = new CreateOrderSessionInput(new Dictionary<string, object>
@@ -36,7 +36,7 @@ namespace JuspayTest {
                         { "amount", "10.00" },
                         { "order_id", orderId },
                         { "customer_id", customerId },
-                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId },
                         { "action", "paymentPage" },
                         { "return_url", "https://google.com" }
                     }
@@ -51,10 +51,10 @@ namespace JuspayTest {
             }
             catch (JuspayException)
             {
-                JuspayEnvironment.JuspayJWT = null;
+                JuspayEnvironment.Instance.JuspayJWT = null;
                 Assert.True(false);
             }
-            JuspayEnvironment.JuspayJWT = null;
+            JuspayEnvironment.Instance.JuspayJWT = null;
         }
 
         public static void JuspaySessionAPIJWTTest()
@@ -68,7 +68,7 @@ namespace JuspayTest {
                         { "amount", "10.00" },
                         { "order_id", orderId },
                         { "customer_id", customerId },
-                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId },
                         { "action", "paymentPage" },
                         { "return_url", "https://google.com" }
                     }
@@ -91,7 +91,7 @@ namespace JuspayTest {
                         { "amount", "10.00" },
                         { "order_id", orderId },
                         { "customer_id", customerId },
-                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId },
                         { "action", "paymentPage" },
                         { "return_url", "https://google.com" }
                     }
