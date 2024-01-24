@@ -9,6 +9,14 @@ namespace Juspay
     using Newtonsoft.Json.Linq;
     using System;
 
+    /// <summary>
+    /// Interface that identifies all entities returned by Juspay.
+    /// </summary>
+    public interface IJuspayEntity
+    {
+        Dictionary<string, object> Data { get; set; }
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     public class JuspayEntity : IJuspayEntity
     {
@@ -113,20 +121,6 @@ namespace Juspay
             return JsonConvert.SerializeObject(
                 this,
                 Formatting.Indented);
-        }
-
-
-        private object GetIdString()
-        {
-            foreach (var property in this.GetType().GetTypeInfo().DeclaredProperties)
-            {
-                if (property.Name == "Id")
-                {
-                    return property.GetValue(this);
-                }
-            }
-
-            return null;
         }
     }
 }

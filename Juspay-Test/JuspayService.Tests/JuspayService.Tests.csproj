@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net5.0;net6.0;net452;net46;net47;net48;net481</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;net5.0;net461;net47;net48;netcoreapp3.1;netcoreapp3.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
   </PropertyGroup>
@@ -17,12 +17,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-   <ItemGroup Condition="'$(TargetFramework)' == 'net452' Or 
-                      '$(TargetFramework)' == 'net46' Or
+   <ItemGroup Condition="
+                      '$(TargetFramework)' == 'net461' Or
                       '$(TargetFramework)' == 'net47' Or
                       '$(TargetFramework)' == 'net48' Or 
                       '$(TargetFramework)' == 'net481'">
-    <Reference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="17.3.3" />  
   </ItemGroup>
 

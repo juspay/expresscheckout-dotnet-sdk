@@ -5,6 +5,11 @@ namespace Juspay
     using System.Net.Http;
     using System.Text;
 
+    public enum ContentType
+    {
+        FormUrlEncoded,
+        Json
+    }
 
     /// <summary>
     /// Represents a request to Juspay's API.
@@ -21,7 +26,7 @@ namespace Juspay
 
         public HttpMethod Method { get; set; }
 
-        public RequestOptions RequestOptions { get; set; }
+        public RequestOptions RequestOptions { get; }
 
         public string ApiKey { get; }
         
@@ -40,8 +45,6 @@ namespace Juspay
             this.QueryParams = queryParams;
 
             this.ContentType = contentType;
-
-            this.RequestOptions = requestOptions;
             
             this.ApiKey = apiKey;
 
@@ -50,6 +53,12 @@ namespace Juspay
             this.Input = input;
 
             this.IsJwtSupported = isJWTSupported;
+
+            if (requestOptions == null) this.RequestOptions = new RequestOptions();
+            else this.RequestOptions = requestOptions;
+            
+            if (RequestOptions.ApiKey != null) this.ApiKey = requestOptions.ApiKey;
+            else this.ApiKey = apiKey;
         }
 
        

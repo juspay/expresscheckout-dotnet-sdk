@@ -4,36 +4,45 @@
     <PackageId>expresscheckout</PackageId>
     <Company>Juspay</Company>
     <Product>Express Checkout dotnet sdk</Product>
-    <TargetFrameworks>net7.0;net5.0;net6.0;net452;net46;net47;net48;net481</TargetFrameworks>
+    <TargetFrameworks>net7.0;net5.0;net6.0;net461;net47;net48;net481;netcoreapp3.1;netcoreapp3.0</TargetFrameworks>
     <RootNamespace>Juspay</RootNamespace>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <Version>2.0.3</Version>
+    <Version>2.0.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>juspay_icon.jpeg</PackageIcon>
     <Copyright>Copyright (c) Juspay 2023.</Copyright>
-    <Description>Official Juspay .NET SDK, supporting .NET Framework 4.5.2+ and .NET 5.0+</Description>
+    <Description>Official Juspay .NET SDK, supporting .NET Framework 4.6.1+, NETCOREAPP3.0+ and .NET 5.0+</Description>
     <PackageTags>juspay express-checkout sdk juspay-technologies dotnet .NET</PackageTags>
-    <PackageReleaseNotes>- updated JuspayJWT class to accept single keyId, public and private key in constructor instead of Dictionary</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      - Removed jose-jwt
+      - Added custom JWE and JWS
+      - Removed support for net452 and net46
+      - Added .net core support
+      - Added Lazy initialization of JuspayEnvironment
+      - Interface change for JuspayEnvironment
+    </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
       <None Include="../juspay_icon.jpeg" Pack="true" PackagePath=""/>
      <None Include="../README.md" Pack="true" PackagePath="\"/>
      <None Include="../LICENSE" Pack="true" PackagePath=""/>
-    <PackageReference Include="jose-jwt" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
      <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net452' Or 
-                      '$(TargetFramework)' == 'net46' Or
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="
+                      '$(TargetFramework)' == 'net461' Or
                       '$(TargetFramework)' == 'net47' Or
                       '$(TargetFramework)' == 'net48' Or 
                       '$(TargetFramework)' == 'net481'
                       ">
-    <PackageReference Include="BouncyCastle" Version="1.8.9" />
     <Reference Include="System.Net.Http" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <Reference Include="System.Configuration" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config" Pack="true">

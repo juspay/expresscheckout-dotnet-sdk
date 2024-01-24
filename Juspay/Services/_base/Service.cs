@@ -14,7 +14,7 @@ namespace Juspay {
         }
          public IJuspayClient Client
         {
-            get => this.client ?? JuspayEnvironment.JuspayClient;
+            get => this.client ?? JuspayEnvironment.Instance.JuspayClient;
             set => this.client = value;
         }
 
@@ -38,7 +38,7 @@ namespace Juspay {
 
         protected bool shouldUseJwt(RequestOptions requestOptions)
         {
-            if ((requestOptions != null && requestOptions.JuspayJWT != null) || JuspayEnvironment.JuspayJWT != null)
+            if ((requestOptions != null && requestOptions.JuspayJWT != null) || JuspayEnvironment.Instance.JuspayJWT != null)
             {
                 return true;
             }

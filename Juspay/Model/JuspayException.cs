@@ -8,13 +8,13 @@ namespace Juspay
         public JuspayException(string message)
             : base(message)
         {
-            JuspayEnvironment.log.Error(message);
+            JuspayEnvironment.Instance.log.Error(message);
         }
 
         public JuspayException(string message, Exception err)
             : base(message, err)
         {
-            JuspayEnvironment.SerializedLog(new Dictionary<string, string> { {"message", message}, { "error", err.ToString() } }, JuspayEnvironment.JuspayLogLevel.Error);
+            JuspayEnvironment.Instance.SerializedLog(new Dictionary<string, string> { {"message", message}, { "error", err.ToString() } }, JuspayEnvironment.JuspayLogLevel.Error);
         }
 
         public JuspayException(int httpStatusCode, JuspayError JuspayError, JuspayResponse juspayResponse, string message)
@@ -23,7 +23,7 @@ namespace Juspay
             this.HttpStatusCode = httpStatusCode;
             this.JuspayError = JuspayError;
             this.JuspayResponse = juspayResponse;
-            JuspayEnvironment.SerializedLog(new Dictionary<string, string> { {"message", message}, { "error", JuspayError?.ToString() }, { "juspay_response", JuspayResponse?.Response.ToString() }, { "http_status_code", httpStatusCode.ToString() } }, JuspayEnvironment.JuspayLogLevel.Error);
+            JuspayEnvironment.Instance.SerializedLog(new Dictionary<string, string> { {"message", message}, { "error", JuspayError?.ToString() }, { "juspay_response", JuspayResponse.RawContent }, { "http_status_code", httpStatusCode.ToString() } }, JuspayEnvironment.JuspayLogLevel.Error);
         }
 
         public int HttpStatusCode { get; set; }
@@ -56,6 +56,21 @@ namespace Juspay
     public class JWTException : JuspayException
     {
         public JWTException(string message) : base(message) {}  
+    }
+
+    public class JWKException : JuspayException
+    {
+        public JWKException(string message) : base(message) {}
+    }
+
+    public class JWEException : JuspayException
+    {
+        public JWEException(string message) : base(message) {}
+    }
+
+    public class JWSException : JuspayException
+    {
+        public JWSException(string message) : base(message) {}
     }
     
 }
