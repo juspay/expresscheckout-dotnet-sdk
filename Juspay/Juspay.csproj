@@ -17,6 +17,8 @@
     <PackageReleaseNotes>
       - Removed jose-jwt
       - Added custom JWE and JWS
+      - Removed support for net452 and net46
+      - Added .net core support
     </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
