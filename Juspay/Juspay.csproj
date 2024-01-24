@@ -19,6 +19,8 @@
       - Added custom JWE and JWS
       - Removed support for net452 and net46
       - Added .net core support
+      - Added Lazy initialization of JuspayEnvironment
+      - Interface change for JuspayEnvironment
     </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>

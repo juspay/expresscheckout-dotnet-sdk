@@ -20,22 +20,22 @@ using Juspay;
 ### Authentication
 Juspay authenticates API request using API key. API key are passed in Authorization headers.
 
-Use `JuspayEnvironment.ApiKey` property to set the API key
+Use `JuspayEnvironment.Instance.ApiKey` property to set the API key
 
 ### Environment Settings
 ```cs
-JuspayEnvironment.ApiKey = "Api key";
-JuspayEnvironment.MerchantId = "merchant id";
-JuspayEnvironment.BaseUrl = "custom url"; // (predefined base url JuspayEnvironment.SANDBOX_BASE_URL, JuspayEnvironment.PRODUCTION_BASE_URL)
-JuspayEnvironment.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
-JuspayEnvironment.ReadTimeoutInMilliSeconds = 5000;
-JuspayEnvironment.SSL = SecurityProtocolType.SystemDefault;
-JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
+JuspayEnvironment.Instance.ApiKey = "Api key";
+JuspayEnvironment.Instance.MerchantId = "merchant id";
+JuspayEnvironment.Instance.BaseUrl = "custom url";
+JuspayEnvironment.Instance.ConnectTimeoutInMilliSeconds = 5000; // Supported only .net6.0 and higher
+JuspayEnvironment.Instance.ReadTimeoutInMilliSeconds = 5000;
+JuspayEnvironment.Instance.SSL = SecurityProtocolType.SystemDefault;
+JuspayEnvironment.Instance.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
 ```
 ```cs
 using Juspay;
-JuspayEnvironment.ApiKey = "api_key";
-JuspayEnvironment.BaseUrl = "https://sandbox.juspay.in";
+JuspayEnvironment.Instance.ApiKey = "api_key";
+JuspayEnvironment.Instance.BaseUrl = "https://sandbox.juspay.in";
 ```
 ### Services
 Use Juspay Service classes to create, get or update Juspay resources. Each Service class accepts a Dictionary<string, object> and RequestOptions as Input and produces a JuspayResponse. All service has both Synchronous and Asynchronous version.
@@ -68,7 +68,7 @@ Console.WriteLine(((string)order.Response.order_id));
 ```
 
 #### Request Options
-RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.ApiKey```), CustomerId, Security protocol type and read timeout.
+RequestOptions provide option to set/override merchant id, API key (to override the global api key set by ```JuspayEnvironment.Instance.ApiKey```), CustomerId, Security protocol type and read timeout.
 ```cs
 RequestOptions.MerchantId = "merchant id";
 RequestOptions.ApiKey = "new api key";
@@ -79,7 +79,7 @@ RequsetOptions.CustomerId = "x-customer-id";
 RequestOptions reqOptions = new RequestOptions(string merchantId, string apiKey, SecurityProtocolType? ssl, long? readTimeoutInMilliSeconds);
 ```
 ### JWT
-Pass JuspayJWTRSA in request option or set JuspayEnvironment.JuspayJWT. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
+Pass JuspayJWTRSA in request option or set JuspayEnvironment.Instance.JuspayJWT. JuspayJWTRSA implements IJuspayJWT interface. IJuspayJWT has three methods ConsumePayload, PreparePayload and Initialize (a factory method to initialize ISign and IEnc objects) along with three attributes Dictionary of keys, Sign of type ISign and Enc of type IEnc. JuspayJWTRSA currently uses JWTSign which is a implementation of ISign interface and JWEEnc which is a implementation of IEnc interface. Currently JuspayJWTRSA class comes with the SDK. Implement IJuspayJWT to create custom JWT classes. JuspayJWTRSA constructor accepts keys with kid as arguments.
 
 #### Using RequestOptions
 ```cs
@@ -93,10 +93,10 @@ JuspayResponse orderStatus = new Order().Get(orderId, new RequestOptions(null, n
 string orderId = "order id";
 string privateKey = "private key pem contents as string";
 string publicKey = "public key pem contents as string";
-JuspayEnvironment.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
+JuspayEnvironment.Instance.JuspayJWT =  new JuspayJWTRSA("keyId", publicKey, privateKey);
 JuspayResponse orderStatus = new Order().Get(orderId);
-JuspayEnvironment.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
-JuspayEnvironment.SetLogFile("log file name"); // by default logs/juspay_sdk
+JuspayEnvironment.Instance.SetLogLevel(JuspayEnvironment.JuspayLogLevel.Debug);
+JuspayEnvironment.Instance.SetLogFile("log file name"); // by default logs/juspay_sdk
 ```
 ### Errors
 Juspay Services throw JuspayException. JuspayException has message, JuspayError, JuspayResponse and StatusCode as attributes.
@@ -204,7 +204,7 @@ CreateOrderSessionInput sessionInput = new CreateOrderSessionInput(new Dictionar
                         { "amount", "10.00" },
                         { "order_id", orderId },
                         { "customer_id", customerId },
-                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId },
                         { "action", "paymentPage" },
                         { "return_url", "https://google.com" }
                     }
@@ -223,7 +223,7 @@ CreateOrderSessionInput sessionInput = new CreateOrderSessionInput(new Dictionar
                         { "amount", "10.00" },
                         { "order_id", orderId },
                         { "customer_id", customerId },
-                        { "payment_page_client_id", JuspayEnvironment.MerchantId },
+                        { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId },
                         { "action", "paymentPage" },
                         { "return_url", "https://google.com" }
                     }
@@ -260,9 +260,9 @@ namespace custom {
             {
                 //ENV Initialization
 
-                JuspayEnvironment.ApiKey = "Api key";
-                JuspayEnvironment.MerchantId = "merchant id";
-                JuspayEnvironment.BaseUrl = "custom url";
+                JuspayEnvironment.Instance.ApiKey = "Api key";
+                JuspayEnvironment.Instance.MerchantId = "merchant id";
+                JuspayEnvironment.Instance.BaseUrl = "custom url";
 
                 //Create Order
                
@@ -277,7 +277,7 @@ namespace custom {
                 JuspayResponse updatedOrder = new Order().Update(orderId, 10, null); // use this to update the order amount
 
                 // Create Session
-                CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
+                CreateOrderSessionInput createOrderSessionInput = new CreateOrderSessionInput(new Dictionary<string, object>{{ "amount", "10.00" }, { "order_id", orderId }, { "customer_id", customerId }, { "payment_page_client_id", JuspayEnvironment.Instance.MerchantId }, { "action", "paymentPage" }, { "return_url", "https://google.com" }});
                 JuspayResponse sessionRes = new OrderSession().Create(createOrderSessionInput, null);
                 Console.WriteLine(sessionRes.Response.payment_links.web); // load this link in browser to do a transaction
 
