@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Juspay;
 using Newtonsoft.Json;
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
     using Org.BouncyCastle.Crypto;
     using Org.BouncyCastle.Crypto.Engines;
     using Org.BouncyCastle.Crypto.Modes;
@@ -44,14 +44,14 @@ public class JWTRSAKey {
     protected RSA privateKey;
     protected RSA publicKey;
 
-    #if NETFRAMEWORK
+    #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
     protected RsaKeyParameters publicKeyParameter;
     protected AsymmetricKeyParameter privateKeyParameter;
     #endif
     public string PrivateKey {
         set {
             try {
-                #if NETFRAMEWORK
+                #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                     this.privateKey = RSAReader.ReadRsaKeyFromPemFile(value);
                     this.privateKeyParameter = DotNetUtilities.GetRsaKeyPair(this.privateKey.ExportParameters(true)).Private;
                 #else
@@ -67,7 +67,7 @@ public class JWTRSAKey {
      public string PublicKey {
         set {
             try {
-                #if NETFRAMEWORK
+                #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                     this.publicKey = RSAReader.ReadRsaKeyFromPemFile(value);
                     this.publicKeyParameter = DotNetUtilities.GetRsaPublicKey(this.publicKey.ExportParameters(false));
                 #else
@@ -135,7 +135,7 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
             this.Nonce = new byte[12];
             this.Tag = new byte[16];
             byte[] cipherText = new byte[data.Length];
-            #if NETFRAMEWORK
+            #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                 RandomNumberGenerator rng = new RNGCryptoServiceProvider();
                 rng.GetBytes(this.Key);
                 rng.GetBytes(this.Nonce);
@@ -143,7 +143,7 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
                 RandomNumberGenerator.Fill(this.Key);
                 RandomNumberGenerator.Fill(this.Nonce);
             #endif
-            #if NETFRAMEWORK
+            #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                 GcmBlockCipher cipher = new GcmBlockCipher(new AesEngine());
                 AeadParameters parameters = new AeadParameters(new KeyParameter(this.Key), this.Tag.Length * 8, this.Nonce, aad);
                 byte[] cipherTextAndTag = new byte[data.Length + this.Tag.Length];
@@ -165,7 +165,7 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     }
     public byte[] Decrypt(byte[] cipherText, byte[] key, byte[] nonce, byte[] tag, byte[] aad)
     {
-         #if NETFRAMEWORK
+         #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
             GcmBlockCipher cipher = new GcmBlockCipher(new AesEngine());
             AeadParameters parameters = new AeadParameters(new KeyParameter(key), tag.Length * 8, nonce, aad);
             cipher.Init(false, parameters);
@@ -188,7 +188,7 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     {
         try
         {
-            #if NETFRAMEWORK
+            #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                 OaepEncoding rsaEngine = new OaepEncoding(new RsaEngine(), new Sha256Digest());
                 rsaEngine.Init(false, this.privateKeyParameter);
                 return rsaEngine.ProcessBlock(key, 0, key.Length);
@@ -204,7 +204,7 @@ public class RSAAESGCM : JWTRSAKey, JweAlgorithm {
     {
         try
         {
-            #if NETFRAMEWORK
+            #if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
                 OaepEncoding rsaEngine = new OaepEncoding(new RsaEngine(), new Sha256Digest());
                 rsaEngine.Init(true, this.publicKeyParameter);
                 return rsaEngine.ProcessBlock(key, 0, key.Length);
@@ -334,7 +334,7 @@ public abstract class JWS {
     }
  }
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETCOREAPP3_0_OR_GREATER && !NET5_0_OR_GREATER
 namespace Juspay
 {
     using System.Security.Cryptography;

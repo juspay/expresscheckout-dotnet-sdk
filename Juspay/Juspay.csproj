@@ -4,10 +4,10 @@
     <PackageId>expresscheckout</PackageId>
     <Company>Juspay</Company>
     <Product>Express Checkout dotnet sdk</Product>
-    <TargetFrameworks>net7.0;net5.0;net6.0;net461;net47;net48;net481</TargetFrameworks>
+    <TargetFrameworks>net7.0;net5.0;net6.0;net461;net47;net48;net481;netcoreapp3.1;netcoreapp3.0</TargetFrameworks>
     <RootNamespace>Juspay</RootNamespace>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <Version>2.0.3</Version>
+    <Version>2.0.4</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>juspay_icon.jpeg</PackageIcon>
@@ -26,14 +26,19 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
      <PackageReference Include="log4net" Version="2.0.15" />
   </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+  </ItemGroup>
+
   <ItemGroup Condition="
                       '$(TargetFramework)' == 'net461' Or
                       '$(TargetFramework)' == 'net47' Or
                       '$(TargetFramework)' == 'net48' Or 
                       '$(TargetFramework)' == 'net481'
                       ">
-    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
     <Reference Include="System.Net.Http" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config" Pack="true">

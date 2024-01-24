@@ -21,7 +21,7 @@ namespace Juspay {
 
         public static JuspayEnvironment Instance => juspayEnvInstance.Value;
 
-        #if NET6_0 || NET7_0 || NET5_0 || (NET47_OR_GREATER && !NET481)
+        #if  NETCOREAPP3_0_OR_GREATER || NET47_OR_GREATER
             public readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.SystemDefault;
         #else
             public readonly SecurityProtocolType DEFAULT_SSL_PROTOCOL = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
